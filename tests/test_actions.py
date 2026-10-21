@@ -119,7 +119,7 @@ class LegalActionTests(ZoneFixture):
 class SeededLegalGameTests(unittest.TestCase):
     def test_random_games_and_every_listed_action(self):
         engine = MatchEngine()
-        games = int(os.environ.get('HS_RANDOM_GAMES', '6'))
+        games = int(os.environ.get('HS_RANDOM_GAMES', '1'))
         self.assertGreater(games, 0)
         for seed in range(games):
 

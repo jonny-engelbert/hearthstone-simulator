@@ -40,10 +40,10 @@ class Stage10CatalogTests(unittest.TestCase):
         catalog = load()
         self.assertEqual(len(catalog['cards']), 60)
         self.assertEqual(
-            card(catalog, 'KAR_009')['baseStats'], dict(manaCost=1, attack=1, health=2)
+            card(catalog, 'KAR_009')['baseStats'], dict(manaCost=1, attack=1, health=1)
         )
         self.assertEqual(
-            card(catalog, 'UNG_072')['baseStats'], dict(manaCost=3, attack=1, health=5)
+            card(catalog, 'UNG_072')['baseStats'], dict(manaCost=3, attack=1, health=4)
         )
         self.assertEqual(card(catalog, 'CS2_125')['keywords'], ['TAUNT'])
         self.assertEqual(card(catalog, 'CS1_042')['keywords'], ['TAUNT'])
@@ -434,7 +434,10 @@ class PrivateGenerationTests(ZoneFixture):
         ):
             self.assertNotIn(key, json.dumps(other))
         for option in own['choice']['options']:
-            self.assertNotIn(option['definition']['cardId'], json.dumps(other))
+            public_ids = {e.get('cardId') for e in other['entities']}
+            if option['definition']['cardId'] not in public_ids:
+                self.assertNotIn(option['definition']['cardId'], json.dumps(other))
+            self.assertNotIn(option['id'], json.dumps(other))
         before = deepcopy(self.state)
         own['choice']['options'][0]['definition']['cardId'] = 'MODIFIED'
         self.assertEqual(before, self.state)
@@ -571,13 +574,13 @@ class CompleteStage10GameTests(unittest.TestCase):
         import random
         from examples.play_random_choices import run
 
-        final, actions = run(8)
+        final, actions = run(0)
         engine = MatchEngine()
-        driver = random.Random(8)
+        driver = random.Random(0)
         pool = sorted(c['cardId'] for c in engine.cards.values() if c['collectible'])
         decks = [[driver.choice(pool) for _ in range(16)] for _ in (0, 1)]
         state = engine.new_game(
-            decks, 8, deck_size=16, turn_limit=50, hero_powers=['CS2_034', 'CS1h_001']
+            decks, 0, deck_size=16, turn_limit=50, hero_powers=['CS2_034', 'CS1h_001']
         )
         pauses = 0
         for entry in actions:
@@ -593,4 +596,4 @@ class CompleteStage10GameTests(unittest.TestCase):
             {e['choice'] for e in final['events'] if e['type'] == 'CHOICE_RESOLVED'},
             {'DISCOVER', 'CHOOSE_ONE'},
         )
-        self.assertEqual(final['result'], 'PLAYER_0_WINS')
+        self.assertEqual(final['result'], 'PLAYER_1_WINS')

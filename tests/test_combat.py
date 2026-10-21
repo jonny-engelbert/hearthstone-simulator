@@ -19,7 +19,7 @@ class WeaponCatalogTests(unittest.TestCase):
         self.assertEqual(axe['type'], 'WEAPON')
         self.assertEqual(axe['classes'], ['WARRIOR'])
         self.assertEqual(
-            axe['baseStats'], {'manaCost': 2, 'attack': 3, 'durability': 2}
+            axe['baseStats'], {'manaCost': 3, 'attack': 3, 'durability': 2}
         )
         self.assertEqual(axe['abilities'], [])
 
@@ -99,7 +99,7 @@ class CombatTests(unittest.TestCase):
         before = deepcopy(self.state)
         result = self.engine.play(self.state, 0, 'axe')
         self.assertEqual(self.state, before)
-        self.assertEqual(result['mana'][0], 8)
+        self.assertEqual(result['mana'][0], 7)
         self.assertEqual(self.engine.equipped_weapon(result, 0)['id'], 'axe')
         self.assertEqual(self.get(result, 'axe')['durability'], 2)
         self.assertEqual(

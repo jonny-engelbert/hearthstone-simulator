@@ -23,7 +23,7 @@ class Stage7CatalogTests(unittest.TestCase):
     def test_keyword_and_representative_stats(self):
         for cid, cost, attack, health, keyword in [
             ('CS2_124', 3, 3, 1, 'CHARGE'),
-            ('GIL_580', 3, 3, 3, 'RUSH'),
+            ('GIL_113', 3, 3, 3, 'RUSH'),
             ('EX1_033', 6, 4, 5, 'WINDFURY'),
         ]:
             card = definition(load(), cid)
@@ -81,7 +81,7 @@ class Stage7CatalogTests(unittest.TestCase):
             if mutation == 'keyword':
                 definition(catalog, 'CS2_124')['keywords'] = ['FLYING']
             if mutation == 'duration':
-                definition(catalog, 'EX1_046')['abilities'][0]['effects'][0][
+                definition(catalog, 'CS2_188')['abilities'][0]['effects'][0][
                     'duration'
                 ] = 'LATER'
             if mutation == 'freeze':
@@ -301,7 +301,7 @@ class CombatKeywordTests(ManagedFixture):
 
     def test_rush_only_attacks_minions_on_play(self):
         self.add('EX1_015', 'enemy', 1)
-        self.play('GIL_580', entity_id='rush')
+        self.play('GIL_113', entity_id='rush')
         self.assertEqual(self.engine.attack_targets(self.state, 'rush'), ['enemy'])
         self.assert_atomic_failure(
             lambda: self.engine.attack(self.state, 0, 'rush', 'hero-1')
@@ -310,7 +310,7 @@ class CombatKeywordTests(ManagedFixture):
         self.assertEqual(self.get('enemy')['zone'], 'GRAVEYARD')
 
     def test_rush_attacks_hero_next_turn(self):
-        self.play('GIL_580', entity_id='rush')
+        self.play('GIL_113', entity_id='rush')
         self.assertEqual(self.engine.attack_targets(self.state, 'rush'), [])
         self.end()
         self.end()
@@ -318,14 +318,14 @@ class CombatKeywordTests(ManagedFixture):
 
     def test_charge_and_rush_obey_taunt_and_frozen(self):
         self.add('CS2_179', 'taunt', 1)
-        for cid, eid in [('CS2_124', 'wolf'), ('GIL_580', 'rush')]:
+        for cid, eid in [('CS2_124', 'wolf'), ('GIL_113', 'rush')]:
             self.play(cid, entity_id=eid)
             self.assertEqual(self.engine.attack_targets(self.state, eid), ['taunt'])
             self.get(eid)['keywords'].append('FROZEN')
             self.assertEqual(self.engine.attack_targets(self.state, eid), [])
 
     def test_charge_overrides_rush_restriction_and_silence_restores_exhaustion(self):
-        self.play('GIL_580', entity_id='rush')
+        self.play('GIL_113', entity_id='rush')
         self.get('rush')['keywords'].append('CHARGE')  # arranged keyword-gain fixture
         self.assertIn('hero-1', self.engine.attack_targets(self.state, 'rush'))
         self.play('EX1_048', 'rush', 'silence')
@@ -444,7 +444,7 @@ class FreezeTests(ManagedFixture):
         self.assertNotIn('FROZEN', self.get('wolf')['keywords'])
 
     def test_rush_without_legal_minion_target_misses_next_turn(self):
-        self.play('GIL_580', entity_id='rush')
+        self.play('GIL_113', entity_id='rush')
         self.freeze('rush')
         self.end()
         self.end()
@@ -454,7 +454,7 @@ class FreezeTests(ManagedFixture):
 
     def test_rush_with_legal_minion_target_thaws_current_turn(self):
         self.add('EX1_015', 'enemy', 1)
-        self.play('GIL_580', entity_id='rush')
+        self.play('GIL_113', entity_id='rush')
         self.freeze('rush')
         self.end()
         self.assertNotIn('FROZEN', self.get('rush')['keywords'])
@@ -540,7 +540,7 @@ class FreezeTests(ManagedFixture):
 class ExpirationTests(ManagedFixture):
     def test_abusive_sergeant_buff_expires_on_current_turn_even_on_enemy(self):
         self.add(entity_id='enemy', player=1)
-        self.play('EX1_046', 'enemy', 'sergeant')
+        self.play('CS2_188', 'enemy', 'sergeant')
         self.assertEqual(self.engine.current_attack(self.state, self.get('enemy')), 6)
         self.end()
         self.assertEqual(self.engine.current_attack(self.state, self.get('enemy')), 4)
@@ -551,7 +551,7 @@ class ExpirationTests(ManagedFixture):
         self.add(entity_id='yeti')
         self.add('CS2_222', 'champ')
         self.play('CS2_092', 'yeti', 'kings')
-        self.play('EX1_046', 'yeti', 'sergeant')
+        self.play('CS2_188', 'yeti', 'sergeant')
         self.assertEqual(self.engine.current_attack(self.state, self.get('yeti')), 11)
         self.end()
         self.assertEqual(self.engine.current_attack(self.state, self.get('yeti')), 9)
@@ -569,7 +569,7 @@ class ExpirationTests(ManagedFixture):
         ]
         self.restart()
         self.add(entity_id='yeti')
-        self.play('EX1_046', 'yeti', 'sergeant')
+        self.play('CS2_188', 'yeti', 'sergeant')
         self.end()
         kinds = [e['type'] for e in self.state['events']]
         self.assertLess(kinds.index('TURN_TRIGGER'), kinds.index('BUFF_EXPIRED'))
@@ -629,8 +629,8 @@ class ExpirationTests(ManagedFixture):
     def test_silence_and_transform_remove_timers_without_later_expiration(self):
         self.add(entity_id='a')
         self.add(entity_id='b')
-        self.play('EX1_046', 'a', 's1')
-        self.play('EX1_046', 'b', 's2')
+        self.play('CS2_188', 'a', 's1')
+        self.play('CS2_188', 'b', 's2')
         self.play('EX1_048', 'a', 'silence')
         self.play('CS2_022', 'b', 'poly')
         self.end()
@@ -638,7 +638,7 @@ class ExpirationTests(ManagedFixture):
 
     def test_expiration_does_not_refund_attacks(self):
         self.add(entity_id='yeti', ready=True)
-        self.play('EX1_046', 'yeti', 'sergeant')
+        self.play('CS2_188', 'yeti', 'sergeant')
         self.state = self.engine.attack(self.state, 0, 'yeti', 'hero-1')
         self.end()
         self.assertEqual(self.get('yeti')['attacksThisTurn'], 1)
@@ -646,7 +646,7 @@ class ExpirationTests(ManagedFixture):
 
     def test_buff_expires_after_source_death_and_only_once(self):
         self.add(entity_id='enemy', player=1)
-        self.play('EX1_046', 'enemy', 'sergeant')
+        self.play('CS2_188', 'enemy', 'sergeant')
         self.play('CS2_029', 'sergeant', 'fireball')
         self.assertEqual(self.engine.current_attack(self.state, self.get('enemy')), 6)
         self.end()
@@ -657,7 +657,7 @@ class ExpirationTests(ManagedFixture):
 
     def test_roundtrip_preserves_deadlines_and_end_turn_is_atomic(self):
         self.add(entity_id='yeti', ready=True)
-        self.play('EX1_046', 'yeti', 'sergeant')
+        self.play('CS2_188', 'yeti', 'sergeant')
         self.play('CS2_024', 'hero-0', 'freeze')
         before = deepcopy(self.state)
         result = self.engine.end_turn(self.state, 0)
@@ -673,7 +673,7 @@ class ExpirationTests(ManagedFixture):
         state['entities'].extend(
             [
                 engine.entity('yeti', 'CS2_182', 0),
-                engine.entity('sergeant', 'EX1_046', 0, 'HAND'),
+                engine.entity('sergeant', 'CS2_188', 0, 'HAND'),
             ]
         )
         enter(engine, state, engine._entity(state, 'yeti'))
@@ -691,10 +691,10 @@ class CompleteKeywordGameTests(unittest.TestCase):
         engine = MatchEngine(load())
         pool = [
             'CS2_124',
-            'GIL_580',
+            'GIL_113',
             'EX1_033',
             'CS2_024',
-            'EX1_046',
+            'CS2_188',
             'CS2_106',
             'EX1_096',
             'EX1_015',
@@ -710,7 +710,7 @@ class CompleteKeywordGameTests(unittest.TestCase):
             )
         self.assertEqual(state, final)
         self.assertEqual(
-            (final['result'], final['turn'], len(actions)), ('PLAYER_1_WINS', 17, 81)
+            (final['result'], final['turn'], len(actions)), ('PLAYER_1_WINS', 19, 92)
         )
         kinds = {e['type'] for e in final['events']}
         self.assertTrue(

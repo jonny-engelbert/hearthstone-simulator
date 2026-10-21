@@ -9,8 +9,9 @@ replay. Uniform catalog-scoped pools and shared-target choices are explicit
 fixture policies; client animation timing is not modeled.
 
 12. Pinned-profile conformance
-    Choose one explicit client/card revision profile, broaden representative
-    decks, compare client logs and declare a reproducible conformance matrix.
+    Card data is pinned to Wild build 11.0.0.24118, with a full value audit.
+    Next: broaden representative decks, compare client logs and declare a
+    reproducible conformance matrix.
     Extend Discover eligibility/weighting and choice targeting as that pool needs.
     Continue invariant/performance checks on the larger supported pool.
 

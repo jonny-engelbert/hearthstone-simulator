@@ -10,9 +10,9 @@ from jsonschema import Draft202012Validator, validators
 from .events import copy_state
 from . import resources
 
-API_VERSION = '1.0'
-CHECKPOINT_VERSION = '1.0'
-RULES_VERSION = 'foundation-rules-11'
+API_VERSION = '2.0'
+CHECKPOINT_VERSION = '2.0'
+RULES_VERSION = 'foundation-rules-12'
 SCHEMA_PATH = Path(__file__).resolve().parents[1] / 'schemas/integration.schema.json'
 LIMITS = ('max_choices', 'max_deathrattles', 'max_reactions', 'max_random_steps')
 
@@ -91,7 +91,7 @@ def description(engine):
         rulesVersion=RULES_VERSION,
         catalogId=engine.catalog_id,
         catalogHash=engine.catalog_hash,
-        schemaId='urn:hearthstone-foundation:integration:1.0',
+        schemaId='urn:hearthstone-foundation:integration:2.0',
         limits={key: getattr(engine, key) for key in LIMITS},
         formats=[format_description(engine)],
     )
@@ -126,8 +126,17 @@ def _state_boundary(engine, state, nested=False):
     for entity in entities:
         engine._player(entity['controller'])
         engine._player(entity['owner'])
-        if entity['zone'] not in ('PLAY', 'HAND', 'DECK', 'SECRET', 'GRAVEYARD'):
+        if entity['zone'] not in (
+            'PLAY',
+            'HAND',
+            'DECK',
+            'SECRET',
+            'GRAVEYARD',
+            'RESOLVING',
+        ):
             raise ValueError('checkpoint entity zone')
+        if entity['zone'] == 'RESOLVING' and phase != 'FINISHED':
+            raise ValueError('checkpoint contains an unresolved card')
         for key in ('damage', 'armor', 'attacksThisTurn'):
             if type(entity[key]) is not int or entity[key] < 0:
                 raise ValueError(f'checkpoint entity {key}')
@@ -153,10 +162,11 @@ def _state_boundary(engine, state, nested=False):
             if type(stamp) is not int or stamp < 1:
                 raise ValueError('checkpoint entry stamp')
             stamps.append(stamp)
-        if entity.get('pendingDestroy', False):
+        if phase != 'FINISHED' and entity.get('pendingDestroy', False):
             raise ValueError('checkpoint contains pending destruction')
         if (
-            entity['zone'] == 'PLAY'
+            phase != 'FINISHED'
+            and entity['zone'] == 'PLAY'
             and entity['kind'] == 'MINION'
             and engine.current_health(state, entity) <= 0
         ):
@@ -208,7 +218,14 @@ def _state_boundary(engine, state, nested=False):
         if nested:
             raise ValueError('checkpoint continuation cannot itself be pending')
         continuation = state['continuation']
-        if set(continuation) != {'start', 'player', 'action', 'answers'}:
+        if set(continuation) != {
+            'start',
+            'player',
+            'action',
+            'answers',
+            'prefix',
+            'prePlay',
+        }:
             raise ValueError('checkpoint continuation fields')
         _state_boundary(engine, continuation['start'], nested=True)
         engine._player(continuation['player'])

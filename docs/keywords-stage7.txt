@@ -13,10 +13,10 @@ Representative definitions
 CS2_034 Fireblast: 2 mana, HERO_POWER, Mage; selected character takes 1 damage.
 CS1h_001 Lesser Heal: 2 mana, HERO_POWER, Priest; selected character heals 2.
 CS2_124 Wolfrider: 3 mana, 3/1, Charge.
-GIL_580 Rabid Worgen: 3 mana, 3/3 Warrior, Rush, The Witchwood.
+GIL_113 Rabid Worgen: 3 mana, 3/3 Warrior, Rush, The Witchwood.
 EX1_033 Windfury Harpy: 6 mana, 4/5, Windfury.
 CS2_024 Frostbolt: 2 mana, selected character takes 3 spell damage, then Freeze.
-EX1_046 Abusive Sergeant: historical 1 mana 2/1; targeted Battlecry gives a
+CS2_188 Abusive Sergeant: historical 1 mana 2/1; targeted Battlecry gives a
 minion +2 Attack until the end of the current turn. This is the pre-6.1.3 body.
 
 This deliberately mixes historical fixtures and a later Rush representative;

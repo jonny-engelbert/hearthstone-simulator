@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:hearthstone-foundation:integration:1.0",
-  "title": "Foundation integration contracts 1.0",
+  "$id": "urn:hearthstone-foundation:integration:2.0",
+  "title": "Foundation integration contracts 2.0",
   "$defs": {
     "player": {
       "type": "integer",
@@ -176,7 +176,7 @@
       "type": "object",
       "properties": {
         "apiVersion": {
-          "const": "1.0"
+          "const": "2.0"
         },
         "sequence": {
           "type": "integer",
@@ -279,7 +279,8 @@
             "PLAY",
             "HAND",
             "SECRET",
-            "GRAVEYARD"
+            "GRAVEYARD",
+            "RESOLVING"
           ]
         },
         "attacksThisTurn": {
@@ -835,7 +836,7 @@
       "type": "object",
       "properties": {
         "apiVersion": {
-          "const": "1.0"
+          "const": "2.0"
         },
         "sequence": {
           "type": "integer",
@@ -1080,6 +1081,62 @@
           "items": {
             "type": "object"
           }
+        },
+        "continuation": {
+          "type": "object",
+          "required": [
+            "start",
+            "player",
+            "action",
+            "answers",
+            "prefix",
+            "prePlay"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "start": {
+              "$ref": "#/$defs/privateState"
+            },
+            "player": {
+              "$ref": "#/$defs/player"
+            },
+            "action": {
+              "$ref": "#/$defs/action"
+            },
+            "answers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "option",
+                  "requestHash"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "option": {
+                    "type": "string"
+                  },
+                  "requestHash": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              }
+            },
+            "prefix": {
+              "type": "object",
+              "required": [
+                "entities",
+                "events",
+                "mana",
+                "resources",
+                "match"
+              ]
+            },
+            "prePlay": {
+              "type": "boolean"
+            }
+          }
         }
       }
     },
@@ -1087,10 +1144,10 @@
       "type": "object",
       "properties": {
         "checkpointVersion": {
-          "const": "1.0"
+          "const": "2.0"
         },
         "rulesVersion": {
-          "const": "foundation-rules-11"
+          "const": "foundation-rules-12"
         },
         "catalogHash": {
           "type": "string",

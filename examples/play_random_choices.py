@@ -9,7 +9,7 @@ from tools.bench import random_game
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def run(seed=8):
+def run(seed=0):
     state, trace, _ = random_game(MatchEngine(), seed)
     return state, trace
 
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     state, actions = run()
     report = dict(
         debugOnly=True,
-        seed=8,
+        seed=0,
         catalogId=state['match']['catalogId'],
         result=state['result'],
         turn=state['turn'],

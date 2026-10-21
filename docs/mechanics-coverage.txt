@@ -1,6 +1,6 @@
 Implemented mechanics and card-backed coverage
 ===============================================
-Current: foundation-v10; 60 definitions. Validation is summarized in CHANGELOG.txt.
+Current: foundation-v12; 60 definitions. Validation is summarized in CHANGELOG.txt.
 Card-backed means real catalog definitions are exercised by behavior tests.
 Extra corner cases may use arranged states or modified in-memory definitions.
 
@@ -11,7 +11,7 @@ Taunt
 Charge
   Cards: Wolfrider [CS2_124]
 Rush
-  Cards: Rabid Worgen [GIL_580]
+  Cards: Rabid Worgen [GIL_113]
 Windfury
   Cards: Windfury Harpy [EX1_033]
 Freeze and turn-based thawing
@@ -29,7 +29,7 @@ Healing and overheal caps
 Permanent Attack/Health buffs and stacking
   Cards: Blessing of Kings [CS2_092], Bananas [EX1_014t], Questing Adventurer [EX1_044]
 Until-end-of-turn Attack buffs and expiration
-  Cards: Abusive Sergeant [EX1_046]
+  Cards: Abusive Sergeant [CS2_188]
 Flat friendly-minion auras and aura removal
   Cards: Stormwind Champion [CS2_222]
 Silence and cleanup
@@ -143,3 +143,6 @@ a deliberately duplicated Yeti definition. Existing sandbox behavior is retained
 Versioned commands/views/events, stale-input rejection, private checkpoints and
 complete view-only client play are covered in test_contracts.py. Discover restore
 uses Stonehill Defender. These integration contracts add no new card definitions.
+
+Choice-prefix visibility and pinned facts: tests/test_profile_and_choices.py.
+All card data follows build 24118; timing exceptions are listed in review-and-decisions.txt.

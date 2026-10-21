@@ -1,7 +1,7 @@
 """JSON-resumable, deterministic decision transactions.
 
 Evaluate from a committed checkpoint to collect choices. A suspended action
-publishes no partial effects/events; replay its pure prefix with saved answers,
+projects its provisional prefix; replay its pure prefix with saved answers,
 then commit its complete output once. No Python stack/frame is serialized.
 """
 
@@ -14,8 +14,9 @@ from .events import copy_state
 
 
 class ChoiceRequired(Exception):
-    def __init__(self, request):
+    def __init__(self, request, state):
         self.request = request
+        self.state = state
 
 
 def request_hash(request):
@@ -40,7 +41,7 @@ class ChoiceTransactions:
             options=deepcopy(options),
         )
         if index == len(transaction['answers']):
-            raise ChoiceRequired(request)
+            raise ChoiceRequired(request, state)
         answer = transaction['answers'][index]
         if answer['requestHash'] != request_hash(request):
             raise ValueError('choice checkpoint no longer matches its request')
@@ -70,8 +71,23 @@ class ChoiceTransactions:
         try:
             result = self._perform(working, player, action)
         except ChoiceRequired as pause:
-            # Keep the last committed board/resources/log, never half a death
-            # batch or an interrupted reaction stack. Only the chooser sees offers.
+            # Keep execution rooted at the committed checkpoint. Preserve a
+            # detached prefix for observation, without serializing runtime frames.
+            pre_play = (
+                pause.request['kind'] == 'CHOOSE_ONE'
+                and action['type'] == 'play'
+                and pause.request['source'] == action['source']
+                and not answers
+            )
+            prefix = copy_state(
+                state
+                if pre_play
+                else {
+                    key: value
+                    for key, value in pause.state.items()
+                    if not key.startswith('_')
+                }
+            )
             result = copy_state(state)
             result['phase'] = 'CHOICE'
             result['pendingChoice'] = pause.request
@@ -80,6 +96,8 @@ class ChoiceTransactions:
                 player=player,
                 action=deepcopy(action),
                 answers=deepcopy(answers or []),
+                prefix=prefix,
+                prePlay=pre_play,
             )
             return result
         transaction = result.pop('_choiceTransaction')

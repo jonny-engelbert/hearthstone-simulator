@@ -16,7 +16,7 @@ NEUTRALS = (
     'EX1_048',
     'CS2_124',
     'EX1_033',
-    'EX1_046',
+    'CS2_188',
     'EX1_506',
     'FP1_002',
     'EX1_049',
@@ -70,7 +70,7 @@ def run(seed=3):
             if action is None:
                 continue
             command = dict(
-                apiVersion='1.0', sequence=observation['sequence'], action=action
+                apiVersion='2.0', sequence=observation['sequence'], action=action
             )
             # Restore on every pending choice, plus periodic ordinary decisions.
             if observation['view']['phase'] == 'CHOICE' or len(trace) % 17 == 0:

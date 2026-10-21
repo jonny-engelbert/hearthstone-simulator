@@ -41,10 +41,10 @@ class CatalogTests(unittest.TestCase):
             'Fireblast': 'CS2_034',
             'Lesser Heal': 'CS1h_001',
             'Wolfrider': 'CS2_124',
-            'Rabid Worgen': 'GIL_580',
+            'Rabid Worgen': 'GIL_113',
             'Windfury Harpy': 'EX1_033',
             'Frostbolt': 'CS2_024',
-            'Abusive Sergeant': 'EX1_046',
+            'Abusive Sergeant': 'CS2_188',
         }
         new = {
             ('Murloc Tidehunter', 'EX1_506'),
@@ -115,7 +115,7 @@ class CatalogTests(unittest.TestCase):
                     {
                         'extra': ('madeUp', 'Additional properties'),
                         'op': 'UNKNOWN_OP',
-                        'version': ("'schemaVersion'", "'1.11' was expected"),
+                        'version': ("'schemaVersion'", "'1.12' was expected"),
                         'policy': ("'legalityPolicy'", "'UNKNOWN' is not one of"),
                     }[mutation],
                 )

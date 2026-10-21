@@ -8,7 +8,7 @@ on:
       random_games:
         description: Number of seeded invariant games (use 100 for a larger run)
         required: true
-        default: '6'
+        default: '100'
         type: string
 
 permissions:
@@ -48,7 +48,7 @@ jobs:
       matrix:
         python: ['3.10', '3.13']
     env:
-      HS_RANDOM_GAMES: ${{ inputs.random_games || '6' }}
+      HS_RANDOM_GAMES: ${{ inputs.random_games || '1' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:

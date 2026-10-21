@@ -317,7 +317,7 @@ class SummonTests(ZoneFixture):
     def test_generated_charge_and_rush_follow_normal_attack_rules(self):
         card(self.catalog, 'CS2_027')['abilities'][0]['effects'] = [
             summon('CS2_124', 'foundation-v7'),
-            summon('GIL_580', 'foundation-v7'),
+            summon('GIL_113', 'foundation-v7'),
         ]
         self.restart()
         self.add('EX1_015', 'enemy', 1)
@@ -541,7 +541,7 @@ class BounceTests(ZoneFixture):
 
     def test_temporary_buff_and_freeze_timers_do_not_follow_bounce(self):
         self.add(eid='yeti', ready=True)
-        self.play('EX1_046', 'yeti')
+        self.play('CS2_188', 'yeti')
         self.play('CS2_024', 'yeti')
         self.play('EX1_049', 'yeti')
         self.end()

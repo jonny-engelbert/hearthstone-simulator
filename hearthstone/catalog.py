@@ -1,12 +1,14 @@
 """Strict structural and cross-reference validation; no network access."""
 
 import json
+from collections import OrderedDict
+from functools import lru_cache
 from pathlib import Path
 
 from jsonschema import Draft202012Validator, FormatChecker
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMAS = {'1.11': 'catalog.schema.json'}
+SCHEMAS = {'1.12': 'catalog.schema.json'}
 
 
 def _structural_errors(error):
@@ -54,7 +56,54 @@ def _excessive_nesting(catalog):
     return False
 
 
+_VALID = OrderedDict()
+
+
+def _json_tree(value):
+    work = [value]
+    while work:
+        item = work.pop()
+        if type(item) is dict:
+            if any(type(key) is not str for key in item):
+                return False
+            work.extend(item.values())
+        elif type(item) is list:
+            work.extend(item)
+        elif type(item) not in (str, int, float, bool, type(None)):
+            return False
+    return True
+
+
+@lru_cache(maxsize=1)
+def _validator(version):
+    schema = json.loads((ROOT / 'schemas' / SCHEMAS[version]).read_text())
+    return Draft202012Validator(schema, format_checker=FormatChecker())
+
+
 def validate(catalog):
+    # Cache only successful validation of exact JSON content, never object IDs.
+    # Mutable caller catalogs are re-keyed on every call; malformed Python-only
+    # values cannot alias valid JSON (e.g. tuples must not become lists).
+    if _excessive_nesting(catalog):
+        return ['effect nesting exceeds eight levels']
+    key = None
+    if _json_tree(catalog):
+        try:
+            key = json.dumps(catalog, allow_nan=False)
+        except ValueError:
+            pass
+    if key is not None and key in _VALID:
+        _VALID.move_to_end(key)
+        return []
+    errors = _validate(catalog)
+    if not errors and key is not None:
+        _VALID[key] = True
+        if len(_VALID) > 16:
+            _VALID.popitem(last=False)
+    return errors
+
+
+def _validate(catalog):
     if (
         not isinstance(catalog, dict)
         or not isinstance(catalog.get('schemaVersion'), str)
@@ -63,10 +112,7 @@ def validate(catalog):
         return ['unsupported catalog schemaVersion']
     if _excessive_nesting(catalog):
         return ['effect nesting exceeds eight levels']
-    schema = json.loads(
-        (ROOT / 'schemas' / SCHEMAS[catalog['schemaVersion']]).read_text()
-    )
-    validator = Draft202012Validator(schema, format_checker=FormatChecker())
+    validator = _validator(catalog['schemaVersion'])
     errors = [
         message
         for error in validator.iter_errors(catalog)

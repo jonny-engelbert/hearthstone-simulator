@@ -1,3 +1,21 @@
+Choice/profile/performance review (2026-10-21, stage 12 groundwork)
+=================================================================
+- Project the resolved prefix at Discover, including spent mana, played minion,
+  preceding effects/events and private offers. Root Choose One is pre-play and
+  hidden from the opponent. Persist/replay prefixes exactly; concession keeps
+  the visible prefix. API/checkpoint 2.0, rules foundation-rules-12.
+- Pin all 60 definitions to Wild build 11.0.0.24118, hsdata commit af94b04fdff91a1900f4adfc873d89c76aa298cd.
+  Audit every collectible/token/power; add reproducible extraction and drift
+  tests. Correct Axe cost 2->3, Sergeant Attack 2->1, Book Health 2->1,
+  Stonehill Health 5->4, token rarities/text and two incorrect native card IDs.
+  See docs/card-profile-audit.txt and docs/review-and-decisions.txt. Keep the
+  existing Counterspell/Overload rule; client-log timing parity remains work.
+- Cache successful catalog validation by bounded exact-content keys. Default
+  random budget 1, manual CI 100; sample ordinary integration checkpoints while
+  retaining every-choice/phase checks and all distinct-rule tests. Ten new tests.
+- Measured full suite: 452 tests/72.37s before; 462 tests/12.29s after. Slowest
+  15 before/after and causes are recorded in docs/performance-review.txt.
+
 Stage 11 (2026-10-21): deck legality and integration contracts
 ============================================================
 - Add FOUNDATION_CONSTRUCTED_V1: 30-card Mage/Priest/Paladin class/Neutral
