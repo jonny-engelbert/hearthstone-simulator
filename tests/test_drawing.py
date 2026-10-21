@@ -1,3 +1,7 @@
+from fixtures import assert_invalid, invalid_field
+from fixtures import spell_bonus
+from fixtures import enter
+
 """Stage 2: ordered draw, overdraw, and fatigue conformance scenarios."""
 from copy import deepcopy
 import json
@@ -9,40 +13,54 @@ from hearthstone.prototype import Prototype
 
 
 class DrawCatalogTests(unittest.TestCase):
-    def test_old_catalog_and_manifest_remain_valid(self):
-        self.assertEqual(len(load(ROOT / 'cards/foundation-v1.json')['cards']), 7)
-        self.assertEqual(verify(json.loads((ROOT / 'cards/manifest.json').read_text())), [])
 
     def test_current_manifest_and_novice_definition(self):
-        self.assertEqual(verify(json.loads((ROOT / 'cards/manifest-v2.json').read_text())), [])
+        self.assertEqual(
+            verify(json.loads((ROOT / 'cards/manifest.json').read_text())), []
+        )
         novice = next(c for c in load()['cards'] if c['cardId'] == 'EX1_015')
         self.assertEqual(novice['baseStats'], {'manaCost': 2, 'attack': 1, 'health': 1})
-        self.assertEqual(novice['abilities'], [{'kind': 'BATTLECRY', 'effects': [
-            {'op': 'DRAW_CARD', 'count': 1, 'targetPlayer': 'EFFECT_CONTROLLER'}]}])
+        self.assertEqual(
+            novice['abilities'],
+            [
+                {
+                    'kind': 'BATTLECRY',
+                    'effects': [
+                        {
+                            'op': 'DRAW_CARD',
+                            'count': 1,
+                            'targetPlayer': 'EFFECT_CONTROLLER',
+                        }
+                    ],
+                }
+            ],
+        )
 
     def test_malformed_draw_effects_are_rejected(self):
-        for key, value in [('count', 0), ('count', -1), ('count', True),
-                           ('count', 1.5), ('targetPlayer', 'SELF'), ('recipient', {})]:
+        for key, value in [
+            ('count', 0),
+            ('count', -1),
+            ('count', True),
+            ('count', 1.5),
+            ('targetPlayer', 'SELF'),
+            ('recipient', {}),
+        ]:
             with self.subTest(key=key, value=value):
                 catalog = load()
                 novice = next(c for c in catalog['cards'] if c['cardId'] == 'EX1_015')
                 novice['abilities'][0]['effects'][0][key] = value
-                self.assertTrue(validate(catalog))
+                assert_invalid(self, catalog, invalid_field(key, value))
         for key in ('count', 'targetPlayer'):
             catalog = load()
             novice = next(c for c in catalog['cards'] if c['cardId'] == 'EX1_015')
             del novice['abilities'][0]['effects'][0][key]
-            self.assertTrue(validate(catalog))
-
-    def test_old_schema_rejects_new_operation(self):
-        catalog = load(ROOT / 'cards/foundation-v1.json')
-        catalog['cards'][2]['abilities'][0]['effects'] = [
-            {'op': 'DRAW_CARD', 'count': 1, 'targetPlayer': 'EFFECT_CONTROLLER'}]
-        self.assertTrue(validate(catalog))
+            assert_invalid(self, catalog, f"'{key}' is a required property")
 
     def test_unknown_or_malformed_catalog_version_fails_closed(self):
         for value in (None, [], {}, 1.2, '99'):
-            self.assertTrue(validate({'schemaVersion': value}))
+            assert_invalid(
+                self, {'schemaVersion': value}, 'unsupported catalog schemaVersion'
+            )
 
 
 class DrawingTests(unittest.TestCase):
@@ -55,6 +73,7 @@ class DrawingTests(unittest.TestCase):
         self.state['entities'].append(entity)
         if zone == 'DECK':
             self.state['decks'][player].append(entity_id)
+        enter(self.engine, self.state, entity)
         return entity
 
     @staticmethod
@@ -79,7 +98,9 @@ class DrawingTests(unittest.TestCase):
         self.assertEqual(self.get(result, 'bottom')['zone'], 'DECK')
         self.assertEqual(result['decks'][0], ['bottom'])
         self.assertEqual(self.state, before)
-        self.assertEqual([e['type'] for e in result['events']], ['DRAW_ATTEMPT', 'DRAW'])
+        self.assertEqual(
+            [e['type'] for e in result['events']], ['DRAW_ATTEMPT', 'DRAW']
+        )
         self.assertEqual(result['fatigue'], [0, 0])
 
     def test_draw_preserves_instance_identity_and_enchantments(self):
@@ -88,7 +109,10 @@ class DrawingTests(unittest.TestCase):
         result = self.engine.draw(self.state, 0)
         drawn = self.get(result, 'top')
         self.assertEqual(drawn['enchantments'], ['deck-cost-reduction'])
-        self.assertEqual((drawn['id'], drawn['revision'], drawn['owner']), ('top', 'foundation-v1', 0))
+        self.assertEqual(
+            (drawn['id'], drawn['revision'], drawn['owner']),
+            ('top', 'foundation-v1', 0),
+        )
         self.assertEqual(len(result['entities']), len(self.state['entities']))
 
     def test_novice_play_draws_after_entering_play(self):
@@ -99,12 +123,22 @@ class DrawingTests(unittest.TestCase):
         self.assertEqual(self.get(result, 'engineer')['zone'], 'PLAY')
         self.assertFalse(self.get(result, 'engineer')['ready'])
         self.assertEqual(self.get(result, 'top')['zone'], 'HAND')
-        self.assertEqual(result['events'], [
-            {'type': 'PLAY', 'source': 'engineer'},
-            {'type': 'SUMMON', 'entity': 'engineer', 'source': 'engineer',
-             'player': 0, 'position': 0, 'reason': 'PLAY'},
-            {'type': 'DRAW_ATTEMPT', 'player': 0, 'source': 'engineer'},
-            {'type': 'DRAW', 'player': 0, 'entity': 'top'}])
+        self.assertEqual(
+            result['events'],
+            [
+                {'type': 'PLAY', 'source': 'engineer'},
+                {
+                    'type': 'SUMMON',
+                    'entity': 'engineer',
+                    'source': 'engineer',
+                    'player': 0,
+                    'position': 0,
+                    'reason': 'PLAY',
+                },
+                {'type': 'DRAW_ATTEMPT', 'player': 0, 'source': 'engineer'},
+                {'type': 'DRAW', 'player': 0, 'entity': 'top'},
+            ],
+        )
 
     def test_novice_play_from_ten_card_hand_frees_space(self):
         self.hand(9)
@@ -127,10 +161,14 @@ class DrawingTests(unittest.TestCase):
         self.hand(10)
         self.add('top', 'EX1_015')
         result = self.engine.draw(self.state, 0)
-        self.assertEqual(result['events'], [
-            {'type': 'DRAW_ATTEMPT', 'player': 0, 'source': None},
-            {'type': 'REVEAL', 'player': 0, 'entity': 'top', 'cardId': 'EX1_015'},
-            {'type': 'BURN', 'player': 0, 'entity': 'top', 'reason': 'FULL_HAND'}])
+        self.assertEqual(
+            result['events'],
+            [
+                {'type': 'DRAW_ATTEMPT', 'player': 0, 'source': None},
+                {'type': 'REVEAL', 'player': 0, 'entity': 'top', 'cardId': 'EX1_015'},
+                {'type': 'BURN', 'player': 0, 'entity': 'top', 'reason': 'FULL_HAND'},
+            ],
+        )
         self.assertEqual(self.get(result, 'top')['zone'], 'GRAVEYARD')
         self.assertEqual(result['decks'][0], [])
         self.assertEqual(result['fatigue'], [0, 0])
@@ -138,30 +176,49 @@ class DrawingTests(unittest.TestCase):
 
     def test_multi_draw_rechecks_capacity_for_each_card(self):
         self.hand(9)
-        for entity_id in ('first', 'second', 'third'): self.add(entity_id)
+        for entity_id in ('first', 'second', 'third'):
+            self.add(entity_id)
         result = self.engine.draw(self.state, 0, 3)
-        self.assertEqual([self.get(result, x)['zone'] for x in ('first', 'second', 'third')],
-                         ['HAND', 'GRAVEYARD', 'GRAVEYARD'])
+        self.assertEqual(
+            [self.get(result, x)['zone'] for x in ('first', 'second', 'third')],
+            ['HAND', 'GRAVEYARD', 'GRAVEYARD'],
+        )
         self.assertEqual([e['entity'] for e in self.events(result, 'DRAW')], ['first'])
-        self.assertEqual([e['entity'] for e in self.events(result, 'BURN')], ['second', 'third'])
+        self.assertEqual(
+            [e['entity'] for e in self.events(result, 'BURN')], ['second', 'third']
+        )
         self.assertEqual(result['fatigue'][0], 0)
 
     def test_empty_deck_increments_fatigue_on_every_attempt(self):
         result = self.engine.draw(self.state, 0, 3)
-        self.assertEqual([e['amount'] for e in self.events(result, 'FATIGUE')], [1, 2, 3])
-        self.assertEqual([e['amount'] for e in self.events(result, 'DAMAGE')], [1, 2, 3])
+        self.assertEqual(
+            [e['amount'] for e in self.events(result, 'FATIGUE')], [1, 2, 3]
+        )
+        self.assertEqual(
+            [e['amount'] for e in self.events(result, 'DAMAGE')], [1, 2, 3]
+        )
         self.assertEqual(result['fatigue'], [3, 0])
         self.assertEqual(self.get(result, 'hero-0')['damage'], 6)
         self.assertEqual(self.events(result, 'DRAW'), [])
 
     def test_novice_empty_deck_causes_fatigue_not_battlecry_damage(self):
         self.add('engineer', 'EX1_015', zone='HAND')
-        self.state['spellDamage'][0] = 50
+        spell_bonus(self.engine, self.state, 0, 3)
         result = self.engine.play(self.state, 0, 'engineer')
         self.assertEqual(self.get(result, 'hero-0')['damage'], 1)
         self.assertEqual(result['mana'][0], 8)
-        self.assertEqual(self.events(result, 'DAMAGE'), [
-            {'type': 'DAMAGE', 'source': None, 'target': 'hero-0', 'amount': 1, 'damageClass': 'FATIGUE'}])
+        self.assertEqual(
+            self.events(result, 'DAMAGE'),
+            [
+                {
+                    'type': 'DAMAGE',
+                    'source': None,
+                    'target': 'hero-0',
+                    'amount': 1,
+                    'damageClass': 'FATIGUE',
+                }
+            ],
+        )
 
     def test_full_hand_with_empty_deck_still_takes_fatigue(self):
         self.hand(10)
@@ -174,9 +231,22 @@ class DrawingTests(unittest.TestCase):
         self.add('first')
         self.add('second')
         result = self.engine.draw(self.state, 0, 4)
-        self.assertEqual([e['type'] for e in result['events']], [
-            'DRAW_ATTEMPT', 'DRAW', 'DRAW_ATTEMPT', 'REVEAL', 'BURN',
-            'DRAW_ATTEMPT', 'FATIGUE', 'DAMAGE', 'DRAW_ATTEMPT', 'FATIGUE', 'DAMAGE'])
+        self.assertEqual(
+            [e['type'] for e in result['events']],
+            [
+                'DRAW_ATTEMPT',
+                'DRAW',
+                'DRAW_ATTEMPT',
+                'REVEAL',
+                'BURN',
+                'DRAW_ATTEMPT',
+                'FATIGUE',
+                'DAMAGE',
+                'DRAW_ATTEMPT',
+                'FATIGUE',
+                'DAMAGE',
+            ],
+        )
         self.assertEqual(result['fatigue'][0], 2)
         self.assertEqual(self.get(result, 'hero-0')['damage'], 3)
 
@@ -191,7 +261,7 @@ class DrawingTests(unittest.TestCase):
 
     def test_fatigue_uses_armor_and_ignores_spell_bonus(self):
         self.get(self.state, 'hero-0')['armor'] = 2
-        self.state['spellDamage'][0] = 99
+        spell_bonus(self.engine, self.state, 0, 3)
         result = self.engine.draw(self.state, 0, 2)
         self.assertEqual(self.get(result, 'hero-0')['armor'], 0)
         self.assertEqual(self.get(result, 'hero-0')['damage'], 1)
@@ -244,8 +314,19 @@ class DrawingTests(unittest.TestCase):
 
     def test_invalid_draw_requests_are_atomic(self):
         before = deepcopy(self.state)
-        for player, count in [(2, 1), (-1, 1), (True, 1), (0, 0), (0, -1), (0, 1.5), (0, True)]:
-            with self.subTest(player=player, count=count), self.assertRaises(ValueError):
+        for player, count in [
+            (2, 1),
+            (-1, 1),
+            (True, 1),
+            (0, 0),
+            (0, -1),
+            (0, 1.5),
+            (0, True),
+        ]:
+            with (
+                self.subTest(player=player, count=count),
+                self.assertRaises(ValueError),
+            ):
                 self.engine.draw(self.state, player, count)
             self.assertEqual(self.state, before)
 
@@ -255,13 +336,15 @@ class DrawingTests(unittest.TestCase):
             with self.subTest(deck=deck):
                 self.state['decks'][0] = deck
                 before = deepcopy(self.state)
-                with self.assertRaises(ValueError): self.engine.draw(self.state, 0)
+                with self.assertRaises(ValueError):
+                    self.engine.draw(self.state, 0)
                 self.assertEqual(self.state, before)
 
     def test_novice_rejected_on_full_board_does_not_draw_or_pay(self):
         self.add('engineer', 'EX1_015', zone='HAND')
         self.add('top')
-        for i in range(7): self.add(f'board-{i}', zone='PLAY')
+        for i in range(7):
+            self.add(f'board-{i}', zone='PLAY')
         before = deepcopy(self.state)
         with self.assertRaisesRegex(ValueError, 'board is full'):
             self.engine.play(self.state, 0, 'engineer')

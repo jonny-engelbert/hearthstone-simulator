@@ -4,12 +4,17 @@
 def fresh(cap=10):
     if type(cap) is not int or not 1 <= cap <= 99:
         raise ValueError('mana cap must be an integer from 1 to 99')
-    return dict(cap=cap, permanent=0, filled=0, temporary=0, locked=0, pendingOverload=0)
+    return dict(
+        cap=cap, permanent=0, filled=0, temporary=0, locked=0, pendingOverload=0
+    )
 
 
 def available(resource):
     excess_locks = max(0, resource['locked'] - resource['permanent'])
-    return max(0, min(resource['cap'], resource['filled'] + resource['temporary'] - excess_locks))
+    return max(
+        0,
+        min(resource['cap'], resource['filled'] + resource['temporary'] - excess_locks),
+    )
 
 
 def sync(state):
@@ -24,8 +29,15 @@ def spend(state, player, amount):
     resource['temporary'] -= temporary
     resource['filled'] -= amount - temporary
     sync(state)
-    state['events'].append(dict(type='MANA_SPENT', player=player, amount=amount,
-                               temporary=temporary, permanent=amount - temporary))
+    state['events'].append(
+        dict(
+            type='MANA_SPENT',
+            player=player,
+            amount=amount,
+            temporary=temporary,
+            permanent=amount - temporary,
+        )
+    )
 
 
 def start_turn(state, player):
@@ -36,7 +48,9 @@ def start_turn(state, player):
     resource['temporary'] = 0
     resource['filled'] = max(0, resource['permanent'] - resource['locked'])
     sync(state)
-    state['events'].append(dict(type='MANA_REFILL', player=player, resource=dict(resource)))
+    state['events'].append(
+        dict(type='MANA_REFILL', player=player, resource=dict(resource))
+    )
 
 
 def end_turn(state, player):
@@ -60,25 +74,41 @@ def change(state, player, effect):
     count = effect.get('count', 0)
     if effect['op'] == 'GAIN_MANA':
         if effect['kind'] == 'TEMPORARY':
-            resource['temporary'] += min(count, max(0, resource['cap'] - resource['filled'] - resource['temporary']))
+            resource['temporary'] += min(
+                count,
+                max(0, resource['cap'] - resource['filled'] - resource['temporary']),
+            )
         else:
             gain = min(count, resource['cap'] - resource['permanent'])
             resource['permanent'] += gain
             if effect['kind'] == 'FILLED':
-                resource['filled'] = min(resource['filled'] + gain,
-                                         max(0, resource['permanent'] - resource['locked']),
-                                         resource['cap'] - resource['temporary'])
+                resource['filled'] = min(
+                    resource['filled'] + gain,
+                    max(0, resource['permanent'] - resource['locked']),
+                    resource['cap'] - resource['temporary'],
+                )
     elif effect['op'] == 'DESTROY_MANA':
         resource['permanent'] = max(0, resource['permanent'] - count)
-        resource['filled'] = min(resource['filled'], max(0, resource['permanent'] - resource['locked']))
+        resource['filled'] = min(
+            resource['filled'], max(0, resource['permanent'] - resource['locked'])
+        )
     elif effect['op'] == 'UNLOCK_MANA':
         restored = min(resource['locked'], resource['permanent'])
-        resource['filled'] = min(resource['permanent'], resource['filled'] + restored,
-                                 resource['cap'] - resource['temporary'])
+        resource['filled'] = min(
+            resource['permanent'],
+            resource['filled'] + restored,
+            resource['cap'] - resource['temporary'],
+        )
         resource['locked'] = 0
         resource['pendingOverload'] = 0
     else:
         raise ValueError('unsupported resource operation')
     sync(state)
-    state['events'].append(dict(type='MANA_CHANGED', player=player, operation=effect['op'],
-                               resource=dict(resource)))
+    state['events'].append(
+        dict(
+            type='MANA_CHANGED',
+            player=player,
+            operation=effect['op'],
+            resource=dict(resource),
+        )
+    )

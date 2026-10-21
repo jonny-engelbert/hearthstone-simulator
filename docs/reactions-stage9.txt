@@ -1,3 +1,7 @@
+Historical stage notes. Catalog snapshots and old test totals were retired by
+hardening. Current requirements.txt, test-plan.txt and CHANGELOG.txt supersede
+version-preservation instructions and obsolete coverage statements below.
+
 Stage 9: reaction scheduling and interruption windows
 ====================================================
 2026-10-20; foundation-v9 / schema 1.9; 51 definitions.
@@ -187,3 +191,15 @@ layers, arbitrary damage/death event filters, all target-invalidity policies,
 random interruption choices, self-trigger deferral, forced attacks or modern
 card types. General board-state copying, cost layers, hidden views, format
 legality and verified single-patch conformance remain future stages.
+
+Hardening review, 2026-10-21: Counterspell/Overload evidence
+----------------------------------------------------------
+Item 2 of the review is reversed. Preserve pendingOverload == 0 for a countered
+Lightning Bolt: mana is spent, card-play listeners run, damage and Overload do not.
+Blizzard's 2013 answer explicitly distinguishes Overload from a play cost.
+The original forum URL now redirects to an inaccessible page; its Blizzard
+answer is reproduced under "Counterspell" here:
+https://www.hearthpwn.com/news/64-hearthstone-puzzle-2-blue-posts-extravaganza
+Original: https://us.battle.net/hearthstone/en/forum/topic/8769367053?page=24
+This is archived developer evidence, not a claim of current client testing.
+Regression: SecretTests.test_counterspell_pays_and_discards_without_text_or_overload.

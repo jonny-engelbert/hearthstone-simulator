@@ -1,3 +1,6 @@
+Historical decision record. The hardening pass supersedes instructions to freeze
+stage artifacts or pin examples. Use current requirements.txt and CHANGELOG.txt.
+
 Review of supplied card definitions
 ==================================
 Reviewed: 2026-10-20. Original exports are preserved in docs/sources/.

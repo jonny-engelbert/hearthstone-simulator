@@ -1,3 +1,7 @@
+from fixtures import assert_invalid, invalid_field
+from fixtures import spell_bonus
+from fixtures import enter
+
 """Stage 5: additive stat layers, healing, flat auras and silence cleanup."""
 from copy import deepcopy
 import json
@@ -13,36 +17,23 @@ def definition(catalog, card_id):
 
 
 class StatCatalogTests(unittest.TestCase):
-    def test_all_five_catalogs_and_manifests(self):
-        for v, count in ((1, 7), (2, 8), (3, 9), (4, 10), (5, 14)):
-            self.assertEqual(len(load(ROOT / f'cards/foundation-v{v}.json')['cards']), count)
-            name = 'manifest.json' if v == 1 else f'manifest-v{v}.json'
-            self.assertEqual(verify(json.loads((ROOT / 'cards' / name).read_text())), [])
 
     def test_representative_historical_stats(self):
-        expected = {'EX1_011': {'manaCost': 1, 'attack': 2, 'health': 1},
-                    'CS2_092': {'manaCost': 4},
-                    'CS2_222': {'manaCost': 7, 'attack': 6, 'health': 6},
-                    'EX1_048': {'manaCost': 4, 'attack': 4, 'health': 3}}
+        expected = {
+            'EX1_011': {'manaCost': 1, 'attack': 2, 'health': 1},
+            'CS2_092': {'manaCost': 4},
+            'CS2_222': {'manaCost': 7, 'attack': 6, 'health': 6},
+            'EX1_048': {'manaCost': 4, 'attack': 4, 'health': 3},
+        }
         for card_id, stats in expected.items():
             self.assertEqual(definition(load(), card_id)['baseStats'], stats)
-
-    def test_previous_schema_rejects_new_abilities(self):
-        catalog = load(ROOT / 'cards/foundation-v4.json')
-        champ = deepcopy(definition(load(), 'CS2_222'))
-        champ['schemaVersion'] = '1.4'
-        catalog['cards'].append(champ)
-        self.assertTrue(validate(catalog))
 
     def test_malformed_buff_amounts_and_duration_are_rejected(self):
         for key, value in [('attack', -1), ('health', True), ('health', 0.5)]:
             catalog = load()
             effect = definition(catalog, 'CS2_092')['abilities'][0]['effects'][0]
             effect['modifiers'][key] = value
-            self.assertTrue(validate(catalog))
-        catalog = load(ROOT / 'cards/foundation-v5.json')
-        definition(catalog, 'CS2_092')['abilities'][0]['effects'][0]['duration'] = 'END_OF_TURN'
-        self.assertTrue(validate(catalog))
+            assert_invalid(self, catalog, invalid_field(key, value))
 
     def test_zero_buffs_and_auras_are_rejected(self):
         for card_id in ('CS2_092', 'CS2_222'):
@@ -50,33 +41,70 @@ class StatCatalogTests(unittest.TestCase):
             ability = definition(catalog, card_id)['abilities'][0]
             node = ability if card_id == 'CS2_222' else ability['effects'][0]
             node['modifiers'] = {'attack': 0, 'health': 0}
-            self.assertTrue(validate(catalog))
+            assert_invalid(
+                self,
+                catalog,
+                (
+                    f'{card_id}: aura must modify a stat'
+                    if card_id == 'CS2_222'
+                    else f'{card_id}: buff must modify a stat'
+                ),
+            )
 
     def test_buff_and_silence_cannot_target_heroes(self):
         for card_id in ('CS2_092', 'EX1_048'):
             catalog = load()
-            definition(catalog, card_id)['abilities'][0]['targeting']['selector']['entityKind'] = 'CHARACTER'
-            self.assertTrue(validate(catalog))
+            definition(catalog, card_id)['abilities'][0]['targeting']['selector'][
+                'entityKind'
+            ] = 'CHARACTER'
+            assert_invalid(
+                self,
+                catalog,
+                (
+                    f'{card_id}: buff requires minion recipients'
+                    if card_id == 'CS2_092'
+                    else f'{card_id}: silence requires minion recipients'
+                ),
+            )
 
     def test_aura_shape_and_mechanic_label_are_strict(self):
         for mutation in ('enemy', 'characters', 'label', 'duration'):
             catalog = load()
             champ = definition(catalog, 'CS2_222')
             aura = champ['abilities'][0]
-            if mutation == 'enemy': aura['selector']['controller'] = 'OPPONENT_OF_EFFECT_CONTROLLER'
-            if mutation == 'characters': aura['selector']['entityKind'] = 'CHARACTER'
-            if mutation == 'label': champ['mechanics'] = []
-            if mutation == 'duration': aura['duration'] = 'PERMANENT'
-            self.assertTrue(validate(catalog))
+            if mutation == 'enemy':
+                aura['selector']['controller'] = 'OPPONENT_OF_EFFECT_CONTROLLER'
+            if mutation == 'characters':
+                aura['selector']['entityKind'] = 'CHARACTER'
+            if mutation == 'label':
+                champ['mechanics'] = []
+            if mutation == 'duration':
+                aura['duration'] = 'PERMANENT'
+            assert_invalid(
+                self,
+                catalog,
+                {
+                    'enemy': 'CS2_222: auras require friendly minion selectors',
+                    'characters': 'CS2_222: auras require friendly minion selectors',
+                    'label': 'CS2_222: AURA label and ability disagree',
+                    'duration': ('duration', 'Additional properties'),
+                }[mutation],
+            )
 
     def test_heal_and_policy_are_strict(self):
         for value in (-1, True, 1.5):
             catalog = load()
-            definition(catalog, 'EX1_011')['abilities'][0]['effects'][0]['amount']['value'] = value
-            self.assertTrue(validate(catalog))
+            definition(catalog, 'EX1_011')['abilities'][0]['effects'][0]['amount'][
+                'value'
+            ] = value
+            assert_invalid(self, catalog, invalid_field('value', value))
         catalog = load()
         catalog['healthModifierPolicy'] = 'UNKNOWN'
-        self.assertTrue(validate(catalog))
+        assert_invalid(
+            self,
+            catalog,
+            ("'healthModifierPolicy'", "'CAP_CURRENT_ON_MAX_LOSS' was expected"),
+        )
 
 
 class HealingBuffAuraTests(unittest.TestCase):
@@ -88,6 +116,7 @@ class HealingBuffAuraTests(unittest.TestCase):
     def add(self, entity_id, card_id='CS2_182', player=0, zone='PLAY'):
         entity = self.engine.entity(entity_id, card_id, player, zone)
         self.state['entities'].append(entity)
+        enter(self.engine, self.state, entity)
         return entity
 
     @staticmethod
@@ -102,8 +131,11 @@ class HealingBuffAuraTests(unittest.TestCase):
     def stats(self, entity_id, state=None):
         state = state or self.state
         entity = self.get(state, entity_id)
-        return (self.engine.current_attack(state, entity), self.engine.max_health(entity, state),
-                self.engine.current_health(state, entity))
+        return (
+            self.engine.current_attack(state, entity),
+            self.engine.max_health(entity, state),
+            self.engine.current_health(state, entity),
+        )
 
     @staticmethod
     def events(state, kind):
@@ -111,11 +143,14 @@ class HealingBuffAuraTests(unittest.TestCase):
 
     def test_doctor_heals_hero_without_touching_armor_or_spell_bonus(self):
         self.get(self.state, 'hero-0').update(damage=5, armor=7)
-        self.state['spellDamage'][0] = 50
+        spell_bonus(self.engine, self.state, 0, 3)
         result = self.play('EX1_011', 'hero-0')
         self.assertEqual(self.get(result, 'hero-0')['damage'], 3)
         self.assertEqual(self.get(result, 'hero-0')['armor'], 7)
-        self.assertEqual(self.events(result, 'HEAL'), [{'type': 'HEAL', 'source': 'spell', 'target': 'hero-0', 'amount': 2}])
+        self.assertEqual(
+            self.events(result, 'HEAL'),
+            [{'type': 'HEAL', 'source': 'spell', 'target': 'hero-0', 'amount': 2}],
+        )
 
     def test_heal_is_capped_and_full_health_target_is_legal(self):
         self.get(self.state, 'hero-0')['damage'] = 1
@@ -135,28 +170,42 @@ class HealingBuffAuraTests(unittest.TestCase):
         target.update(damage=2, keywords=['DIVINE_SHIELD', 'IMMUNE'])
         self.play('EX1_011', 'target')
         self.assertEqual(self.get(self.state, 'target')['damage'], 0)
-        self.assertEqual(self.get(self.state, 'target')['keywords'], ['DIVINE_SHIELD', 'IMMUNE'])
+        self.assertEqual(
+            self.get(self.state, 'target')['keywords'], ['DIVINE_SHIELD', 'IMMUNE']
+        )
 
     def test_doctor_requires_target_and_cannot_target_self(self):
         self.add('doctor', 'EX1_011', zone='HAND')
         before = deepcopy(self.state)
         for target in (None, 'doctor'):
-            with self.assertRaises(ValueError): self.engine.play(self.state, 0, 'doctor', target)
+            with self.assertRaises(ValueError):
+                self.engine.play(self.state, 0, 'doctor', target)
             self.assertEqual(self.state, before)
 
     def test_spell_healing_uses_same_primitive_without_spell_bonus(self):
         spell = definition(self.catalog, 'CS2_029')
-        spell['abilities'][0]['effects'] = deepcopy(definition(self.catalog, 'EX1_011')['abilities'][0]['effects'])
+        spell['abilities'][0]['effects'] = deepcopy(
+            definition(self.catalog, 'EX1_011')['abilities'][0]['effects']
+        )
         self.engine = Prototype(self.catalog)
         self.get(self.state, 'hero-0')['damage'] = 4
-        self.state['spellDamage'][0] = 50
+        spell_bonus(self.engine, self.state, 0, 3)
         self.play('CS2_029', 'hero-0')
         self.assertEqual(self.get(self.state, 'hero-0')['damage'], 2)
 
     def test_deathrattle_heal_can_save_hero_before_final_result(self):
-        effect = deepcopy(definition(self.catalog, 'EX1_011')['abilities'][0]['effects'][0])
-        effect['recipient'] = {'kind': 'QUERY', 'capture': 'EFFECT_START',
-                               'selector': {'zone': 'PLAY', 'entityKind': 'CHARACTER', 'controller': 'FRIENDLY'}}
+        effect = deepcopy(
+            definition(self.catalog, 'EX1_011')['abilities'][0]['effects'][0]
+        )
+        effect['recipient'] = {
+            'kind': 'QUERY',
+            'capture': 'EFFECT_START',
+            'selector': {
+                'zone': 'PLAY',
+                'entityKind': 'CHARACTER',
+                'controller': 'FRIENDLY',
+            },
+        }
         definition(self.catalog, 'EX1_096')['abilities'][0]['effects'] = [effect]
         self.engine = Prototype(self.catalog)
         self.add('loot', 'EX1_096')['damage'] = 1
@@ -167,7 +216,9 @@ class HealingBuffAuraTests(unittest.TestCase):
 
     def test_same_ability_heal_can_save_mortally_wounded_minion(self):
         ability = definition(self.catalog, 'CS2_042')['abilities'][0]
-        ability['effects'].extend(deepcopy(definition(self.catalog, 'EX1_011')['abilities'][0]['effects']))
+        ability['effects'].extend(
+            deepcopy(definition(self.catalog, 'EX1_011')['abilities'][0]['effects'])
+        )
         self.engine = Prototype(self.catalog)
         self.add('yeti')['damage'] = 3  # Current 2; damage 3 then heal 2 => current 1.
         result = self.play('CS2_042', 'yeti')
@@ -178,9 +229,17 @@ class HealingBuffAuraTests(unittest.TestCase):
     def test_healing_does_not_cancel_pending_destroy(self):
         ability = definition(self.catalog, 'CS2_042')['abilities'][0]
         ability['targeting']['selector']['entityKind'] = 'MINION'
-        heal = deepcopy(definition(self.catalog, 'EX1_011')['abilities'][0]['effects'][0])
-        ability['effects'] = [{'op': 'DESTROY', 'recipient': deepcopy(heal['recipient']),
-                               'missingRecipient': 'SKIP'}, heal]
+        heal = deepcopy(
+            definition(self.catalog, 'EX1_011')['abilities'][0]['effects'][0]
+        )
+        ability['effects'] = [
+            {
+                'op': 'DESTROY',
+                'recipient': deepcopy(heal['recipient']),
+                'missingRecipient': 'SKIP',
+            },
+            heal,
+        ]
         self.engine = Prototype(self.catalog)
         self.add('yeti')['damage'] = 2
         result = self.play('CS2_042', 'yeti')
@@ -192,7 +251,9 @@ class HealingBuffAuraTests(unittest.TestCase):
         self.play('CS2_092', 'yeti')
         self.assertEqual(self.stats('yeti'), (8, 9, 6))
         self.assertEqual(self.get(self.state, 'yeti')['damage'], 3)
-        self.assertEqual(self.engine.cards[('CS2_182', 'foundation-v1')]['baseStats']['health'], 5)
+        self.assertEqual(
+            self.engine.cards[('CS2_182', 'foundation-v1')]['baseStats']['health'], 5
+        )
 
     def test_two_permanent_buffs_stack_and_survive_spell_graveyard(self):
         self.add('yeti')
@@ -215,7 +276,9 @@ class HealingBuffAuraTests(unittest.TestCase):
         self.play('CS2_092', 'yeti')
         result = self.engine.attack(self.state, 0, 'yeti', 'enemy')
         self.assertEqual(self.get(result, 'enemy')['zone'], 'GRAVEYARD')
-        self.assertEqual(self.engine.current_health(result, self.get(result, 'yeti')), 5)
+        self.assertEqual(
+            self.engine.current_health(result, self.get(result, 'yeti')), 5
+        )
 
     def test_buff_target_restrictions_and_invalid_action_atomicity(self):
         self.add('enemy', player=1)['keywords'] = ['ELUSIVE']
@@ -223,7 +286,8 @@ class HealingBuffAuraTests(unittest.TestCase):
         self.add('kings', 'CS2_092', zone='HAND')
         before = deepcopy(self.state)
         for target in (None, 'hero-0', 'weapon', 'enemy'):
-            with self.assertRaises(ValueError): self.engine.play(self.state, 0, 'kings', target)
+            with self.assertRaises(ValueError):
+                self.engine.play(self.state, 0, 'kings', target)
             self.assertEqual(self.state, before)
 
     def test_silence_removes_buff_and_caps_current_health_at_new_max(self):
@@ -321,16 +385,30 @@ class HealingBuffAuraTests(unittest.TestCase):
         self.get(self.state, 'champ')['damage'] = 6
         self.get(self.state, 'loot')['damage'] = 2
         result = self.engine.resolve_deaths(self.state)
-        self.assertEqual(self.events(result, 'DEATH_BATCH')[-1]['targets'], ['champ', 'loot'])
+        self.assertEqual(
+            self.events(result, 'DEATH_BATCH')[-1]['targets'], ['champ', 'loot']
+        )
         self.assertEqual(len(self.events(result, 'DEATHRATTLE')), 1)
 
     def test_source_aura_removed_before_its_deathrattle_effects(self):
         champ = definition(self.catalog, 'CS2_222')
         champ['mechanics'].append('DEATHRATTLE')
-        effect = {'op': 'DEAL_DAMAGE', 'amount': {'kind': 'CONSTANT', 'value': 1},
-                  'recipient': {'kind': 'QUERY', 'capture': 'EFFECT_START',
-                                'selector': {'zone': 'PLAY', 'entityKind': 'MINION', 'controller': 'FRIENDLY'}},
-                  'missingRecipient': 'SKIP', 'damageClass': 'ABILITY', 'application': 'SINGLE_DAMAGE_BATCH'}
+        effect = {
+            'op': 'DEAL_DAMAGE',
+            'amount': {'kind': 'CONSTANT', 'value': 1},
+            'recipient': {
+                'kind': 'QUERY',
+                'capture': 'EFFECT_START',
+                'selector': {
+                    'zone': 'PLAY',
+                    'entityKind': 'MINION',
+                    'controller': 'FRIENDLY',
+                },
+            },
+            'missingRecipient': 'SKIP',
+            'damageClass': 'ABILITY',
+            'application': 'SINGLE_DAMAGE_BATCH',
+        }
         champ['abilities'].append({'kind': 'DEATHRATTLE', 'effects': [effect]})
         self.engine = Prototype(self.catalog)
         self.add('champ', 'CS2_222')
@@ -338,7 +416,10 @@ class HealingBuffAuraTests(unittest.TestCase):
         self.state = self.engine.resolve_deaths(self.state)
         self.get(self.state, 'champ')['damage'] = 6
         result = self.engine.resolve_deaths(self.state)
-        self.assertEqual([e['targets'] for e in self.events(result, 'DEATH_BATCH')], [['champ'], ['loot']])
+        self.assertEqual(
+            [e['targets'] for e in self.events(result, 'DEATH_BATCH')],
+            [['champ'], ['loot']],
+        )
 
     def test_transform_discards_buffs_and_receives_external_aura_afresh(self):
         self.add('champ', 'CS2_222')
@@ -383,9 +464,12 @@ class HealingBuffAuraTests(unittest.TestCase):
         self.assertEqual(self.engine.resolve_deaths(self.state), self.state)
 
     def test_bad_stat_enchantment_is_rejected_atomically(self):
-        self.add('yeti')['enchantments'] = [{'kind': 'STAT_BUFF', 'attack': True, 'health': 1}]
+        self.add('yeti')['enchantments'] = [
+            {'kind': 'STAT_BUFF', 'attack': True, 'health': 1}
+        ]
         before = deepcopy(self.state)
-        with self.assertRaises(ValueError): self.engine.resolve_deaths(self.state)
+        with self.assertRaises(ValueError):
+            self.engine.resolve_deaths(self.state)
         self.assertEqual(self.state, before)
 
     def test_stats_events_and_final_states_are_deterministic_and_serializable(self):

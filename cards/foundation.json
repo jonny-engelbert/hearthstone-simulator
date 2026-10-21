@@ -1,11 +1,11 @@
 {
-  "schemaVersion": "1.8",
-  "catalogId": "foundation-v8",
+  "schemaVersion": "1.10",
+  "catalogId": "foundation-v9.1",
   "rulesProfile": "historical-foundation-fixtures",
   "basis": "HISTORICAL_TEST_FIXTURE",
   "cards": [
     {
-      "schemaVersion": "1.1",
+      "schemaVersion": "1.10",
       "cardId": "CS2_182",
       "revision": "foundation-v1",
       "name": "Chillwind Yeti",
@@ -35,7 +35,7 @@
       ]
     },
     {
-      "schemaVersion": "1.1",
+      "schemaVersion": "1.10",
       "cardId": "CS2_179",
       "revision": "foundation-v1",
       "name": "Sen'jin Shieldmasta",
@@ -67,7 +67,7 @@
       ]
     },
     {
-      "schemaVersion": "1.1",
+      "schemaVersion": "1.10",
       "cardId": "CS2_042",
       "revision": "foundation-v1",
       "name": "Fire Elemental",
@@ -132,7 +132,7 @@
       ]
     },
     {
-      "schemaVersion": "1.1",
+      "schemaVersion": "1.10",
       "cardId": "CS2_022",
       "revision": "foundation-v1",
       "name": "Polymorph",
@@ -190,7 +190,7 @@
       ]
     },
     {
-      "schemaVersion": "1.1",
+      "schemaVersion": "1.10",
       "cardId": "CS2_tk1",
       "revision": "foundation-v1",
       "name": "Sheep",
@@ -223,7 +223,7 @@
       ]
     },
     {
-      "schemaVersion": "1.1",
+      "schemaVersion": "1.10",
       "cardId": "CS2_032",
       "revision": "foundation-v1",
       "name": "Flamestrike",
@@ -277,7 +277,7 @@
       ]
     },
     {
-      "schemaVersion": "1.1",
+      "schemaVersion": "1.10",
       "cardId": "CS2_029",
       "revision": "foundation-v1",
       "name": "Fireball",
@@ -336,7 +336,7 @@
       ]
     },
     {
-      "schemaVersion": "1.2",
+      "schemaVersion": "1.10",
       "cardId": "EX1_015",
       "revision": "foundation-v2",
       "name": "Novice Engineer",
@@ -380,7 +380,7 @@
       ]
     },
     {
-      "schemaVersion": "1.3",
+      "schemaVersion": "1.10",
       "cardId": "CS2_106",
       "revision": "foundation-v3",
       "name": "Fiery War Axe",
@@ -411,7 +411,7 @@
       ]
     },
     {
-      "schemaVersion": "1.4",
+      "schemaVersion": "1.10",
       "cardId": "EX1_096",
       "revision": "foundation-v4",
       "name": "Loot Hoarder",
@@ -455,7 +455,7 @@
       ]
     },
     {
-      "schemaVersion": "1.5",
+      "schemaVersion": "1.10",
       "cardId": "EX1_011",
       "revision": "foundation-v5",
       "name": "Voodoo Doctor",
@@ -519,7 +519,7 @@
       ]
     },
     {
-      "schemaVersion": "1.5",
+      "schemaVersion": "1.10",
       "cardId": "CS2_092",
       "revision": "foundation-v5",
       "name": "Blessing of Kings",
@@ -577,7 +577,7 @@
       ]
     },
     {
-      "schemaVersion": "1.5",
+      "schemaVersion": "1.10",
       "cardId": "CS2_222",
       "revision": "foundation-v5",
       "name": "Stormwind Champion",
@@ -626,7 +626,7 @@
       ]
     },
     {
-      "schemaVersion": "1.5",
+      "schemaVersion": "1.10",
       "cardId": "EX1_048",
       "revision": "foundation-v5",
       "name": "Spellbreaker",
@@ -686,7 +686,7 @@
       ]
     },
     {
-      "schemaVersion": "1.6",
+      "schemaVersion": "1.10",
       "cardId": "GAME_005",
       "revision": "foundation-v6",
       "name": "The Coin",
@@ -726,7 +726,7 @@
       ]
     },
     {
-      "schemaVersion": "1.6",
+      "schemaVersion": "1.10",
       "cardId": "EX1_238",
       "revision": "foundation-v6",
       "name": "Lightning Bolt",
@@ -786,7 +786,7 @@
       "overload": 1
     },
     {
-      "schemaVersion": "1.7",
+      "schemaVersion": "1.10",
       "cardId": "CS2_034",
       "revision": "foundation-v7",
       "name": "Fireblast",
@@ -844,7 +844,7 @@
       ]
     },
     {
-      "schemaVersion": "1.7",
+      "schemaVersion": "1.10",
       "cardId": "CS1h_001",
       "revision": "foundation-v7",
       "name": "Lesser Heal",
@@ -900,7 +900,7 @@
       ]
     },
     {
-      "schemaVersion": "1.7",
+      "schemaVersion": "1.10",
       "cardId": "CS2_124",
       "revision": "foundation-v7",
       "name": "Wolfrider",
@@ -932,7 +932,7 @@
       ]
     },
     {
-      "schemaVersion": "1.7",
+      "schemaVersion": "1.10",
       "cardId": "GIL_580",
       "revision": "foundation-v7",
       "name": "Rabid Worgen",
@@ -964,7 +964,7 @@
       ]
     },
     {
-      "schemaVersion": "1.7",
+      "schemaVersion": "1.10",
       "cardId": "EX1_033",
       "revision": "foundation-v7",
       "name": "Windfury Harpy",
@@ -996,7 +996,7 @@
       ]
     },
     {
-      "schemaVersion": "1.7",
+      "schemaVersion": "1.10",
       "cardId": "CS2_024",
       "revision": "foundation-v7",
       "name": "Frostbolt",
@@ -1062,7 +1062,7 @@
       ]
     },
     {
-      "schemaVersion": "1.7",
+      "schemaVersion": "1.10",
       "cardId": "EX1_046",
       "revision": "foundation-v7",
       "name": "Abusive Sergeant",
@@ -1126,7 +1126,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "EX1_506",
       "revision": "foundation-v8",
       "name": "Murloc Tidehunter",
@@ -1176,7 +1176,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "EX1_506a",
       "revision": "foundation-v8",
       "name": "Murloc Scout",
@@ -1208,7 +1208,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "CS2_027",
       "revision": "foundation-v8",
       "name": "Mirror Image",
@@ -1252,7 +1252,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "CS2_mirror",
       "revision": "foundation-v8",
       "name": "Mirror Image",
@@ -1284,7 +1284,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "FP1_002",
       "revision": "foundation-v8",
       "name": "Haunted Creeper",
@@ -1334,7 +1334,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "FP1_002t",
       "revision": "foundation-v8",
       "name": "Spectral Spider",
@@ -1364,7 +1364,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "EX1_049",
       "revision": "foundation-v8",
       "name": "Youthful Brewmaster",
@@ -1424,7 +1424,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "EX1_581",
       "revision": "foundation-v8",
       "name": "Sap",
@@ -1477,7 +1477,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "EX1_014",
       "revision": "foundation-v8",
       "name": "King Mukla",
@@ -1526,7 +1526,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "EX1_014t",
       "revision": "foundation-v8",
       "name": "Bananas",
@@ -1583,7 +1583,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "BRM_007",
       "revision": "foundation-v8",
       "name": "Gang Up",
@@ -1638,7 +1638,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "GVG_031",
       "revision": "foundation-v8",
       "name": "Recycle",
@@ -1691,7 +1691,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "CS2_101",
       "revision": "foundation-v8",
       "name": "Reinforce",
@@ -1735,7 +1735,7 @@
       ]
     },
     {
-      "schemaVersion": "1.8",
+      "schemaVersion": "1.10",
       "cardId": "CS2_101t",
       "revision": "foundation-v8",
       "name": "Silver Hand Recruit",
@@ -1763,10 +1763,744 @@
       "sources": [
         "https://hearthstone.blizzard.com/en-us/cards/"
       ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "EX1_007",
+      "revision": "foundation-v9",
+      "name": "Acolyte of Pain",
+      "type": "MINION",
+      "classes": [
+        "NEUTRAL"
+      ],
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 1,
+        "health": 3
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": "Whenever this minion takes damage, draw a card."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "TRIGGER",
+          "effects": [
+            {
+              "op": "DRAW_CARD",
+              "count": 1,
+              "targetPlayer": "EFFECT_CONTROLLER"
+            }
+          ],
+          "trigger": {
+            "event": "DAMAGE",
+            "relation": "SELF",
+            "subjectKind": "MINION"
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "CS2_235",
+      "revision": "foundation-v9",
+      "name": "Northshire Cleric",
+      "type": "MINION",
+      "classes": [
+        "PRIEST"
+      ],
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 3
+      },
+      "collectible": true,
+      "set": "BASIC",
+      "rarity": "FREE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": "Whenever a minion is healed, draw a card."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "TRIGGER",
+          "effects": [
+            {
+              "op": "DRAW_CARD",
+              "count": 1,
+              "targetPlayer": "EFFECT_CONTROLLER"
+            }
+          ],
+          "trigger": {
+            "event": "HEAL",
+            "relation": "ANY",
+            "subjectKind": "MINION"
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "EX1_595",
+      "revision": "foundation-v9",
+      "name": "Cult Master",
+      "type": "MINION",
+      "classes": [
+        "NEUTRAL"
+      ],
+      "baseStats": {
+        "manaCost": 4,
+        "attack": 4,
+        "health": 2
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": "Whenever one of your other minions dies, draw a card."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "TRIGGER",
+          "effects": [
+            {
+              "op": "DRAW_CARD",
+              "count": 1,
+              "targetPlayer": "EFFECT_CONTROLLER"
+            }
+          ],
+          "trigger": {
+            "event": "MINION_DIED",
+            "relation": "FRIENDLY",
+            "subjectKind": "MINION",
+            "excludeSelf": true
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "NEW1_020",
+      "revision": "foundation-v9",
+      "name": "Wild Pyromancer",
+      "type": "MINION",
+      "classes": [
+        "NEUTRAL"
+      ],
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 3,
+        "health": 2
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "RARE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": "After you cast a spell, deal 1 damage to ALL minions."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "TRIGGER",
+          "effects": [
+            {
+              "op": "DEAL_DAMAGE",
+              "amount": {
+                "kind": "CONSTANT",
+                "value": 1
+              },
+              "recipient": {
+                "kind": "QUERY",
+                "capture": "EFFECT_START",
+                "selector": {
+                  "zone": "PLAY",
+                  "entityKind": "MINION",
+                  "controller": "ANY"
+                }
+              },
+              "missingRecipient": "SKIP",
+              "application": "SINGLE_DAMAGE_BATCH",
+              "damageClass": "ABILITY"
+            }
+          ],
+          "trigger": {
+            "event": "AFTER_SPELL",
+            "relation": "FRIENDLY",
+            "subjectKind": "SPELL"
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "EX1_044",
+      "revision": "foundation-v9",
+      "name": "Questing Adventurer",
+      "type": "MINION",
+      "classes": [
+        "NEUTRAL"
+      ],
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 2,
+        "health": 2
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "RARE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": "Whenever you play a card, gain +1/+1."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "TRIGGER",
+          "effects": [
+            {
+              "op": "BUFF",
+              "recipient": {
+                "kind": "SELF"
+              },
+              "missingRecipient": "SKIP",
+              "modifiers": {
+                "attack": 1,
+                "health": 1
+              },
+              "duration": "PERMANENT"
+            }
+          ],
+          "trigger": {
+            "event": "ON_CARD_PLAY",
+            "relation": "FRIENDLY",
+            "subjectKind": "ANY",
+            "excludeSelf": true
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "OG_113",
+      "revision": "foundation-v9",
+      "name": "Darkshire Councilman",
+      "type": "MINION",
+      "classes": [
+        "WARLOCK"
+      ],
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 1,
+        "health": 5
+      },
+      "collectible": true,
+      "set": "OG",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": "After you summon a minion, gain +1 Attack."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "TRIGGER",
+          "effects": [
+            {
+              "op": "BUFF",
+              "recipient": {
+                "kind": "SELF"
+              },
+              "missingRecipient": "SKIP",
+              "modifiers": {
+                "attack": 1,
+                "health": 0
+              },
+              "duration": "PERMANENT"
+            }
+          ],
+          "trigger": {
+            "event": "AFTER_SUMMON",
+            "relation": "FRIENDLY",
+            "subjectKind": "MINION",
+            "excludeSelf": true
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "EX1_287",
+      "revision": "foundation-v9",
+      "name": "Counterspell",
+      "type": "SPELL",
+      "classes": [
+        "MAGE"
+      ],
+      "baseStats": {
+        "manaCost": 3
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "RARE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [
+        "SECRET"
+      ],
+      "text": {
+        "enUS": "Secret: When your opponent casts a spell, Counter it."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "SECRET",
+          "effects": [
+            {
+              "op": "COUNTER_SPELL"
+            }
+          ],
+          "trigger": {
+            "event": "BEFORE_SPELL",
+            "relation": "ENEMY",
+            "subjectKind": "SPELL"
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/113/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "EX1_594",
+      "revision": "foundation-v9",
+      "name": "Vaporize",
+      "type": "SPELL",
+      "classes": [
+        "MAGE"
+      ],
+      "baseStats": {
+        "manaCost": 3
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "RARE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [
+        "SECRET"
+      ],
+      "text": {
+        "enUS": "Secret: When a minion attacks your hero, destroy it."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "SECRET",
+          "effects": [
+            {
+              "op": "DESTROY",
+              "recipient": {
+                "kind": "ATTACKER"
+              },
+              "missingRecipient": "SKIP"
+            }
+          ],
+          "trigger": {
+            "event": "BEFORE_ATTACK",
+            "relation": "FRIENDLY",
+            "subjectKind": "HERO",
+            "actorKind": "MINION"
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "EX1_610",
+      "revision": "foundation-v9",
+      "name": "Explosive Trap",
+      "type": "SPELL",
+      "classes": [
+        "HUNTER"
+      ],
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [
+        "SECRET"
+      ],
+      "text": {
+        "enUS": "Secret: When your hero is attacked, deal 2 damage to all enemies."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "SECRET",
+          "effects": [
+            {
+              "op": "DEAL_DAMAGE",
+              "amount": {
+                "kind": "CONSTANT",
+                "value": 2
+              },
+              "recipient": {
+                "kind": "QUERY",
+                "capture": "EFFECT_START",
+                "selector": {
+                  "zone": "PLAY",
+                  "entityKind": "CHARACTER",
+                  "controller": "OPPONENT_OF_EFFECT_CONTROLLER"
+                }
+              },
+              "missingRecipient": "SKIP",
+              "application": "SINGLE_DAMAGE_BATCH",
+              "damageClass": "SPELL"
+            }
+          ],
+          "trigger": {
+            "event": "BEFORE_ATTACK",
+            "relation": "FRIENDLY",
+            "subjectKind": "HERO"
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "EX1_130",
+      "revision": "foundation-v9",
+      "name": "Noble Sacrifice",
+      "type": "SPELL",
+      "classes": [
+        "PALADIN"
+      ],
+      "baseStats": {
+        "manaCost": 1
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [
+        "SECRET"
+      ],
+      "text": {
+        "enUS": "Secret: When an enemy attacks, summon a 2/1 Defender as the new target."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "SECRET",
+          "effects": [
+            {
+              "op": "REDIRECT_ATTACK",
+              "definition": {
+                "cardId": "EX1_130a",
+                "revision": "foundation-v9"
+              }
+            }
+          ],
+          "trigger": {
+            "event": "BEFORE_ATTACK",
+            "relation": "FRIENDLY",
+            "subjectKind": "CHARACTER"
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "EX1_130a",
+      "revision": "foundation-v9",
+      "name": "Defender",
+      "type": "MINION",
+      "classes": [
+        "PALADIN"
+      ],
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 2,
+        "health": 1
+      },
+      "collectible": false,
+      "set": "EXPERT1",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": ""
+      },
+      "playConditions": [],
+      "abilities": [],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "CS2_097",
+      "revision": "foundation-v9",
+      "name": "Truesilver Champion",
+      "type": "WEAPON",
+      "classes": [
+        "PALADIN"
+      ],
+      "baseStats": {
+        "manaCost": 4,
+        "attack": 4,
+        "durability": 2
+      },
+      "collectible": true,
+      "set": "BASIC",
+      "rarity": "FREE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": "Whenever your hero attacks, restore 2 Health to it."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "TRIGGER",
+          "effects": [
+            {
+              "op": "HEAL",
+              "recipient": {
+                "kind": "CONTROLLER_HERO"
+              },
+              "missingRecipient": "SKIP",
+              "amount": {
+                "kind": "CONSTANT",
+                "value": 2
+              }
+            }
+          ],
+          "trigger": {
+            "event": "BEFORE_ATTACK",
+            "relation": "SELF",
+            "subjectKind": "HERO"
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "FP1_021",
+      "revision": "foundation-v9",
+      "name": "Death's Bite",
+      "type": "WEAPON",
+      "classes": [
+        "WARRIOR"
+      ],
+      "baseStats": {
+        "manaCost": 4,
+        "attack": 4,
+        "durability": 2
+      },
+      "collectible": true,
+      "set": "NAXX",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [
+        "DEATHRATTLE"
+      ],
+      "text": {
+        "enUS": "Deathrattle: Deal 1 damage to all minions."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "DEATHRATTLE",
+          "effects": [
+            {
+              "op": "DEAL_DAMAGE",
+              "amount": {
+                "kind": "CONSTANT",
+                "value": 1
+              },
+              "recipient": {
+                "kind": "QUERY",
+                "capture": "EFFECT_START",
+                "selector": {
+                  "zone": "PLAY",
+                  "entityKind": "MINION",
+                  "controller": "ANY"
+                }
+              },
+              "missingRecipient": "SKIP",
+              "application": "SINGLE_DAMAGE_BATCH",
+              "damageClass": "ABILITY"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "EX1_132",
+      "revision": "foundation-v9",
+      "name": "Eye for an Eye",
+      "type": "SPELL",
+      "classes": [
+        "PALADIN"
+      ],
+      "baseStats": {
+        "manaCost": 1
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [
+        "SECRET"
+      ],
+      "text": {
+        "enUS": "Secret: When your hero takes damage, deal that much damage to the enemy hero."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "SECRET",
+          "effects": [
+            {
+              "op": "DEAL_DAMAGE",
+              "amount": {
+                "kind": "EVENT_AMOUNT"
+              },
+              "recipient": {
+                "kind": "OPPONENT_HERO"
+              },
+              "missingRecipient": "SKIP",
+              "application": "SINGLE_HIT",
+              "damageClass": "SPELL"
+            }
+          ],
+          "trigger": {
+            "event": "DAMAGE",
+            "relation": "FRIENDLY",
+            "subjectKind": "HERO"
+          }
+        }
+      ],
+      "sources": [
+        "https://hearthstone.blizzard.com/en-us/cards/462-eye-for-an-eye/"
+      ]
+    },
+    {
+      "schemaVersion": "1.10",
+      "cardId": "CS2_142",
+      "revision": "hardening-v1",
+      "name": "Kobold Geomancer",
+      "type": "MINION",
+      "classes": [
+        "NEUTRAL"
+      ],
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 2,
+        "health": 2
+      },
+      "collectible": true,
+      "set": "BASIC",
+      "rarity": "FREE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [
+        "SPELL_DAMAGE"
+      ],
+      "mechanics": [],
+      "text": {
+        "enUS": "Spell Damage +1"
+      },
+      "playConditions": [],
+      "abilities": [],
+      "sources": [
+        "https://github.com/HearthSim/hs-data/blob/master/CardDefs.xml"
+      ],
+      "spellDamage": 1
     }
   ],
   "deathResolutionPolicy": "DEATH_WAVES_FIFO",
   "healthModifierPolicy": "CAP_CURRENT_ON_MAX_LOSS",
   "resourcePolicy": "CAPPED_TEMPORARY_MANA",
-  "zoneTransitionPolicy": "RESET_ON_EXIT_BASE_DECK_COPIES"
+  "zoneTransitionPolicy": "RESET_ON_EXIT_BASE_DECK_COPIES",
+  "reactionPolicy": "DEPTH_FIRST_REACTIONS_DEATH_WAVES_V1"
 }

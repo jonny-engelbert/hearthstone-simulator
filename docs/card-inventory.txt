@@ -1,5 +1,5 @@
-Card inventory — foundation-v9 / schema 1.9
-51 definitions: 40 collectible cards, 8 generated/token cards, 3 hero powers.
+Card inventory — foundation-v9.1 / schema 1.10
+52 definitions: 41 collectible cards, 8 generated/token cards, 3 hero powers.
 Historical conformance fixtures; not one verified live patch.
 
 Stage 1
@@ -80,3 +80,7 @@ CS2_097        Truesilver Champion | WEAPON | 4 mana; 4 Attack / 2 durability | 
 FP1_021        Death's Bite | WEAPON | 4 mana; 4 Attack / 2 durability | collectible
 EX1_132        Eye for an Eye | SPELL | 1 mana | collectible
 
+
+Pre-stage-10 hardening
+----------------------
+CS2_142        Kobold Geomancer | MINION | 2 mana; 2/2; Spell Damage +1 | collectible

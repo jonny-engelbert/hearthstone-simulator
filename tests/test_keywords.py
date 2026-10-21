@@ -1,3 +1,7 @@
+from fixtures import assert_invalid, invalid_field
+from fixtures import spell_bonus
+from fixtures import enter
+
 """Stage 7: public hero powers, combat keywords and managed expiration."""
 from copy import deepcopy
 import json
@@ -15,49 +19,84 @@ def definition(catalog, card_id):
 
 
 class Stage7CatalogTests(unittest.TestCase):
-    def test_frozen_catalogs_and_definition_continuity(self):
-        current = load(ROOT / 'cards/foundation-v7.json')
-        self.assertEqual(len(current['cards']), 23)
-        for version in range(1, 8):
-            old = load(ROOT / f'cards/foundation-v{version}.json')
-            self.assertEqual(current['cards'][:len(old['cards'])], old['cards'])
-            name = 'manifest.json' if version == 1 else f'manifest-v{version}.json'
-            self.assertEqual(verify(json.loads((ROOT / 'cards' / name).read_text())), [])
 
     def test_keyword_and_representative_stats(self):
-        for cid, cost, attack, health, keyword in [('CS2_124', 3, 3, 1, 'CHARGE'),
-                ('GIL_580', 3, 3, 3, 'RUSH'), ('EX1_033', 6, 4, 5, 'WINDFURY')]:
+        for cid, cost, attack, health, keyword in [
+            ('CS2_124', 3, 3, 1, 'CHARGE'),
+            ('GIL_580', 3, 3, 3, 'RUSH'),
+            ('EX1_033', 6, 4, 5, 'WINDFURY'),
+        ]:
             card = definition(load(), cid)
-            self.assertEqual(card['baseStats'], dict(manaCost=cost, attack=attack, health=health))
+            self.assertEqual(
+                card['baseStats'], dict(manaCost=cost, attack=attack, health=health)
+            )
             self.assertEqual(card['keywords'], [keyword])
 
     def test_bad_hero_power_shapes(self):
-        for mutation in ('collectible', 'stats', 'kind', 'class', 'policy', 'empty', 'overload'):
+        for mutation in (
+            'collectible',
+            'stats',
+            'kind',
+            'class',
+            'policy',
+            'empty',
+            'overload',
+        ):
             catalog = load()
             power = definition(catalog, 'CS2_034')
-            if mutation == 'collectible': power['collectible'] = True
-            if mutation == 'stats': power['baseStats']['attack'] = 1
-            if mutation == 'kind': power['abilities'][0]['kind'] = 'SPELL_EFFECT'
-            if mutation == 'class': power['abilities'][0]['effects'][0]['damageClass'] = 'SPELL'
-            if mutation == 'policy': power['abilities'][0]['targeting']['legalityPolicy'] = 'SPELL_SELECTED_TARGET'
-            if mutation == 'empty': power['abilities'] = []
-            if mutation == 'overload': power['overload'] = 1
-            with self.subTest(mutation=mutation): self.assertTrue(validate(catalog))
+            if mutation == 'collectible':
+                power['collectible'] = True
+            if mutation == 'stats':
+                power['baseStats']['attack'] = 1
+            if mutation == 'kind':
+                power['abilities'][0]['kind'] = 'SPELL_EFFECT'
+            if mutation == 'class':
+                power['abilities'][0]['effects'][0]['damageClass'] = 'SPELL'
+            if mutation == 'policy':
+                power['abilities'][0]['targeting'][
+                    'legalityPolicy'
+                ] = 'SPELL_SELECTED_TARGET'
+            if mutation == 'empty':
+                power['abilities'] = []
+            if mutation == 'overload':
+                power['overload'] = 1
+            with self.subTest(mutation=mutation):
+                assert_invalid(
+                    self,
+                    catalog,
+                    {
+                        'collectible': ("'collectible'", 'False was expected'),
+                        'stats': ('baseStats', 'should not be valid under'),
+                        'kind': 'CS2_034: incompatible ability kind',
+                        'class': 'CS2_034: incompatible damage class',
+                        'policy': 'CS2_034: incompatible targeting policy',
+                        'empty': ("'abilities'", 'should be non-empty'),
+                        'overload': 'CS2_034: hero power Overload is not supported',
+                    }[mutation],
+                )
 
     def test_unknown_keyword_duration_and_freeze_fields_rejected(self):
         for mutation in ('keyword', 'duration', 'freeze'):
             catalog = load()
-            if mutation == 'keyword': definition(catalog, 'CS2_124')['keywords'] = ['FLYING']
-            if mutation == 'duration': definition(catalog, 'EX1_046')['abilities'][0]['effects'][0]['duration'] = 'LATER'
-            if mutation == 'freeze': definition(catalog, 'CS2_024')['abilities'][0]['effects'][1]['duration'] = 'LATER'
-            self.assertTrue(validate(catalog))
-
-    def test_previous_schema_rejects_hero_powers(self):
-        catalog = load(ROOT / 'cards/foundation-v6.json')
-        power = deepcopy(definition(load(), 'CS2_034'))
-        power['schemaVersion'] = '1.6'
-        catalog['cards'].append(power)
-        self.assertTrue(validate(catalog))
+            if mutation == 'keyword':
+                definition(catalog, 'CS2_124')['keywords'] = ['FLYING']
+            if mutation == 'duration':
+                definition(catalog, 'EX1_046')['abilities'][0]['effects'][0][
+                    'duration'
+                ] = 'LATER'
+            if mutation == 'freeze':
+                definition(catalog, 'CS2_024')['abilities'][0]['effects'][1][
+                    'duration'
+                ] = 'LATER'
+            assert_invalid(
+                self,
+                catalog,
+                {
+                    'keyword': ("'keywords'", "'FLYING' is not one of"),
+                    'duration': ("'duration'", "'LATER' is not one of"),
+                    'freeze': ('duration', 'Additional properties'),
+                }[mutation],
+            )
 
 
 class ManagedFixture(unittest.TestCase):
@@ -67,8 +106,9 @@ class ManagedFixture(unittest.TestCase):
 
     def restart(self, powers=None):
         self.engine = MatchEngine(self.catalog)
-        self.state = self.engine.new_game([['CS2_182'] * 30] * 2, seed=17,
-                                         first_player=0, hero_powers=powers)
+        self.state = self.engine.new_game(
+            [['CS2_182'] * 30] * 2, seed=17, first_player=0, hero_powers=powers
+        )
         self.state = self.engine.mulligan(self.state, 0, [])
         self.state = self.engine.mulligan(self.state, 1, [])
         self.refill()
@@ -83,6 +123,7 @@ class ManagedFixture(unittest.TestCase):
         e = self.engine.entity(entity_id, cid, player, zone)
         e.update(fields)
         self.state['entities'].append(e)
+        enter(self.engine, self.state, e)
         return e
 
     def get(self, entity_id, state=None):
@@ -90,7 +131,9 @@ class ManagedFixture(unittest.TestCase):
 
     def play(self, cid, target=None, entity_id='card'):
         self.add(cid, entity_id, self.state['activePlayer'], 'HAND')
-        self.state = self.engine.play(self.state, self.state['activePlayer'], entity_id, target)
+        self.state = self.engine.play(
+            self.state, self.state['activePlayer'], entity_id, target
+        )
 
     def end(self):
         self.state = self.engine.end_turn(self.state, self.state['activePlayer'])
@@ -100,15 +143,18 @@ class ManagedFixture(unittest.TestCase):
 
     def assert_atomic_failure(self, fn):
         before = deepcopy(self.state)
-        with self.assertRaises(ValueError): fn()
+        with self.assertRaises(ValueError):
+            fn()
         self.assertEqual(self.state, before)
 
 
 class HeroPowerTests(ManagedFixture):
     def test_fireblast_pays_once_and_is_not_a_card_play(self):
         before = deepcopy(self.state)
-        self.state['spellDamage'][0] = 9
-        self.state = self.engine.apply(self.state, 0, {'type': 'hero_power', 'target': 'hero-1'})
+        spell_bonus(self.engine, self.state, 0, 3)
+        self.state = self.engine.apply(
+            self.state, 0, {'type': 'hero_power', 'target': 'hero-1'}
+        )
         self.assertEqual(self.get('hero-1')['damage'], 1)
         self.assertEqual(self.state['mana'][0], 8)
         self.assertEqual(self.state['heroPowerUsesThisTurn'], [1, 0])
@@ -117,7 +163,9 @@ class HeroPowerTests(ManagedFixture):
         self.assertEqual(self.events('PLAY'), [])
         self.assertEqual(len(self.events('HERO_POWER')), 1)
         self.assertEqual(before['heroPowerUsesThisTurn'], [0, 0])
-        self.assert_atomic_failure(lambda: self.engine.hero_power(self.state, 0, 'hero-1'))
+        self.assert_atomic_failure(
+            lambda: self.engine.hero_power(self.state, 0, 'hero-1')
+        )
 
     def test_powers_reset_only_on_their_own_turn(self):
         self.state = self.engine.hero_power(self.state, 0, 'hero-1')
@@ -134,21 +182,31 @@ class HeroPowerTests(ManagedFixture):
         self.add(entity_id='stealth', player=1, keywords=['STEALTH'])
         self.add(entity_id='immune', player=1, keywords=['IMMUNE'])
         for target in (None, 'missing', 'hero-power-1', 'elusive', 'stealth', 'immune'):
-            self.assert_atomic_failure(lambda: self.engine.hero_power(self.state, 0, target))
+            self.assert_atomic_failure(
+                lambda: self.engine.hero_power(self.state, 0, target)
+            )
         self.assertEqual(self.state['heroPowerUsesThisTurn'][0], 0)
 
     def test_cost_phase_player_and_finished_checks(self):
         self.state['resources'][0]['filled'] = 1
         resources.sync(self.state)
-        self.assert_atomic_failure(lambda: self.engine.hero_power(self.state, 0, 'hero-1'))
+        self.assert_atomic_failure(
+            lambda: self.engine.hero_power(self.state, 0, 'hero-1')
+        )
         self.refill()
         for player in (1, True, -1):
-            self.assert_atomic_failure(lambda: self.engine.hero_power(self.state, player, 'hero-1'))
+            self.assert_atomic_failure(
+                lambda: self.engine.hero_power(self.state, player, 'hero-1')
+            )
         self.state['phase'] = 'MULLIGAN'
-        self.assert_atomic_failure(lambda: self.engine.hero_power(self.state, 0, 'hero-1'))
+        self.assert_atomic_failure(
+            lambda: self.engine.hero_power(self.state, 0, 'hero-1')
+        )
         self.state['phase'] = 'MAIN'
         self.state = self.engine.concede(self.state, 1)
-        self.assert_atomic_failure(lambda: self.engine.hero_power(self.state, 0, 'hero-1'))
+        self.assert_atomic_failure(
+            lambda: self.engine.hero_power(self.state, 0, 'hero-1')
+        )
 
     def test_frozen_hero_can_use_power_and_equip(self):
         self.get('hero-0')['keywords'].append('FROZEN')
@@ -162,7 +220,8 @@ class HeroPowerTests(ManagedFixture):
         self.get('hero-0')['damage'] = 3
         self.state = self.engine.hero_power(self.state, 0, 'hero-0')
         self.assertEqual(self.get('hero-0')['damage'], 1)
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.state = self.engine.hero_power(self.state, 0, 'hero-1')
         self.assertEqual(self.events('HEAL')[-1]['amount'], 0)
         self.assertEqual(self.state['heroPowerUsesThisTurn'][0], 1)
@@ -172,39 +231,62 @@ class HeroPowerTests(ManagedFixture):
         self.state = self.engine.hero_power(self.state, 0, 'loot')
         self.assertEqual(self.get('loot')['zone'], 'GRAVEYARD')
         self.assertEqual(self.events('DEATHRATTLE')[-1]['source'], 'loot')
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.get('hero-1')['damage'] = 29
         self.state = self.engine.hero_power(self.state, 0, 'hero-1')
-        self.assertEqual((self.state['result'], self.state['phase']), ('PLAYER_0_WINS', 'FINISHED'))
+        self.assertEqual(
+            (self.state['result'], self.state['phase']), ('PLAYER_0_WINS', 'FINISHED')
+        )
 
     def test_shield_armor_and_friendly_target_legality(self):
         self.get('hero-0').update(armor=2, keywords=['STEALTH'])
         self.state = self.engine.hero_power(self.state, 0, 'hero-0')
-        self.assertEqual((self.get('hero-0')['armor'], self.get('hero-0')['damage']), (1, 0))
-        self.end(); self.end()
+        self.assertEqual(
+            (self.get('hero-0')['armor'], self.get('hero-0')['damage']), (1, 0)
+        )
+        self.end()
+        self.end()
         self.add(entity_id='shield', player=1, keywords=['DIVINE_SHIELD'])
         self.state = self.engine.hero_power(self.state, 0, 'shield')
-        self.assertEqual((self.get('shield')['damage'], self.get('shield')['keywords']), (0, []))
+        self.assertEqual(
+            (self.get('shield')['damage'], self.get('shield')['keywords']), (0, [])
+        )
 
     def test_power_setup_and_action_shapes_are_strict(self):
-        for config in (['CS2_182', 'CS2_034'], ['missing', None], ['CS2_034'], 'CS2_034'):
+        for config in (
+            ['CS2_182', 'CS2_034'],
+            ['missing', None],
+            ['CS2_034'],
+            'CS2_034',
+        ):
             with self.assertRaises(ValueError):
                 self.engine.new_game([['CS2_182'] * 30] * 2, 1, hero_powers=config)
-        for action in ({'type':'hero_power', 'source':'hero-power-1'}, {'type':'hero_power', 'extra':1}):
+        for action in (
+            {'type': 'hero_power', 'source': 'hero-power-1'},
+            {'type': 'hero_power', 'extra': 1},
+        ):
             self.assert_atomic_failure(lambda: self.engine.apply(self.state, 0, action))
         self.restart([None, None])
-        self.assert_atomic_failure(lambda: self.engine.hero_power(self.state, 0, 'hero-1'))
+        self.assert_atomic_failure(
+            lambda: self.engine.hero_power(self.state, 0, 'hero-1')
+        )
 
     def test_powers_are_not_deck_or_hand_cards(self):
-        with self.assertRaises(ValueError): self.engine.new_game([['CS2_034'] * 30] * 2, 1)
+        with self.assertRaises(ValueError):
+            self.engine.new_game([['CS2_034'] * 30] * 2, 1)
         self.add('CS2_034', 'bad-hand-power', zone='HAND')
-        self.assert_atomic_failure(lambda: self.engine.play(self.state, 0, 'bad-hand-power', 'hero-1'))
+        self.assert_atomic_failure(
+            lambda: self.engine.play(self.state, 0, 'bad-hand-power', 'hero-1')
+        )
         self.assertEqual(self.engine.attack_targets(self.state, 'hero-power-0'), [])
 
     def test_power_replay_and_json_restore(self):
         initial = deepcopy(self.state)
         result = self.engine.hero_power(self.state, 0, 'hero-1')
-        self.assertEqual(result, self.engine.hero_power(json.loads(json.dumps(initial)), 0, 'hero-1'))
+        self.assertEqual(
+            result, self.engine.hero_power(json.loads(json.dumps(initial)), 0, 'hero-1')
+        )
         self.assertEqual(self.state, initial)
         self.assertEqual(result, json.loads(json.dumps(result)))
 
@@ -221,19 +303,22 @@ class CombatKeywordTests(ManagedFixture):
         self.add('EX1_015', 'enemy', 1)
         self.play('GIL_580', entity_id='rush')
         self.assertEqual(self.engine.attack_targets(self.state, 'rush'), ['enemy'])
-        self.assert_atomic_failure(lambda: self.engine.attack(self.state, 0, 'rush', 'hero-1'))
+        self.assert_atomic_failure(
+            lambda: self.engine.attack(self.state, 0, 'rush', 'hero-1')
+        )
         self.state = self.engine.attack(self.state, 0, 'rush', 'enemy')
         self.assertEqual(self.get('enemy')['zone'], 'GRAVEYARD')
 
     def test_rush_attacks_hero_next_turn(self):
         self.play('GIL_580', entity_id='rush')
         self.assertEqual(self.engine.attack_targets(self.state, 'rush'), [])
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.assertIn('hero-1', self.engine.attack_targets(self.state, 'rush'))
 
     def test_charge_and_rush_obey_taunt_and_frozen(self):
         self.add('CS2_179', 'taunt', 1)
-        for cid, eid in [('CS2_124','wolf'), ('GIL_580','rush')]:
+        for cid, eid in [('CS2_124', 'wolf'), ('GIL_580', 'rush')]:
             self.play(cid, entity_id=eid)
             self.assertEqual(self.engine.attack_targets(self.state, eid), ['taunt'])
             self.get(eid)['keywords'].append('FROZEN')
@@ -249,11 +334,16 @@ class CombatKeywordTests(ManagedFixture):
     def test_windfury_exhaustion_and_two_attacks_after_refresh(self):
         self.play('EX1_033', entity_id='harpy')
         self.assertEqual(self.engine.attack_targets(self.state, 'harpy'), [])
-        self.end(); self.end()
-        for _ in range(2): self.state = self.engine.attack(self.state, 0, 'harpy', 'hero-1')
+        self.end()
+        self.end()
+        for _ in range(2):
+            self.state = self.engine.attack(self.state, 0, 'harpy', 'hero-1')
         self.assertEqual(self.get('hero-1')['damage'], 8)
-        self.assert_atomic_failure(lambda: self.engine.attack(self.state, 0, 'harpy', 'hero-1'))
-        self.end(); self.end()
+        self.assert_atomic_failure(
+            lambda: self.engine.attack(self.state, 0, 'harpy', 'hero-1')
+        )
+        self.end()
+        self.end()
         self.assertIn('hero-1', self.engine.attack_targets(self.state, 'harpy'))
 
     def test_dynamic_windfury_never_refunds_attack_count(self):
@@ -293,14 +383,17 @@ class FreezeTests(ManagedFixture):
     def setUp(self):
         super().setUp()
         # Isolate thaw timing from lethal damage to 1-Health Charge cards.
-        definition(self.catalog, 'CS2_024')['abilities'][0]['effects'][0]['amount']['value'] = 0
+        definition(self.catalog, 'CS2_024')['abilities'][0]['effects'][0]['amount'][
+            'value'
+        ] = 0
         self.restart()
 
     def freeze(self, target, eid='frost'):
         self.play('CS2_024', target, eid)
 
     def test_representative_frostbolt_damage_and_freeze(self):
-        self.catalog = load(); self.restart()
+        self.catalog = load()
+        self.restart()
         self.add(entity_id='enemy', player=1)
         self.freeze('enemy')
         self.assertEqual(self.get('enemy')['damage'], 3)
@@ -319,7 +412,8 @@ class FreezeTests(ManagedFixture):
         self.add(ready=True)
         self.state = self.engine.attack(self.state, 0, 'minion', 'hero-1')
         self.freeze('minion')
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.assertIn('FROZEN', self.get('minion')['keywords'])
         self.assertEqual(self.engine.attack_targets(self.state, 'minion'), [])
         self.end()
@@ -337,7 +431,8 @@ class FreezeTests(ManagedFixture):
     def test_exhausted_minion_misses_next_turn(self):
         self.play('CS2_182', entity_id='new')
         self.freeze('new')
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.assertIn('FROZEN', self.get('new')['keywords'])
         self.end()
         self.assertNotIn('FROZEN', self.get('new')['keywords'])
@@ -351,7 +446,8 @@ class FreezeTests(ManagedFixture):
     def test_rush_without_legal_minion_target_misses_next_turn(self):
         self.play('GIL_580', entity_id='rush')
         self.freeze('rush')
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.assertIn('FROZEN', self.get('rush')['keywords'])
         self.end()
         self.assertNotIn('FROZEN', self.get('rush')['keywords'])
@@ -367,7 +463,8 @@ class FreezeTests(ManagedFixture):
         self.add('EX1_033', 'harpy', ready=True)
         self.state = self.engine.attack(self.state, 0, 'harpy', 'hero-1')
         self.freeze('harpy')
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.assertIn('FROZEN', self.get('harpy')['keywords'])
         self.end()
         self.assertNotIn('FROZEN', self.get('harpy')['keywords'])
@@ -378,19 +475,25 @@ class FreezeTests(ManagedFixture):
         first = deepcopy(self.get('enemy')['freezeUntil'])
         self.freeze('enemy', 'frost2')
         self.assertEqual(self.get('enemy')['freezeUntil'], first)
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.assertNotIn('FROZEN', self.get('enemy')['keywords'])
         self.assertEqual(len(self.events('THAW')), 1)
 
     def test_silence_and_transform_discard_freeze_deadline(self):
-        self.add(entity_id='a'); self.add(entity_id='b')
-        self.freeze('a', 'frost1'); self.freeze('b', 'frost2')
+        self.add(entity_id='a')
+        self.add(entity_id='b')
+        self.freeze('a', 'frost1')
+        self.freeze('b', 'frost2')
         self.play('EX1_048', 'a', 'silence')
-        self.refill(); self.play('CS2_022', 'b', 'poly')
-        for eid in ('a','b'):
+        self.refill()
+        self.play('CS2_022', 'b', 'poly')
+        for eid in ('a', 'b'):
             self.assertNotIn('FROZEN', self.get(eid)['keywords'])
             self.assertNotIn('freezeUntil', self.get(eid))
-        self.end(); self.end(); self.end()
+        self.end()
+        self.end()
+        self.end()
         self.assertEqual(self.events('THAW'), [])
 
     def test_frozen_minion_still_retaliates(self):
@@ -402,7 +505,8 @@ class FreezeTests(ManagedFixture):
 
     def test_frozen_hero_with_no_attack_waits_next_own_turn(self):
         self.freeze('hero-0')
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.assertIn('FROZEN', self.get('hero-0')['keywords'])
         self.end()
         self.assertNotIn('FROZEN', self.get('hero-0')['keywords'])
@@ -418,7 +522,8 @@ class FreezeTests(ManagedFixture):
         self.add(entity_id='enemy', player=1)
         self.freeze('enemy')
         self.play('CS2_029', 'enemy', 'fireball')
-        self.end(); self.end()
+        self.end()
+        self.end()
         self.assertEqual(self.get('enemy')['zone'], 'GRAVEYARD')
         self.assertEqual(self.events('THAW'), [])
 
@@ -427,7 +532,8 @@ class FreezeTests(ManagedFixture):
         state = engine.state()
         state['entities'].append(engine.entity('spell', 'CS2_024', 0, 'HAND'))
         before = deepcopy(state)
-        with self.assertRaises(ValueError): engine.play(state, 0, 'spell', 'hero-1')
+        with self.assertRaises(ValueError):
+            engine.play(state, 0, 'spell', 'hero-1')
         self.assertEqual(state, before)
 
 
@@ -442,7 +548,8 @@ class ExpirationTests(ManagedFixture):
         self.assertEqual(len(self.events('BUFF_EXPIRED')), 1)
 
     def test_permanent_buff_and_aura_survive_temporary_expiration(self):
-        self.add(entity_id='yeti'); self.add('CS2_222', 'champ')
+        self.add(entity_id='yeti')
+        self.add('CS2_222', 'champ')
         self.play('CS2_092', 'yeti', 'kings')
         self.play('EX1_046', 'yeti', 'sergeant')
         self.assertEqual(self.engine.current_attack(self.state, self.get('yeti')), 11)
@@ -452,17 +559,31 @@ class ExpirationTests(ManagedFixture):
 
     def test_end_hooks_see_buff_before_expiration(self):
         card = definition(self.catalog, 'CS2_182')
-        card['abilities'] = [dict(kind='END_OF_TURN', effects=[dict(op='DRAW_CARD', count=1, targetPlayer='EFFECT_CONTROLLER')])]
-        self.restart(); self.add(entity_id='yeti')
+        card['abilities'] = [
+            dict(
+                kind='END_OF_TURN',
+                effects=[
+                    dict(op='DRAW_CARD', count=1, targetPlayer='EFFECT_CONTROLLER')
+                ],
+            )
+        ]
+        self.restart()
+        self.add(entity_id='yeti')
         self.play('EX1_046', 'yeti', 'sergeant')
         self.end()
         kinds = [e['type'] for e in self.state['events']]
         self.assertLess(kinds.index('TURN_TRIGGER'), kinds.index('BUFF_EXPIRED'))
-        self.assertLess(kinds.index('BUFF_EXPIRED'), kinds.index('THAW') if 'THAW' in kinds else len(kinds))
+        self.assertLess(
+            kinds.index('BUFF_EXPIRED'),
+            kinds.index('THAW') if 'THAW' in kinds else len(kinds),
+        )
 
     def test_next_turn_expiration_anchors_effect_controller_not_recipient(self):
-        definition(self.catalog, 'CS2_092')['abilities'][0]['effects'][0]['duration'] = 'START_OF_NEXT_TURN'
-        self.restart(); self.add(entity_id='enemy', player=1)
+        definition(self.catalog, 'CS2_092')['abilities'][0]['effects'][0][
+            'duration'
+        ] = 'START_OF_NEXT_TURN'
+        self.restart()
+        self.add(entity_id='enemy', player=1)
         self.play('CS2_092', 'enemy', 'kings')
         self.end()
         self.assertEqual(self.engine.current_attack(self.state, self.get('enemy')), 8)
@@ -471,9 +592,19 @@ class ExpirationTests(ManagedFixture):
         self.assertEqual(self.events('BUFF_EXPIRED')[-1]['phase'], 'START_OF_TURN')
 
     def test_start_expiration_precedes_start_hooks_and_draw(self):
-        definition(self.catalog, 'CS2_092')['abilities'][0]['effects'][0]['duration'] = 'START_OF_NEXT_TURN'
-        definition(self.catalog, 'CS2_182')['abilities'] = [dict(kind='START_OF_TURN',effects=[dict(op='DRAW_CARD',count=1,targetPlayer='EFFECT_CONTROLLER')])]
-        self.restart(); self.add(entity_id='yeti')
+        definition(self.catalog, 'CS2_092')['abilities'][0]['effects'][0][
+            'duration'
+        ] = 'START_OF_NEXT_TURN'
+        definition(self.catalog, 'CS2_182')['abilities'] = [
+            dict(
+                kind='START_OF_TURN',
+                effects=[
+                    dict(op='DRAW_CARD', count=1, targetPlayer='EFFECT_CONTROLLER')
+                ],
+            )
+        ]
+        self.restart()
+        self.add(entity_id='yeti')
         self.play('CS2_092', 'yeti', 'kings')
         self.end()
         self.state['events'] = []
@@ -483,8 +614,11 @@ class ExpirationTests(ManagedFixture):
         self.assertLess(kinds.index('TURN_TRIGGER'), kinds.index('DRAW'))
 
     def test_temporary_health_expiration_uses_existing_cap_policy(self):
-        definition(self.catalog, 'CS2_092')['abilities'][0]['effects'][0]['duration'] = 'END_OF_TURN'
-        self.restart(); self.add(entity_id='yeti')
+        definition(self.catalog, 'CS2_092')['abilities'][0]['effects'][0][
+            'duration'
+        ] = 'END_OF_TURN'
+        self.restart()
+        self.add(entity_id='yeti')
         self.play('CS2_092', 'yeti', 'kings')
         self.get('yeti')['damage'] = 8  # 1 current Health of 9
         self.end()
@@ -493,9 +627,12 @@ class ExpirationTests(ManagedFixture):
         self.assertEqual(self.get('yeti')['zone'], 'PLAY')
 
     def test_silence_and_transform_remove_timers_without_later_expiration(self):
-        self.add(entity_id='a'); self.add(entity_id='b')
-        self.play('EX1_046', 'a', 's1'); self.play('EX1_046', 'b', 's2')
-        self.play('EX1_048', 'a', 'silence'); self.play('CS2_022', 'b', 'poly')
+        self.add(entity_id='a')
+        self.add(entity_id='b')
+        self.play('EX1_046', 'a', 's1')
+        self.play('EX1_046', 'b', 's2')
+        self.play('EX1_048', 'a', 'silence')
+        self.play('CS2_022', 'b', 'poly')
         self.end()
         self.assertEqual(self.events('BUFF_EXPIRED'), [])
 
@@ -512,7 +649,9 @@ class ExpirationTests(ManagedFixture):
         self.play('EX1_046', 'enemy', 'sergeant')
         self.play('CS2_029', 'sergeant', 'fireball')
         self.assertEqual(self.engine.current_attack(self.state, self.get('enemy')), 6)
-        self.end(); self.end(); self.end()
+        self.end()
+        self.end()
+        self.end()
         self.assertEqual(self.engine.current_attack(self.state, self.get('enemy')), 4)
         self.assertEqual(len(self.events('BUFF_EXPIRED')), 1)
 
@@ -522,33 +661,62 @@ class ExpirationTests(ManagedFixture):
         self.play('CS2_024', 'hero-0', 'freeze')
         before = deepcopy(self.state)
         result = self.engine.end_turn(self.state, 0)
-        self.assertEqual(result, self.engine.end_turn(json.loads(json.dumps(self.state)), 0))
+        self.assertEqual(
+            result, self.engine.end_turn(json.loads(json.dumps(self.state)), 0)
+        )
         self.assertEqual(self.state, before)
         self.assertEqual(result, json.loads(json.dumps(result)))
 
     def test_temporary_buff_requires_managed_clock(self):
-        engine = Prototype(load()); state = engine.state()
-        state['entities'].extend([engine.entity('yeti','CS2_182',0), engine.entity('sergeant','EX1_046',0,'HAND')])
+        engine = Prototype(load())
+        state = engine.state()
+        state['entities'].extend(
+            [
+                engine.entity('yeti', 'CS2_182', 0),
+                engine.entity('sergeant', 'EX1_046', 0, 'HAND'),
+            ]
+        )
+        enter(engine, state, engine._entity(state, 'yeti'))
         before = deepcopy(state)
-        with self.assertRaises(ValueError): engine.play(state, 0, 'sergeant', 'yeti')
+        with self.assertRaises(ValueError):
+            engine.play(state, 0, 'sergeant', 'yeti')
         self.assertEqual(state, before)
 
 
 class CompleteKeywordGameTests(unittest.TestCase):
     def test_public_actions_replay_across_json_checkpoints(self):
         from examples.play_keywords import run
+
         final, actions = run(0)
-        engine = MatchEngine(load(ROOT / 'cards/foundation-v7.json'))
-        pool = ['CS2_124', 'GIL_580', 'EX1_033', 'CS2_024', 'EX1_046',
-                'CS2_106', 'EX1_096', 'EX1_015', 'CS2_182', 'CS2_179'] * 3
-        state = engine.new_game([pool, list(reversed(pool))], 0,
-                                hero_powers=['CS2_034', 'CS1h_001'])
+        engine = MatchEngine(load())
+        pool = [
+            'CS2_124',
+            'GIL_580',
+            'EX1_033',
+            'CS2_024',
+            'EX1_046',
+            'CS2_106',
+            'EX1_096',
+            'EX1_015',
+            'CS2_182',
+            'CS2_179',
+        ] * 3
+        state = engine.new_game(
+            [pool, list(reversed(pool))], 0, hero_powers=['CS2_034', 'CS1h_001']
+        )
         for entry in actions:
-            state = engine.apply(json.loads(json.dumps(state)), entry['player'], entry['action'])
+            state = engine.apply(
+                json.loads(json.dumps(state)), entry['player'], entry['action']
+            )
         self.assertEqual(state, final)
-        self.assertEqual((final['result'], final['turn'], len(actions)), ('PLAYER_1_WINS', 17, 79))
+        self.assertEqual(
+            (final['result'], final['turn'], len(actions)), ('PLAYER_1_WINS', 17, 81)
+        )
         kinds = {e['type'] for e in final['events']}
-        self.assertTrue({'HERO_POWER', 'FREEZE', 'THAW', 'BUFF_EXPIRED', 'ATTACK', 'DURABILITY'} <= kinds)
+        self.assertTrue(
+            {'HERO_POWER', 'FREEZE', 'THAW', 'BUFF_EXPIRED', 'ATTACK', 'DURABILITY'}
+            <= kinds
+        )
 
 
 if __name__ == '__main__':
