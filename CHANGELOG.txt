@@ -1,0 +1,8 @@
+Hardening pass (2026-10-21, before stage 10)
+==========================================
+1. Existing baseline: 0f37497 (all original files, already on GitHub).
+   Consolidated current catalog/schema/manifest; removed obsolete snapshots and
+   version branches/tests. Examples now use current rules. Arranged board
+   fixtures explicitly supply entry stamps. outputs/ is regenerated and ignored.
+   The keyword example now takes 81 actions under current placement rules (79
+   under the removed historical engine); deterministic replay still matches.

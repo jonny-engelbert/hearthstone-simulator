@@ -1,3 +1,4 @@
+from fixtures import enter
 """Stage 2: ordered draw, overdraw, and fatigue conformance scenarios."""
 from copy import deepcopy
 import json
@@ -9,12 +10,9 @@ from hearthstone.prototype import Prototype
 
 
 class DrawCatalogTests(unittest.TestCase):
-    def test_old_catalog_and_manifest_remain_valid(self):
-        self.assertEqual(len(load(ROOT / 'cards/foundation-v1.json')['cards']), 7)
-        self.assertEqual(verify(json.loads((ROOT / 'cards/manifest.json').read_text())), [])
 
     def test_current_manifest_and_novice_definition(self):
-        self.assertEqual(verify(json.loads((ROOT / 'cards/manifest-v2.json').read_text())), [])
+        self.assertEqual(verify(json.loads((ROOT / 'cards/manifest.json').read_text())), [])
         novice = next(c for c in load()['cards'] if c['cardId'] == 'EX1_015')
         self.assertEqual(novice['baseStats'], {'manaCost': 2, 'attack': 1, 'health': 1})
         self.assertEqual(novice['abilities'], [{'kind': 'BATTLECRY', 'effects': [
@@ -34,11 +32,6 @@ class DrawCatalogTests(unittest.TestCase):
             del novice['abilities'][0]['effects'][0][key]
             self.assertTrue(validate(catalog))
 
-    def test_old_schema_rejects_new_operation(self):
-        catalog = load(ROOT / 'cards/foundation-v1.json')
-        catalog['cards'][2]['abilities'][0]['effects'] = [
-            {'op': 'DRAW_CARD', 'count': 1, 'targetPlayer': 'EFFECT_CONTROLLER'}]
-        self.assertTrue(validate(catalog))
 
     def test_unknown_or_malformed_catalog_version_fails_closed(self):
         for value in (None, [], {}, 1.2, '99'):
@@ -55,6 +48,7 @@ class DrawingTests(unittest.TestCase):
         self.state['entities'].append(entity)
         if zone == 'DECK':
             self.state['decks'][player].append(entity_id)
+        enter(self.engine, self.state, entity)
         return entity
 
     @staticmethod

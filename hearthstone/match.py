@@ -56,9 +56,8 @@ class MatchEngine(Prototype):
         resources.sync(state)
         # Ensure setup's generated Coin can resolve before starting any game.
         self.entity('coin-check', 'GAME_005', 1 - first, 'HAND')
-        # Old frozen catalogs remain usable without introducing new definitions.
         if hero_powers is None:
-            hero_powers = ['CS2_034', 'CS2_034'] if any(k[0] == 'CS2_034' for k in self.cards) else [None, None]
+            hero_powers = ['CS2_034', 'CS2_034']
         if not isinstance(hero_powers, list) or len(hero_powers) != 2:
             raise ValueError('provide two hero powers')
         state['heroPowers'] = [None, None]

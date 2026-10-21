@@ -1,3 +1,4 @@
+from fixtures import enter
 from copy import deepcopy
 import json
 import unittest
@@ -101,6 +102,7 @@ class BehaviorTests(unittest.TestCase):
     def add(self, card_id, entity_id, controller=0, zone='PLAY'):
         entity = self.engine.entity(entity_id, card_id, controller, zone)
         self.state['entities'].append(entity)
+        enter(self.engine, self.state, entity)
         return entity
 
     def get(self, state, entity_id):

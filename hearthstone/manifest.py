@@ -1,4 +1,4 @@
-"""Verify frozen catalog/schema bytes without contacting external services."""
+"""Verify current catalog/schema bytes without contacting external services."""
 import hashlib
 import json
 from pathlib import Path
@@ -25,11 +25,11 @@ def verify(manifest):
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description='Verify a frozen catalog manifest')
-    parser.add_argument('path', nargs='?', default=str(ROOT / 'cards/manifest-v9.json'))
+    parser = argparse.ArgumentParser(description='Verify a current catalog manifest')
+    parser.add_argument('path', nargs='?', default=str(ROOT / 'cards/manifest.json'))
     args = parser.parse_args()
     manifest = json.loads(Path(args.path).read_text())
     errors = verify(manifest)
     if errors:
         raise SystemExit('\n'.join(errors))
-    print(f"Verified {len(manifest['files'])} frozen files for {manifest['catalogId']}")
+    print(f"Verified {len(manifest['files'])} current files for {manifest['catalogId']}")

@@ -10,9 +10,8 @@ from .errors import ResolutionLimitError
 
 class ReactionScheduler:
     def _begin_reactions(self, state):
-        if self.reaction_rules:
-            state.setdefault('scheduler',dict(nextEventId=1))
-            state['_reactionCount']=0
+        state.setdefault('scheduler',dict(nextEventId=1))
+        state['_reactionCount']=0
 
     @staticmethod
     def _finish_reactions(state):
@@ -67,7 +66,6 @@ class ReactionScheduler:
         return True
 
     def _emit_reaction(self,state,kind,subject,actor=None,amount=0,frame=None,eligible=None):
-        if not self.reaction_rules: return
         self._prepare_play_order(state)
         scheduler=state.setdefault('scheduler',dict(nextEventId=1))
         event=dict(type=kind,subject=self._subject(subject),actor=self._subject(actor),amount=amount,id=scheduler['nextEventId'])
@@ -89,14 +87,13 @@ class ReactionScheduler:
             state.setdefault('_reactionPending',[]).extend(queue)
 
     def _queue_weapon_death(self,state,weapon):
-        if not self.reaction_rules: return
         for ability in self.definition(weapon)['abilities']:
             if ability['kind']=='DEATHRATTLE':
                 state.setdefault('_reactionPending',[]).append(dict(source=weapon['id'],controller=weapon['controller'],
                     stamp=weapon.get('playOrder'),ability=deepcopy(ability),event=dict(type='WEAPON_DEATH',amount=0),frame=None,lastKnown=True))
 
     def _drain_reactions(self,state):
-        if not self.reaction_rules or state.get('_reactionDraining'): return
+        if state.get('_reactionDraining'): return
         state.setdefault('scheduler',dict(nextEventId=1))
         state['_reactionDraining']=True
         stack=[]

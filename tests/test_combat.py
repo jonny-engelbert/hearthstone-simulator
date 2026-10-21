@@ -1,3 +1,4 @@
+from fixtures import enter
 """Stage 3: plain weapons and normal hero/minion combat."""
 from copy import deepcopy
 import json
@@ -9,12 +10,6 @@ from hearthstone.prototype import Prototype
 
 
 class WeaponCatalogTests(unittest.TestCase):
-    def test_catalogs_and_manifests_remain_valid(self):
-        for catalog, manifest, count in [('foundation-v1.json', 'manifest.json', 7),
-                                         ('foundation-v2.json', 'manifest-v2.json', 8),
-                                         ('foundation-v3.json', 'manifest-v3.json', 9)]:
-            self.assertEqual(len(load(ROOT / 'cards' / catalog)['cards']), count)
-            self.assertEqual(verify(json.loads((ROOT / 'cards' / manifest).read_text())), [])
 
     def test_historical_axe_definition(self):
         axe = next(c for c in load()['cards'] if c['cardId'] == 'CS2_106')
@@ -47,12 +42,6 @@ class WeaponCatalogTests(unittest.TestCase):
         next(c for c in catalog['cards'] if c['cardId'] == 'CS2_106')['mechanics'] = ['BATTLECRY']
         self.assertTrue(validate(catalog))
 
-    def test_previous_schema_rejects_weapon_type(self):
-        catalog = load(ROOT / 'cards/foundation-v2.json')
-        axe = deepcopy(next(c for c in load()['cards'] if c['cardId'] == 'CS2_106'))
-        axe['schemaVersion'] = '1.2'
-        catalog['cards'].append(axe)
-        self.assertTrue(validate(catalog))
 
 
 class CombatTests(unittest.TestCase):
@@ -64,6 +53,7 @@ class CombatTests(unittest.TestCase):
         entity = self.engine.entity(entity_id, card_id, player, zone)
         entity['ready'] = ready
         self.state['entities'].append(entity)
+        enter(self.engine, self.state, entity)
         return entity
 
     @staticmethod

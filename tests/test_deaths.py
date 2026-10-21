@@ -1,3 +1,4 @@
+from fixtures import enter
 """Stage 4: death snapshots, ordered waves and synthetic nested Deathrattles."""
 from copy import deepcopy
 import json
@@ -38,18 +39,7 @@ class DeathCatalogTests(unittest.TestCase):
         self.assertEqual(loot['abilities'], [{'kind': 'DEATHRATTLE', 'effects': [
             {'op': 'DRAW_CARD', 'count': 1, 'targetPlayer': 'CONTROLLER_AT_DEATH'}]}])
 
-    def test_all_catalogs_and_frozen_manifests(self):
-        for v, count in ((1, 7), (2, 8), (3, 9), (4, 10)):
-            self.assertEqual(len(load(ROOT / f'cards/foundation-v{v}.json')['cards']), count)
-            name = 'manifest.json' if v == 1 else f'manifest-v{v}.json'
-            self.assertEqual(verify(json.loads((ROOT / 'cards' / name).read_text())), [])
 
-    def test_previous_schema_rejects_deathrattles(self):
-        catalog = load(ROOT / 'cards/foundation-v3.json')
-        loot = deepcopy(card(load(), 'EX1_096'))
-        loot['schemaVersion'] = '1.3'
-        catalog['cards'].append(loot)
-        self.assertTrue(validate(catalog))
 
     def test_deathrattle_label_and_kind_must_agree(self):
         for field in ('mechanics', 'abilities'):
@@ -112,6 +102,7 @@ class DeathProcessingTests(unittest.TestCase):
         if order is not None: entity['playOrder'] = order
         self.state['entities'].append(entity)
         if zone == 'DECK': self.state['decks'][player].append(entity_id)
+        enter(self.engine, self.state, entity)
         return entity
 
     @staticmethod

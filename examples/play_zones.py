@@ -7,7 +7,7 @@ from hearthstone.catalog import ROOT,load
 
 
 def run(seed=1):
-    engine = MatchEngine(load(ROOT / 'cards/foundation-v8.json'))
+    engine = MatchEngine(load())
     pool = ['EX1_506', 'FP1_002', 'EX1_014', 'CS2_027', 'EX1_049',
             'BRM_007', 'GVG_031', 'EX1_581', 'EX1_015', 'CS2_124'] * 3
     state = engine.new_game([pool, list(reversed(pool))], seed,

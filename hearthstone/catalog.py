@@ -5,11 +5,7 @@ from pathlib import Path
 from jsonschema import Draft202012Validator, FormatChecker
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMAS = {'1.1': 'catalog.schema.json', '1.2': 'catalog-v1.2.schema.json',
-           '1.3': 'catalog-v1.3.schema.json', '1.4': 'catalog-v1.4.schema.json',
-           '1.5': 'catalog-v1.5.schema.json', '1.6': 'catalog-v1.6.schema.json',
-           '1.7': 'catalog-v1.7.schema.json', '1.8': 'catalog-v1.8.schema.json',
-           '1.9': 'catalog-v1.9.schema.json'}
+SCHEMAS = {'1.9': 'catalog.schema.json'}
 
 
 def validate(catalog):
@@ -161,7 +157,7 @@ def validate(catalog):
 
 
 def load(path=None):
-    catalog = json.loads(Path(path or ROOT / 'cards/foundation-v9.json').read_text())
+    catalog = json.loads(Path(path or ROOT / 'cards/foundation.json').read_text())
     errors = validate(catalog)
     if errors:
         raise ValueError('\n'.join(errors))

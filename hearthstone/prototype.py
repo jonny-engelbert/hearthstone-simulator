@@ -23,9 +23,6 @@ class Prototype(ZoneOperations, ReactionScheduler):
         if type(max_reactions) is not int or max_reactions < 1:
             raise ValueError('max_reactions must be a positive integer')
         self.max_reactions = max_reactions
-        self.reaction_rules = 'reactionPolicy' in catalog
-        self.death_policy = catalog.get('deathResolutionPolicy', 'DEATH_WAVES_FIFO')
-        self.zone_rules = tuple(map(int, catalog['schemaVersion'].split('.'))) >= (1, 8)
         self.cards = {(c['cardId'], c['revision']): deepcopy(c) for c in catalog['cards']}
 
     def definition(self, entity):
@@ -176,7 +173,7 @@ class Prototype(ZoneOperations, ReactionScheduler):
         board = [e for e in next_state['entities'] if e['zone'] == 'PLAY' and e['kind'] == 'MINION' and e['controller'] == player]
         if card['type'] == 'MINION' and len(board) >= 7:
             raise ValueError('board is full')
-        if position is not None and (not self.zone_rules or card['type'] != 'MINION'
+        if position is not None and (card['type'] != 'MINION'
                                     or type(position) is not int or not 0 <= position <= len(board)):
             raise ValueError('invalid minion position')
         kind = 'BATTLECRY' if card['type'] == 'MINION' else 'SPELL_EFFECT'
@@ -196,24 +193,22 @@ class Prototype(ZoneOperations, ReactionScheduler):
             # A bounced entity is a fresh arrival with no previous attack rights.
             source['ready'] = False
             source['attacksThisTurn'] = 0
-            if self.zone_rules:
-                self._place_minion(next_state, source, position)
+            self._place_minion(next_state, source, position)
             self._stamp_enter(next_state, source)
         next_state['events'].append(dict(type='PLAY', source=source_id))
-        if card['type'] == 'MINION' and self.zone_rules:
+        if card['type'] == 'MINION':
             next_state['events'].append(dict(type='SUMMON', entity=source_id, source=source_id,
                                             player=player, position=self.board(next_state, player).index(source),
                                             reason='PLAY'))
         if 'cardsPlayedThisTurn' in next_state:
             next_state['cardsPlayedThisTurn'][player] += 1
         frame = dict(countered=False)
-        if self.reaction_rules:
-            if card['type']=='SPELL':
-                self._emit_reaction(next_state,'BEFORE_SPELL',source,frame=frame)
-                self._drain_reactions(next_state)
-            self._emit_reaction(next_state,'ON_CARD_PLAY',source,eligible=eligible)
+        if card['type']=='SPELL':
+            self._emit_reaction(next_state,'BEFORE_SPELL',source,frame=frame)
             self._drain_reactions(next_state)
-            self._deaths(next_state)
+        self._emit_reaction(next_state,'ON_CARD_PLAY',source,eligible=eligible)
+        self._drain_reactions(next_state)
+        self._deaths(next_state)
         if 'overload' in card and not frame['countered']:
             resources.overload(next_state, player, card['overload'])
         if card['type'] == 'WEAPON':
@@ -226,15 +221,14 @@ class Prototype(ZoneOperations, ReactionScheduler):
         if ability and not frame['countered'] and (card['type']!='MINION' or source['zone']=='PLAY'):
             self._execute_effects(next_state, ability['effects'], player, source_id, target)
         self._deaths(next_state)
-        if self.reaction_rules:
-            self._emit_reaction(next_state,'AFTER_CARD_PLAY',source,eligible=eligible)
-            self._drain_reactions(next_state)
-            if card['type']=='SPELL' and not frame['countered']:
-                self._emit_reaction(next_state,'AFTER_SPELL',source,eligible=eligible)
-            if card['type']=='MINION' and source['zone']=='PLAY':
-                self._emit_reaction(next_state,'AFTER_SUMMON',source,eligible=eligible)
-            self._drain_reactions(next_state)
-            self._deaths(next_state)
+        self._emit_reaction(next_state,'AFTER_CARD_PLAY',source,eligible=eligible)
+        self._drain_reactions(next_state)
+        if card['type']=='SPELL' and not frame['countered']:
+            self._emit_reaction(next_state,'AFTER_SPELL',source,eligible=eligible)
+        if card['type']=='MINION' and source['zone']=='PLAY':
+            self._emit_reaction(next_state,'AFTER_SUMMON',source,eligible=eligible)
+        self._drain_reactions(next_state)
+        self._deaths(next_state)
         if card['type'] == 'SPELL' and source['zone']!='SECRET':
             source['zone'] = 'GRAVEYARD'
         self._result(next_state)
@@ -374,8 +368,7 @@ class Prototype(ZoneOperations, ReactionScheduler):
     def _destroy_weapon(self, state, weapon, reason):
         self._queue_weapon_death(state,weapon)
         weapon['zone'] = 'GRAVEYARD'
-        if self.zone_rules:
-            self._clear_departed(weapon)
+        self._clear_departed(weapon)
         state['events'].append(dict(type='WEAPON_DESTROYED', weapon=weapon['id'], reason=reason))
 
     def _equip(self, state, weapon):
@@ -429,32 +422,7 @@ class Prototype(ZoneOperations, ReactionScheduler):
             raise ValueError('illegal attack')
         # Validate the referenced defender independently before consuming anything.
         self._entity(state, defender_id)
-        if self.reaction_rules:
-            return self._reactive_attack(state,player,attacker_id,defender_id)
-        next_state = deepcopy(state)
-        self._refresh_stats(next_state)
-        attacker = self._entity(next_state, attacker_id)
-        defender = self._entity(next_state, defender_id)
-        attack_damage = self.current_attack(next_state, attacker)
-        return_damage = self.current_attack(next_state, defender) if defender['kind'] == 'MINION' else 0
-        weapon = self.equipped_weapon(next_state, player) if attacker['kind'] == 'HERO' else None
-        attacker['attacksThisTurn'] = attacker.get('attacksThisTurn', 0) + 1
-        if 'STEALTH' in attacker['keywords']:
-            attacker['keywords'].remove('STEALTH')
-        next_state['events'].append(dict(type='ATTACK', attacker=attacker_id, defender=defender_id))
-        # Both Attack values are captured before either hit. No death processing
-        # or result check can interrupt the paired damage applications.
-        self._damage(next_state, defender, attack_damage, attacker_id, 'COMBAT')
-        if return_damage > 0:
-            self._damage(next_state, attacker, return_damage, defender_id, 'COMBAT')
-        if weapon:
-            weapon['durability'] -= 1
-            next_state['events'].append(dict(type='DURABILITY', weapon=weapon['id'], remaining=weapon['durability']))
-            if weapon['durability'] == 0:
-                self._destroy_weapon(next_state, weapon, 'EXHAUSTED')
-        self._deaths(next_state)
-        self._result(next_state)
-        return self._finish_reactions(next_state)
+        return self._reactive_attack(state,player,attacker_id,defender_id)
 
     def _damage(self, state, entity, amount, source_id, damage_class=None):
         actual = amount
@@ -536,12 +504,7 @@ class Prototype(ZoneOperations, ReactionScheduler):
 
     @staticmethod
     def _prepare_play_order(state):
-        """Normalize legacy fixtures, then reserve globally monotonic stamps.
-
-        Direct PLAY fixtures without stamps use entity-list order once. Tests
-        requiring another chronology must set explicit unique playOrder values.
-        Normal play/equip/transform always assigns a fresh stamp.
-        """
+        """Validate explicit entry stamps and reserve the next sequence number."""
         ids = [e['id'] for e in state['entities']]
         if len(set(ids)) != len(ids):
             raise ValueError('duplicate instance IDs')
@@ -552,9 +515,9 @@ class Prototype(ZoneOperations, ReactionScheduler):
             raise ValueError('invalid or duplicate playOrder')
         state['nextPlayOrder'] = max(state.get('nextPlayOrder', 1), max(stamps, default=0) + 1)
         for entity in state['entities']:
-            if (entity['zone'] == 'PLAY' and entity['kind'] in ('MINION', 'WEAPON') or entity['zone']=='SECRET') and 'playOrder' not in entity:
-                Prototype._stamp_enter(state, entity)
-        state.setdefault('deathHistory', [])
+            if (entity['zone'] == 'PLAY' and entity['kind'] in ('MINION', 'WEAPON')
+                    or entity['zone'] == 'SECRET') and 'playOrder' not in entity:
+                raise ValueError('in-play entity requires an explicit playOrder')
 
     @staticmethod
     def _stamp_enter(state, entity):
@@ -601,8 +564,7 @@ class Prototype(ZoneOperations, ReactionScheduler):
                 snapshots.append(snapshot)
             for entity in dead:
                 entity['zone'] = 'GRAVEYARD'
-                if self.zone_rules:
-                    self._clear_departed(entity)
+                self._clear_departed(entity)
             state['deathHistory'].extend(deepcopy(snapshots))
             state['events'].append(dict(type='DEATH_BATCH', targets=[e['id'] for e in dead]))
             self._refresh_stats(state)
@@ -611,24 +573,17 @@ class Prototype(ZoneOperations, ReactionScheduler):
             for snapshot in snapshots:
                 source = snapshot['entity']
                 controller = snapshot['controllerAtDeath']
-                if self.reaction_rules:
-                    self._emit_reaction(state,'MINION_DIED',source)
+                self._emit_reaction(state,'MINION_DIED',source)
                 for ability in snapshot['abilities']:
                     resolved += 1
                     if resolved > self.max_deathrattles:
                         raise ResolutionLimitError('Deathrattle resolution budget exceeded')
                     context = dict(slots=wave_boards[controller], cursor=source['id'])
-                    if self.reaction_rules:
-                        state.setdefault('_reactionPending',[]).append(dict(source=source['id'],controller=controller,
-                            stamp=source['playOrder'],ability=deepcopy(ability),event=dict(type='MINION_DIED',amount=0),
-                            frame=None,lastKnown=True,death_context=context))
-                    else:
-                        state['events'].append(dict(type='DEATHRATTLE', source=source['id'],
-                                                   controller=controller, playOrder=source['playOrder']))
-                        self._execute_effects(state, ability['effects'], controller, source['id'],death_context=context)
-                if self.reaction_rules:
-                    state.setdefault('_reactionPending',[]).sort(key=lambda j:j.get('stamp',0))
-                    self._drain_reactions(state)
+                    state.setdefault('_reactionPending',[]).append(dict(source=source['id'],controller=controller,
+                        stamp=source['playOrder'],ability=deepcopy(ability),event=dict(type='MINION_DIED',amount=0),
+                        frame=None,lastKnown=True,death_context=context))
+                state.setdefault('_reactionPending',[]).sort(key=lambda j:j.get('stamp',0))
+                self._drain_reactions(state)
 
     def _result(self, state):
         dead = [e['controller'] for e in state['entities'] if e['kind'] == 'HERO' and e['damage'] >= e['maxHealth']]
