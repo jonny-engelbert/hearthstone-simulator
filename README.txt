@@ -54,3 +54,16 @@ and docs/test-plan.txt for the precise API/privacy and testing contracts.
 Current: 52 definitions; schema 1.10; catalog foundation-v9.1.
 Remaining: random effects/choices, deck legality/API contracts, pinned-profile
 conformance (three planned stages, range two to four).
+
+Publishing and CI
+-----------------
+Commit completed changes on a feature branch, then publish after local checks:
+  python3 -m pip install -r requirements-dev.txt
+  python3 tools/publish.py
+
+The publisher requires a clean committed feature branch and stops if any catalog,
+manifest, format, test or push check fails. Open/update its pull request afterward.
+GitHub CI runs on pushes and pull requests: formatting/catalog checks and the full
+suite on Python 3.10 and 3.13. Main requires passing CI and a pull request; merging
+is an explicit decision. Use the workflow's manual input random_games=100 for a
+larger invariant run. CI does not upload uncommitted files from your computer.

@@ -72,3 +72,11 @@ Estimate: three remaining planned stages (range two to four): random effects/
 choices; deck legality and stable integration contracts; pinned-client profile
 conformance. Legal actions, views, invariant games and initial performance work
 have been pulled forward. See docs/roadmap.txt.
+
+CI and publishing (2026-10-21)
+-----------------------------
+Added GitHub CI for catalog/manifest integrity, formatting and Python 3.10/3.13
+unit/property tests, with an aggregate CI gate and configurable manual game count.
+Added tools/publish.py: require a clean feature branch, run local checks, then push.
+AGENTS.md makes checked branch publication and PR/CI verification the default for
+future completed project work; merging still requires an explicit user request.
