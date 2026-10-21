@@ -1,6 +1,6 @@
-Card inventory — foundation-v10 / schema 1.11
+Card inventory — foundation-v12 / schema 1.12
 60 definitions: 49 collectible cards, 8 generated/token cards, 3 hero powers.
-Historical conformance fixtures; not one verified live patch.
+Card data: Wild 11.0.0.24118 subset; client-log rules parity remains unverified.
 
 Stage 1
 --------------
@@ -18,7 +18,7 @@ EX1_015        Novice Engineer | MINION | 2 mana; 1/1 | collectible
 
 Stage 3
 --------------
-CS2_106        Fiery War Axe | WEAPON | 2 mana; 3 Attack / 2 durability | collectible
+CS2_106        Fiery War Axe | WEAPON | 3 mana; 3 Attack / 2 durability | collectible
 
 Stage 4
 --------------
@@ -41,10 +41,10 @@ Stage 7
 CS2_034        Fireblast | HERO_POWER | 2 mana | hero power
 CS1h_001       Lesser Heal | HERO_POWER | 2 mana | hero power
 CS2_124        Wolfrider | MINION | 3 mana; 3/1 | collectible
-GIL_580        Rabid Worgen | MINION | 3 mana; 3/3 | collectible
+GIL_113        Rabid Worgen | MINION | 3 mana; 3/3 | collectible
 EX1_033        Windfury Harpy | MINION | 6 mana; 4/5 | collectible
 CS2_024        Frostbolt | SPELL | 2 mana | collectible
-EX1_046        Abusive Sergeant | MINION | 1 mana; 2/1 | collectible
+CS2_188        Abusive Sergeant | MINION | 1 mana; 1/1 | collectible
 
 Stage 8
 --------------
@@ -90,8 +90,8 @@ Stage 10
 EX1_277        Arcane Missiles | SPELL | 1 mana | collectible
 EX1_082        Mad Bomber | MINION | 2 mana; 3/2 | collectible
 EX1_617        Deadly Shot | SPELL | 3 mana | collectible
-KAR_009        Babbling Book | MINION | 1 mana; 1/2 | collectible
-UNG_072        Stonehill Defender | MINION | 3 mana; 1/5; Taunt | collectible
+KAR_009        Babbling Book | MINION | 1 mana; 1/1 | collectible
+UNG_072        Stonehill Defender | MINION | 3 mana; 1/4; Taunt | collectible
 CS2_125        Ironfur Grizzly | MINION | 3 mana; 3/3; Taunt; Beast | collectible
 CS1_042        Goldshire Footman | MINION | 1 mana; 1/2; Taunt | collectible
 EX1_154        Wrath | SPELL | 2 mana | collectible

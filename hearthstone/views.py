@@ -125,7 +125,11 @@ def player_view(engine, state, player):
     public_sources = {
         entity['id']
         for entity in state['entities']
-        if entity['zone'] in ('PLAY', 'GRAVEYARD')
+        if (
+            entity['zone'] in ('PLAY', 'GRAVEYARD')
+            or entity['zone'] == 'RESOLVING'
+            and 'SECRET' not in engine.definition(entity)['mechanics']
+        )
         and ('privateTo' not in entity or entity['privateTo'] == player)
     }
     for event in state['events']:
@@ -159,7 +163,11 @@ def player_view(engine, state, player):
     visible = [
         entity
         for entity in state['entities']
-        if entity['zone'] in ('PLAY', 'GRAVEYARD')
+        if (
+            entity['zone'] in ('PLAY', 'GRAVEYARD')
+            or entity['zone'] == 'RESOLVING'
+            and 'SECRET' not in engine.definition(entity)['mechanics']
+        )
         and ('privateTo' not in entity or entity['privateTo'] == player)
         or entity['zone'] in ('HAND', 'SECRET')
         and entity['controller'] == player

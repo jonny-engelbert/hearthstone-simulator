@@ -1,0 +1,74 @@
+Card audit: Wild build 11.0.0.24118 supported subset
+==================================================
+Source: https://raw.githubusercontent.com/HearthSim/hsdata/af94b04fdff91a1900f4adfc873d89c76aa298cd/CardDefs.xml
+Commit: af94b04fdff91a1900f4adfc873d89c76aa298cd; XML SHA256: 4b17d9fae40dbd2fe332a3ee032ab54e095758702d154595d61ee832d57fae9d
+Old = merged stage 11 catalog; profile = normalized pinned CardDefs facts.
+Stats shown as cost/Attack/Health or cost/Attack/durability; - means absent.
+Every row audits cost, stats, rarity, combat keywords and normalized enUS text.
+All 49 collectibles existed in this build. Wild retains rotated cards. Tokens
+and powers are included below too; no later-era cards are retained.
+Identity corrections: GIL_580 was Town Crier, not Rabid Worgen (GIL_113);
+EX1_046 was Dark Iron Dwarf, not Abusive Sergeant (CS2_188).
+
+| Card | Old stats; rarity; keywords; text | Profile values | Changed |
+|---|---|---|---|
+| CS2_182 Chillwind Yeti | 4/4/5; FREE; ; (empty) | 4/4/5; FREE; ; (empty) | no |
+| CS2_179 Sen'jin Shieldmasta | 4/3/5; FREE; TAUNT; Taunt | 4/3/5; FREE; TAUNT; Taunt | no |
+| CS2_042 Fire Elemental | 6/6/5; FREE; ; Battlecry: Deal 3 damage. | 6/6/5; FREE; ; Battlecry: Deal 3 damage. | no |
+| CS2_022 Polymorph | 4; FREE; ; Transform a minion into a 1/1 Sheep. | 4; FREE; ; Transform a minion into a 1/1 Sheep. | no |
+| CS2_tk1 Sheep | 1/1/1; FREE; ; (empty) | 1/1/1; COMMON; ; (empty) | yes |
+| CS2_032 Flamestrike | 7; FREE; ; Deal 4 damage to all enemy minions. | 7; FREE; ; Deal 4 damage to all enemy minions. | no |
+| CS2_029 Fireball | 4; FREE; ; Deal 6 damage. | 4; FREE; ; Deal 6 damage. | no |
+| EX1_015 Novice Engineer | 2/1/1; FREE; ; Battlecry: Draw a card. | 2/1/1; FREE; ; Battlecry: Draw a card. | no |
+| CS2_106 Fiery War Axe | 2/3/2; FREE; ; (empty) | 3/3/2; FREE; ; (empty) | yes |
+| EX1_096 Loot Hoarder | 2/2/1; COMMON; ; Deathrattle: Draw a card. | 2/2/1; COMMON; ; Deathrattle: Draw a card. | no |
+| EX1_011 Voodoo Doctor | 1/2/1; FREE; ; Battlecry: Restore 2 Health. | 1/2/1; FREE; ; Battlecry: Restore 2 Health. | no |
+| CS2_092 Blessing of Kings | 4; FREE; ; Give a minion +4/+4. | 4; FREE; ; Give a minion +4/+4. (+4 Attack/+4 Health) | yes |
+| CS2_222 Stormwind Champion | 7/6/6; FREE; ; Your other minions have +1/+1. | 7/6/6; FREE; ; Your other minions have +1/+1. | no |
+| EX1_048 Spellbreaker | 4/4/3; COMMON; ; Battlecry: Silence a minion. | 4/4/3; COMMON; ; Battlecry: Silence a minion. | no |
+| GAME_005 The Coin | 0; FREE; ; Gain 1 Mana Crystal this turn only. | 0; FREE; ; Gain 1 Mana Crystal this turn only. | no |
+| EX1_238 Lightning Bolt | 1; COMMON; ; Deal 3 damage. Overload: (1) | 1; COMMON; ; Deal 3 damage. Overload: (1) | no |
+| CS2_034 Fireblast | 2; FREE; ; Deal 1 damage. | 2; FREE; ; Hero Power Deal 1 damage. | yes |
+| CS1h_001 Lesser Heal | 2; FREE; ; Restore 2 Health. | 2; FREE; ; Hero Power Restore 2 Health. | yes |
+| CS2_124 Wolfrider | 3/3/1; FREE; CHARGE; Charge | 3/3/1; FREE; CHARGE; Charge | no |
+| GIL_113 Rabid Worgen | 3/3/3; COMMON; RUSH; Rush | 3/3/3; COMMON; RUSH; Rush | no |
+| EX1_033 Windfury Harpy | 6/4/5; COMMON; WINDFURY; Windfury | 6/4/5; COMMON; WINDFURY; Windfury | no |
+| CS2_024 Frostbolt | 2; FREE; ; Deal 3 damage to a character and Freeze it. | 2; FREE; ; Deal 3 damage to a character and Freeze it. | no |
+| CS2_188 Abusive Sergeant | 1/2/1; COMMON; ; Battlecry: Give a minion +2 Attack this turn. | 1/1/1; COMMON; ; Battlecry: Give a minion +2 Attack this turn. | yes |
+| EX1_506 Murloc Tidehunter | 2/2/1; FREE; ; Battlecry: Summon a 1/1 Murloc Scout. | 2/2/1; FREE; ; Battlecry: Summon a 1/1 Murloc Scout. | no |
+| EX1_506a Murloc Scout | 1/1/1; FREE; ; (empty) | 1/1/1; COMMON; ; (empty) | yes |
+| CS2_027 Mirror Image | 1; FREE; ; Summon two 0/2 minions with Taunt. | 1; FREE; ; Summon two 0/2 minions with Taunt. | no |
+| CS2_mirror Mirror Image | 0/0/2; FREE; TAUNT; Taunt | 0/0/2; COMMON; TAUNT; Taunt | yes |
+| FP1_002 Haunted Creeper | 2/1/2; COMMON; ; Deathrattle: Summon two 1/1 Spectral Spiders. | 2/1/2; COMMON; ; Deathrattle: Summon two 1/1 Spectral Spiders. | no |
+| FP1_002t Spectral Spider | 1/1/1; COMMON; ; (empty) | 1/1/1; FREE; ; (empty) | yes |
+| EX1_049 Youthful Brewmaster | 2/3/2; COMMON; ; Battlecry: Return a friendly minion from the battlefield to your hand. | 2/3/2; COMMON; ; Battlecry: Return a friendly minion from the battlefield to your hand. | no |
+| EX1_581 Sap | 2; FREE; ; Return an enemy minion to your opponent's hand. | 2; FREE; ; Return an enemy minion to your opponent's hand. | no |
+| EX1_014 King Mukla | 3/5/5; LEGENDARY; ; Battlecry: Give your opponent 2 Bananas. | 3/5/5; LEGENDARY; ; Battlecry: Give your opponent 2 Bananas. | no |
+| EX1_014t Bananas | 1; COMMON; ; Give a minion +1/+1. | 1; FREE; ; Give a minion +1/+1. | yes |
+| BRM_007 Gang Up | 2; COMMON; ; Choose a minion. Shuffle 3 copies of it into your deck. | 2; COMMON; ; Choose a minion. Shuffle 3 copies of it into your deck. | no |
+| GVG_031 Recycle | 6; RARE; ; Shuffle an enemy minion into your opponent's deck. | 6; RARE; ; Shuffle an enemy minion into your opponent's deck. | no |
+| CS2_101 Reinforce | 2; FREE; ; Summon a 1/1 Silver Hand Recruit. | 2; FREE; ; Hero Power Summon a 1/1 Silver Hand Recruit. | yes |
+| CS2_101t Silver Hand Recruit | 1/1/1; FREE; ; (empty) | 1/1/1; FREE; ; (empty) | no |
+| EX1_007 Acolyte of Pain | 3/1/3; COMMON; ; Whenever this minion takes damage, draw a card. | 3/1/3; COMMON; ; Whenever this minion takes damage, draw a card. | no |
+| CS2_235 Northshire Cleric | 1/1/3; FREE; ; Whenever a minion is healed, draw a card. | 1/1/3; FREE; ; Whenever a minion is healed, draw a card. | no |
+| EX1_595 Cult Master | 4/4/2; COMMON; ; Whenever one of your other minions dies, draw a card. | 4/4/2; COMMON; ; After a friendly minion dies, draw a card. | yes |
+| NEW1_020 Wild Pyromancer | 2/3/2; RARE; ; After you cast a spell, deal 1 damage to ALL minions. | 2/3/2; RARE; ; After you cast a spell, deal 1 damage to ALL minions. | no |
+| EX1_044 Questing Adventurer | 3/2/2; RARE; ; Whenever you play a card, gain +1/+1. | 3/2/2; RARE; ; Whenever you play a card, gain +1/+1. | no |
+| OG_113 Darkshire Councilman | 3/1/5; COMMON; ; After you summon a minion, gain +1 Attack. | 3/1/5; COMMON; ; After you summon a minion, gain +1 Attack. | no |
+| EX1_287 Counterspell | 3; RARE; ; Secret: When your opponent casts a spell, Counter it. | 3; RARE; ; Secret: When your opponent casts a spell, Counter it. | no |
+| EX1_594 Vaporize | 3; RARE; ; Secret: When a minion attacks your hero, destroy it. | 3; RARE; ; Secret: When a minion attacks your hero, destroy it. | no |
+| EX1_610 Explosive Trap | 2; COMMON; ; Secret: When your hero is attacked, deal 2 damage to all enemies. | 2; COMMON; ; Secret: When your hero is attacked, deal 2 damage to all enemies. | no |
+| EX1_130 Noble Sacrifice | 1; COMMON; ; Secret: When an enemy attacks, summon a 2/1 Defender as the new target. | 1; COMMON; ; Secret: When an enemy attacks, summon a 2/1 Defender as the new target. | no |
+| EX1_130a Defender | 1/2/1; COMMON; ; (empty) | 1/2/1; COMMON; ; (empty) | no |
+| CS2_097 Truesilver Champion | 4/4/2; FREE; ; Whenever your hero attacks, restore 2 Health to it. | 4/4/2; FREE; ; Whenever your hero attacks, restore 2 Health to it. | no |
+| FP1_021 Death's Bite | 4/4/2; COMMON; ; Deathrattle: Deal 1 damage to all minions. | 4/4/2; COMMON; ; Deathrattle: Deal 1 damage to all minions. | no |
+| EX1_132 Eye for an Eye | 1; COMMON; ; Secret: When your hero takes damage, deal that much damage to the enemy hero. | 1; COMMON; ; Secret: When your hero takes damage, deal that much damage to the enemy hero. | no |
+| CS2_142 Kobold Geomancer | 2/2/2; FREE; SPELL_DAMAGE; Spell Damage +1 | 2/2/2; FREE; SPELL_DAMAGE; Spell Damage +1 | no |
+| EX1_277 Arcane Missiles | 1; FREE; ; Deal 3 damage randomly split among all enemies. | 1; FREE; ; Deal 3 damage randomly split among all enemies. | no |
+| EX1_082 Mad Bomber | 2/3/2; COMMON; ; Battlecry: Deal 3 damage randomly split between all other characters. | 2/3/2; COMMON; ; Battlecry: Deal 3 damage randomly split between all other characters. | no |
+| EX1_617 Deadly Shot | 3; COMMON; ; Destroy a random enemy minion. | 3; COMMON; ; Destroy a random enemy minion. | no |
+| KAR_009 Babbling Book | 1/1/2; RARE; ; Battlecry: Add a random Mage spell to your hand. | 1/1/1; RARE; ; Battlecry: Add a random Mage spell to your hand. | yes |
+| UNG_072 Stonehill Defender | 3/1/5; RARE; TAUNT; Taunt Battlecry: Discover a Taunt minion. | 3/1/4; RARE; TAUNT; Taunt Battlecry: Discover a Taunt minion. | yes |
+| CS2_125 Ironfur Grizzly | 3/3/3; FREE; TAUNT; Taunt | 3/3/3; FREE; TAUNT; Taunt | no |
+| CS1_042 Goldshire Footman | 1/1/2; FREE; TAUNT; Taunt | 1/1/2; FREE; TAUNT; Taunt | no |
+| EX1_154 Wrath | 2; COMMON; ; Choose One - Deal 3 damage to a minion; or 1 damage and draw a card. | 2; COMMON; ; Choose One - Deal 3 damage to a minion; or 1 damage and draw a card. | no |

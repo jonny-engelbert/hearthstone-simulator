@@ -1,0 +1,62 @@
+Test runtime review (2026-10-21)
+================================
+Command: PYTHONPATH=.devtools python3 tools/time_tests.py
+Machine: local macOS, Python 3.11; same environment/dependencies for both runs.
+Before: 452 tests, 72.37s, passing (merged PR #3).
+After: 462 tests, 12.29s, passing.
+Before random budget: 6 invariant games + 4 integration games with every-state
+full-history schema/checkpoint checks. After: default budget 1, phase/choice
+checks plus periodic ordinary checkpoints. HS_RANDOM_GAMES scales both suites.
+No test methods or distinct-rule checks were removed; ten focused regressions
+were added. Card/profile corrections require changed assertions and seeded traces.
+
+Causes and changes:
+- The slowest test repeatedly schemas/checkpoints the full event history and
+  projects both views at every action. Keep every-choice/new-phase checks,
+  sample ordinary checkpoints, and put extra games behind HS_RANDOM_GAMES.
+- The invariant test executes every legal action at each visited state and
+  replays full games. Retain this property; default 1, manual CI input 100.
+- Catalogs were structurally/semantically validated several times per fixture.
+  Cache successful validation by exact JSON content (16-entry bound), plus
+  schema construction. Re-key mutable catalogs; do not cache invalid inputs.
+- Full event projections remain O(history); avoid an unsafe view cache.
+
+15 slowest tests BEFORE (seconds):
+  16.800  test_contracts.SessionTests.test_json_replay_during_complete_seeded_game
+   7.800  test_actions.SeededLegalGameTests.test_random_games_and_every_listed_action
+   1.078  test_contracts.SessionTests.test_complete_view_only_client_and_exact_replay
+   0.757  test_match.MatchCatalogTests.test_resource_schema_rejects_invalid_fields
+   0.742  test_zones.ZoneGameTests.test_complete_public_game_replays_through_json_and_keeps_zone_invariants
+   0.697  test_reactions.ReactionGameTests.test_public_reaction_game_replays_across_json_checkpoints
+   0.629  test_combat.WeaponCatalogTests.test_weapon_stat_shapes_are_strict
+   0.529  test_zones.ZoneCatalogTests.test_moves_and_copies_require_minions_and_explicit_policy
+   0.524  test_zones.ZoneCatalogTests.test_tokens_cannot_be_used_as_starting_deck_cards
+   0.513  test_random_choices.Stage10CatalogTests.test_pools_random_hits_and_recipients_are_strict
+   0.492  test_drawing.DrawCatalogTests.test_malformed_draw_effects_are_rejected
+   0.457  test_reactions.ReactionCatalogTests.test_listener_conditions_are_strict
+   0.442  test_random_choices.CompleteStage10GameTests.test_complete_demo_replays_through_choice_checkpoints
+   0.434  test_keywords.Stage7CatalogTests.test_bad_hero_power_shapes
+   0.408  test_hardening.SpellDamageTests.test_spell_damage_metadata_is_validated
+
+15 slowest tests AFTER (seconds):
+   1.212  test_actions.SeededLegalGameTests.test_random_games_and_every_listed_action
+   0.884  test_contracts.SessionTests.test_complete_view_only_client_and_exact_replay
+   0.551  test_zones.ZoneGameTests.test_complete_public_game_replays_through_json_and_keeps_zone_invariants
+   0.491  test_reactions.ReactionGameTests.test_public_reaction_game_replays_across_json_checkpoints
+   0.298  test_contracts.SessionTests.test_json_replay_during_complete_seeded_game
+   0.297  test_match.MatchCatalogTests.test_resource_schema_rejects_invalid_fields
+   0.257  test_combat.WeaponCatalogTests.test_weapon_stat_shapes_are_strict
+   0.242  test_drawing.DrawCatalogTests.test_malformed_draw_effects_are_rejected
+   0.220  test_random_choices.CompleteStage10GameTests.test_complete_demo_replays_through_choice_checkpoints
+   0.216  test_keywords.Stage7CatalogTests.test_bad_hero_power_shapes
+   0.214  test_zones.ZoneCatalogTests.test_moves_and_copies_require_minions_and_explicit_policy
+   0.187  test_reactions.ReactionCatalogTests.test_listener_conditions_are_strict
+   0.176  test_random_choices.Stage10CatalogTests.test_pools_random_hits_and_recipients_are_strict
+   0.172  test_keywords.CompleteKeywordGameTests.test_public_actions_replay_across_json_checkpoints
+   0.159  test_zones.ZoneCatalogTests.test_bad_generation_count_placement_and_extra_fields
+
+CI default uses the same small budget on Python 3.10/3.13;
+the manual workflow defaults to random_games=100. Local times exclude
+dependency installation. Runner/OS differences mean exact times will vary.
+
+Expanded local verification: HS_RANDOM_GAMES=8 ran all 462 tests in 26.17s, passing.

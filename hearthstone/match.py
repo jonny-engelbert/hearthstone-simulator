@@ -517,7 +517,11 @@ class MatchEngine(ChoiceTransactions, Prototype):
         self._player(player)
         if state['result'] is not None:
             raise ValueError('match is already over')
-        next_state = copy_state(state)
+        next_state = copy_state(
+            state['continuation']['prefix'] if state['phase'] == 'CHOICE' else state
+        )
+        if '_choiceTransaction' in state:
+            next_state['_choiceTransaction'] = deepcopy(state['_choiceTransaction'])
         next_state['result'] = f'PLAYER_{1-player}_WINS'
         next_state['phase'] = 'FINISHED'
         next_state['events'].append(dict(type='CONCEDE', player=player))
@@ -534,6 +538,13 @@ class MatchEngine(ChoiceTransactions, Prototype):
 
         self._managed(state)
         self._player(player)
+        if state['phase'] == 'CHOICE':
+            continuation = state['continuation']
+            projected = dict(continuation['prefix'])
+            request = state['pendingChoice']
+            if not continuation['prePlay'] or request['player'] == player:
+                projected.update(phase='CHOICE', pendingChoice=request)
+            return player_view(self, projected, player)
         return player_view(self, state, player)
 
     def legal_actions(self, state, player):

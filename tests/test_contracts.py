@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 import json
+import os
 import unittest
 
 from examples.play_client import deck, run
@@ -149,7 +150,7 @@ class SessionTests(unittest.TestCase):
 
     def command(self, action, sequence=None):
         return dict(
-            apiVersion='1.0',
+            apiVersion='2.0',
             sequence=self.session.sequence if sequence is None else sequence,
             action=action,
         )
@@ -196,7 +197,8 @@ class SessionTests(unittest.TestCase):
     def test_unknown_versions_extra_fields_and_noninteger_sequences(self):
         before = self.session.checkpoint()
         for change in (
-            {'apiVersion': '2.0'},
+            {'apiVersion': '3.0'},
+            {'apiVersion': '1.0'},
             {'sequence': True},
             {'sequence': 0.0},
             {'player': 1},
@@ -230,7 +232,8 @@ class SessionTests(unittest.TestCase):
     def test_checkpoint_versions_catalog_limits_and_checksum(self):
         original = self.session.checkpoint()
         for change, message in [
-            ({'checkpointVersion': '2.0'}, 'checkpoint contract'),
+            ({'checkpointVersion': '3.0'}, 'checkpoint contract'),
+            ({'checkpointVersion': '1.0'}, 'checkpoint contract'),
             ({'rulesVersion': 'other'}, 'checkpoint contract'),
             ({'catalogHash': '0' * 64}, 'catalog fingerprint'),
             ({'sequence': True}, 'checkpoint contract'),
@@ -275,25 +278,31 @@ class SessionTests(unittest.TestCase):
         seen = set()
 
         def inspect(state, player, actions):
-            checkpoint = self.engine.checkpoint(state)
-            restored = self.engine.restore(json.loads(json.dumps(checkpoint)))
-            self.assertEqual(state, restored)
-            for owner in (0, 1):
-                view = self.engine.view(state, owner)
-                validate('view', view)
-                self.assertEqual(view, self.engine.view(restored, owner))
+            if (
+                state['phase'] not in seen
+                or state['phase'] == 'CHOICE'
+                or state['turn'] % 13 == 0
+            ):
+                checkpoint = self.engine.checkpoint(state)
+                restored = self.engine.restore(json.loads(json.dumps(checkpoint)))
+                self.assertEqual(state, restored)
+                for owner in (0, 1):
+                    view = self.engine.view(state, owner)
+                    validate('view', view)
+                    self.assertEqual(view, self.engine.view(restored, owner))
+                validate(
+                    'observation',
+                    dict(
+                        apiVersion='2.0',
+                        sequence=0,
+                        view=self.engine.view(state, player),
+                        legalActions=actions,
+                    ),
+                )
             seen.add(state['phase'])
-            validate(
-                'observation',
-                dict(
-                    apiVersion='1.0',
-                    sequence=0,
-                    view=self.engine.view(state, player),
-                    legalActions=actions,
-                ),
-            )
 
-        for seed in (0, 3, 8, 17):
+        games = int(os.environ.get('HS_RANDOM_GAMES', '1'))
+        for seed in [8] + list(range(max(0, games - 1))):
             random_game(self.engine, seed, inspect=inspect)
         self.assertIn('CHOICE', seen)
 

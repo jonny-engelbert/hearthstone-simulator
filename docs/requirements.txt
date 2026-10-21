@@ -1,7 +1,7 @@
 Current card definition and execution contract
 =============================================
-Updated 2026-10-21: schema 1.11; catalog foundation-v10; 60 definitions.
-Profile: historical-foundation-fixtures, not one verified live-client patch.
+Updated 2026-10-21: schema 1.12; catalog foundation-v12; 60 definitions.
+Card-data profile: wild-11.0.0.24118-subset; rules parity remains unverified.
 
 Data and versioning
 -------------------
@@ -98,19 +98,22 @@ Card pools are explicit filters over current collectible catalog definitions,
 sorted by (cardId, revision), not the full Hearthstone collection. ADD_RANDOM_CARD
 samples once; DISCOVER offers up to three distinct definitions without replacement.
 The Stonehill fixture uses only Neutral Taunt minions, uniformly, without historical
-class weighting. New card stats follow the pinned extracted data (Book 1/2, Stonehill
-1/5); the full catalog still mixes historical fixtures, not a single client patch.
+class weighting. New card stats follow the pinned extracted data (Book 1/1, Stonehill
+1/4); all card values follow build 24118; not all rules have verified client parity.
 CHOOSE_ONE offers labeled effect branches; these share the ability's preselected
 target (Wrath). Branch-specific targeting and full-format Discover pools are future
 content/API extensions, not silently inferred from text.
-A pending CHOICE is an atomic command-parameter transaction: board, resources,
-RNG and event history stay at the last committed boundary. Only pendingChoice
-and a private JSON continuation are added. The pure command prefix is replayed
-from its checkpoint with saved, hashed answers; the final selection commits all
-costs, outcomes and events exactly once. This deliberately avoids exposing partial
-Deathrattle/reaction states. It is a protocol policy, not client animation timing.
+A pending CHOICE retains the committed execution root and stores a detached
+provisional prefix beside the continuation. Views show the prefix at the prompt:
+Discover shows spent costs, the played card and all preceding effects/events.
+Root Choose One shows the pre-play hand/mana to its chooser and leaves the
+opponent's entire view unchanged. Nested/off-turn choices show their actual prefix.
+Only the chooser sees options; no runtime frames enter views/checkpoints. Replay
+with saved hashed answers commits the final action once, with unchanged final
+bytes under the same catalog. Conceding ends at the visible prefix. See
+review-and-decisions.txt for sources, timing policies and known limitations.
 choose(state, player, choice_id, option_id) and apply's choose dictionary resume.
-Only that chooser may choose; both players can concede, which discards the command.
+Only that chooser may choose; both players can concede, ending at the visible prefix and discarding remaining effects.
 Other actions are blocked. Views show offers only to the chooser, without effect
 scripts or continuation data. No unchosen private offer is published in events.
 Defaults: 32 choices per action, 1000 random selections, eight effect nesting
@@ -145,7 +148,7 @@ The selected class/copy/pool restrictions above are this project's pinned policy
 API-01: schemas/integration.schema.json is the one current integration schema,
 separate from the executable card-language schema. Draft 2020-12 $defs name
 command, action, observation, view, event and checkpoint contracts. API version
-1.0 envelopes are closed; commands contain apiVersion, sequence and action.
+2.0 envelopes are closed; commands contain apiVersion, sequence and action.
 Actions retain the documented existing dictionaries; target/position may be
 null to mean omitted. Python booleans/floats are rejected for integer arguments.
 An action schema describes shape; execution validators decide live legality.
@@ -164,7 +167,7 @@ is a synchronous integration adapter, with no network, authentication, locking,
 or durable database implementation. Clients must never receive checkpoint().
 API-03: engine.checkpoint(state, sequence=0), engine.restore(checkpoint),
 Session.checkpoint() and Session.resume(engine, checkpoint) persist private JSON.
-Checkpoint 1.0 pins rulesVersion foundation-rules-11, catalog fingerprint, all
+Checkpoint 2.0 pins rulesVersion foundation-rules-12, catalog fingerprint, all
 resolution budgets, session sequence, payload and checksum. Restore rejects
 unknown versions, incompatible catalogs/budgets and corrupted payloads. Validate
 boundary phases, IDs, definitions/kinds, zones, deck membership, hero identities,
@@ -186,3 +189,11 @@ Python ValueError indicates invalid/stale input; its human diagnostic text is no
 a stable machine error-code contract. examples/play_client.py demonstrates a
 complete constructed game from observations only, command replay and private
 server checkpoint resumption during Discover.
+
+Pinned profile (stage 12 groundwork)
+------------------------------------
+All 60 definitions match the pinned CardDefs extraction for Wild build
+11.0.0.24118, commit af94b04fdff91a1900f4adfc873d89c76aa298cd. Manifest stores
+source/extract hashes. Tests assert costs/stats/rarity/keywords/text for every
+card. See card-profile-audit.txt and review-and-decisions.txt. Legacy per-card
+revision labels are opaque identifiers; the manifest pins the actual values.

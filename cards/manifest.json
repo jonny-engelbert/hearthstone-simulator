@@ -1,23 +1,27 @@
 {
   "manifestVersion": "1.0",
-  "catalogId": "foundation-v10",
-  "schemaVersion": "1.11",
-  "rulesProfile": "historical-foundation-fixtures",
-  "basis": "HISTORICAL_TEST_FIXTURE",
-  "targetClientBuild": null,
+  "catalogId": "foundation-v12",
+  "schemaVersion": "1.12",
+  "rulesProfile": "wild-11.0.0.24118-subset",
+  "basis": "PINNED_CARD_DATA_SUBSET",
+  "targetClientBuild": "11.0.0.24118",
   "createdDate": "2026-10-21",
   "files": [
     {
       "path": "cards/foundation.json",
-      "sha256": "1f8e0dc57c985abdbc85ff3634d2f59b00c3fd7601e1265d45ec64e18858f3ae"
+      "sha256": "a7136b32056585a05308972497d6d8b9cf5f44e691b15bf9dbad0637d393ddf0"
     },
     {
       "path": "schemas/catalog.schema.json",
-      "sha256": "434b50ce3bc47c68cb5be8fa6172981ff099ae70e1fa072bf9c0cb95da526edf"
+      "sha256": "ebcb0bb5c759651afb869b5d89e54ddddd64a5f3704650da9404013d77004400"
     },
     {
       "path": "schemas/integration.schema.json",
-      "sha256": "d6eb03c4c1013032f04af9b501e97caa2b0dfd8616ff04c2ef5f13710cc03e17"
+      "sha256": "b02eb31703450e2d20848ded7b3ee5e76edb28a8467cb72115c82ec40eb7bcf6"
+    },
+    {
+      "path": "docs/sources/card-profile.json",
+      "sha256": "06d8bd4fe9b58d8c2efa55475257f0ed2d0306cd8e616ec04592a88d6c3b3f70"
     }
   ],
   "deathResolutionPolicy": "DEATH_WAVES_FIFO",
@@ -25,6 +29,11 @@
   "resourcePolicy": "CAPPED_TEMPORARY_MANA",
   "zoneTransitionPolicy": "RESET_ON_EXIT_BASE_DECK_COPIES",
   "reactionPolicy": "DEPTH_FIRST_REACTIONS_DEATH_WAVES_V1",
-  "integrationSchemaVersion": "1.0",
-  "rulesVersion": "foundation-rules-11"
+  "integrationSchemaVersion": "2.0",
+  "rulesVersion": "foundation-rules-12",
+  "cardDataSource": {
+    "revision": "af94b04fdff91a1900f4adfc873d89c76aa298cd",
+    "url": "https://raw.githubusercontent.com/HearthSim/hsdata/af94b04fdff91a1900f4adfc873d89c76aa298cd/CardDefs.xml",
+    "sha256": "4b17d9fae40dbd2fe332a3ee032ab54e095758702d154595d61ee832d57fae9d"
+  }
 }

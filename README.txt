@@ -1,6 +1,6 @@
 Hearthstone simulator
 ====================
-Headless Python rules engine with a deliberately limited historical card profile.
+Headless Python rules engine with a pinned Wild 11.0.0.24118 card-data subset.
 This is a conformance prototype, not complete or live-client-verified Hearthstone.
 
 Run with Python 3.10+ from this folder:
@@ -53,7 +53,7 @@ Historical event payloads are immutable; JSON export produces ordinary editable
 data. The log sequence is independent in each state. See docs/requirements.txt
 and docs/test-plan.txt for the precise API/privacy and testing contracts.
 
-Current: 60 definitions; schema 1.11; catalog foundation-v10.
+Current: 60 definitions; schema 1.12; catalog foundation-v12.
 Remaining: pinned-profile conformance (one planned stage; may split with scope).
 
 Publishing and CI
@@ -76,13 +76,15 @@ phase CHOICE. Read engine.view(state, player)['choice']; only its player sees th
 offers. Resume using engine.choose(state, player, choice_id, option_id), or apply:
   {'type': 'choose', 'choice': 'choice-1', 'option': 'option-0'}
 legal_actions includes those concrete choices. Other actions wait; either player
-can concede. A paused transaction keeps the last committed board, mana, RNG and
-events; the final selection commits the command exactly once. Pending states
-resume through plain JSON, including nested and off-turn choices.
+can concede. The private execution root stays committed, while views project the resolved
+prefix at Discover: cost paid, card placed, earlier effects/events visible.
+Root Choose One remains a private pre-play decision; the opponent view stays
+unchanged. Choosing replays and commits the result exactly once. Prefixes and
+nested/off-turn choices round-trip through private checkpoints (version 2.0).
 
 Discover uses the current supported catalog, not all Hearthstone cards. Stonehill
 uses uniform Neutral Taunt offers; Wrath branches share its selected target.
-Book/Stonehill stats follow verified newer data (1/2 and 1/5). See requirements.txt
+Book/Stonehill stats follow pinned build 24118 (1/1 and 1/4). See requirements.txt
 for the explicit profile and protocol limits. Generated/Discovered hand cards,
 unchosen offers and full-hand generated discards stay private. Example output
 outputs/stage10-demo.json is an omniscient debug trace and must not be sent to
@@ -94,7 +96,7 @@ Constructed games and clients (stage 11)
   state = engine.new_constructed_game([deck0, deck1], ['MAGE', 'PRIEST'], seed=3)
   session = Session(engine, state)
   observation = session.observe(player)
-  command = {'apiVersion': '1.0', 'sequence': observation['sequence'],
+  command = {'apiVersion': '2.0', 'sequence': observation['sequence'],
              'action': observation['legalActions'][0]}
   observation = session.submit(player, command)
 
@@ -104,10 +106,26 @@ fingerprint pins the format pool. Hero powers follow the classes. This historica
 format does not claim Standard/Wild legality. new_game remains a sandbox for
 arranged tests. contract() describes versions, limits and the exact format pool.
 
-Client commands/observations use integration schema 1.0. The host supplies player
+Client commands/observations use integration schema 2.0. The host supplies player
 identity and serializes submissions; stale sequences are rejected atomically.
 Send observe(player) to clients. Session.checkpoint() belongs in private server
 storage; Session.resume(engine, checkpoint) restores JSON with exact catalog,
 rules and budget compatibility checks. Private checkpoints expose both decks,
 RNG and pending offers. They must never be used as player observations. See
 requirements.txt for versioning, privacy, trust and persistence limits.
+
+Pinned profile and review decisions
+-----------------------------------
+Card values target Wild build 11.0.0.24118, HearthSim/hsdata commit
+  af94b04fdff91a1900f4adfc873d89c76aa298cd
+  https://github.com/HearthSim/hsdata/blob/af94b04fdff91a1900f4adfc873d89c76aa298cd/CardDefs.xml
+All 49 collectibles existed in that build. Wild retains rotated cards. The
+manifest pins the source and extracted-facts hashes; docs/card-profile-audit.txt
+lists every old/profile value. docs/review-and-decisions.txt explains profile
+selection, choice timing and rules policies that still need client-log evidence.
+This pins data; it does not claim full client parity. API/checkpoints are now 2.0.
+
+The default random-game budget is 1; HS_RANDOM_GAMES=100 enables the extended
+workload (also the manual CI workflow default). Time the complete suite with
+python3 tools/time_tests.py. See docs/performance-review.txt for before/after
+measurements and the 15 slowest tests. No distinct-rule tests were removed.

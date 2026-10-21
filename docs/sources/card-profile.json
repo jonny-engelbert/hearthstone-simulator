@@ -1,0 +1,881 @@
+{
+  "profile": "wild-11.0.0.24118-subset",
+  "build": "11.0.0.24118",
+  "revision": "af94b04fdff91a1900f4adfc873d89c76aa298cd",
+  "url": "https://raw.githubusercontent.com/HearthSim/hsdata/af94b04fdff91a1900f4adfc873d89c76aa298cd/CardDefs.xml",
+  "sha256": "4b17d9fae40dbd2fe332a3ee032ab54e095758702d154595d61ee832d57fae9d",
+  "cards": [
+    {
+      "cardId": "CS2_182",
+      "name": "Chillwind Yeti",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 4,
+        "attack": 4,
+        "health": 5
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "",
+      "rawText": ""
+    },
+    {
+      "cardId": "CS2_179",
+      "name": "Sen'jin Shieldmasta",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 4,
+        "attack": 3,
+        "health": 5
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [
+        "TAUNT"
+      ],
+      "text": "Taunt",
+      "rawText": "<b>Taunt</b>"
+    },
+    {
+      "cardId": "CS2_042",
+      "name": "Fire Elemental",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 6,
+        "attack": 6,
+        "health": 5
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Battlecry: Deal 3 damage.",
+      "rawText": "<b>Battlecry:</b> Deal 3 damage."
+    },
+    {
+      "cardId": "CS2_022",
+      "name": "Polymorph",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 4
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Transform a minion into a 1/1 Sheep.",
+      "rawText": "Transform a minion\ninto a 1/1 Sheep."
+    },
+    {
+      "cardId": "CS2_tk1",
+      "name": "Sheep",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 1
+      },
+      "collectible": false,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "",
+      "rawText": ""
+    },
+    {
+      "cardId": "CS2_032",
+      "name": "Flamestrike",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 7
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Deal 4 damage to all enemy minions.",
+      "rawText": "Deal $4 damage to all enemy minions."
+    },
+    {
+      "cardId": "CS2_029",
+      "name": "Fireball",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 4
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Deal 6 damage.",
+      "rawText": "Deal $6 damage."
+    },
+    {
+      "cardId": "EX1_015",
+      "name": "Novice Engineer",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 1,
+        "health": 1
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Battlecry: Draw a card.",
+      "rawText": "<b>Battlecry:</b> Draw a card."
+    },
+    {
+      "cardId": "CS2_106",
+      "name": "Fiery War Axe",
+      "type": "WEAPON",
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 3,
+        "durability": 2
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "",
+      "rawText": ""
+    },
+    {
+      "cardId": "EX1_096",
+      "name": "Loot Hoarder",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 2,
+        "health": 1
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Deathrattle: Draw a card.",
+      "rawText": "<b>Deathrattle:</b> Draw a card."
+    },
+    {
+      "cardId": "EX1_011",
+      "name": "Voodoo Doctor",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 2,
+        "health": 1
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Battlecry: Restore 2 Health.",
+      "rawText": "<b>Battlecry:</b> Restore 2_Health."
+    },
+    {
+      "cardId": "CS2_092",
+      "name": "Blessing of Kings",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 4
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Give a minion +4/+4. (+4 Attack/+4 Health)",
+      "rawText": "Give a minion +4/+4. <i>(+4 Attack/+4 Health)</i>"
+    },
+    {
+      "cardId": "CS2_222",
+      "name": "Stormwind Champion",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 7,
+        "attack": 6,
+        "health": 6
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Your other minions have +1/+1.",
+      "rawText": "Your other minions have +1/+1."
+    },
+    {
+      "cardId": "EX1_048",
+      "name": "Spellbreaker",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 4,
+        "attack": 4,
+        "health": 3
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Battlecry: Silence a minion.",
+      "rawText": "<b>Battlecry:</b> <b>Silence</b> a_minion."
+    },
+    {
+      "cardId": "GAME_005",
+      "name": "The Coin",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 0
+      },
+      "collectible": false,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Gain 1 Mana Crystal this turn only.",
+      "rawText": "Gain 1 Mana Crystal this turn only."
+    },
+    {
+      "cardId": "EX1_238",
+      "name": "Lightning Bolt",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 1
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Deal 3 damage. Overload: (1)",
+      "rawText": "Deal $3 damage. <b>Overload:</b> (1)"
+    },
+    {
+      "cardId": "CS2_034",
+      "name": "Fireblast",
+      "type": "HERO_POWER",
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": false,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Hero Power Deal 1 damage.",
+      "rawText": "<b>Hero Power</b>\nDeal $1 damage."
+    },
+    {
+      "cardId": "CS1h_001",
+      "name": "Lesser Heal",
+      "type": "HERO_POWER",
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": false,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Hero Power Restore 2 Health.",
+      "rawText": "<b>Hero Power</b>\nRestore #2 Health."
+    },
+    {
+      "cardId": "CS2_124",
+      "name": "Wolfrider",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 3,
+        "health": 1
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [
+        "CHARGE"
+      ],
+      "text": "Charge",
+      "rawText": "<b>Charge</b>"
+    },
+    {
+      "cardId": "GIL_113",
+      "name": "Rabid Worgen",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 3,
+        "health": 3
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [
+        "RUSH"
+      ],
+      "text": "Rush",
+      "rawText": "<b>Rush</b>"
+    },
+    {
+      "cardId": "EX1_033",
+      "name": "Windfury Harpy",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 6,
+        "attack": 4,
+        "health": 5
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [
+        "WINDFURY"
+      ],
+      "text": "Windfury",
+      "rawText": "<b>Windfury</b>"
+    },
+    {
+      "cardId": "CS2_024",
+      "name": "Frostbolt",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Deal 3 damage to a character and Freeze it.",
+      "rawText": "Deal $3 damage to a_character and <b>Freeze</b> it."
+    },
+    {
+      "cardId": "CS2_188",
+      "name": "Abusive Sergeant",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 1
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Battlecry: Give a minion +2 Attack this turn.",
+      "rawText": "<b>Battlecry:</b> Give a minion +2_Attack this turn."
+    },
+    {
+      "cardId": "EX1_506",
+      "name": "Murloc Tidehunter",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 2,
+        "health": 1
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Battlecry: Summon a 1/1 Murloc Scout.",
+      "rawText": "<b>Battlecry:</b> Summon a 1/1_Murloc Scout."
+    },
+    {
+      "cardId": "EX1_506a",
+      "name": "Murloc Scout",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 1
+      },
+      "collectible": false,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "",
+      "rawText": ""
+    },
+    {
+      "cardId": "CS2_027",
+      "name": "Mirror Image",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 1
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Summon two 0/2 minions with Taunt.",
+      "rawText": "Summon two 0/2 minions with <b>Taunt</b>."
+    },
+    {
+      "cardId": "CS2_mirror",
+      "name": "Mirror Image",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 0,
+        "attack": 0,
+        "health": 2
+      },
+      "collectible": false,
+      "rarity": "COMMON",
+      "keywords": [
+        "TAUNT"
+      ],
+      "text": "Taunt",
+      "rawText": "<b>Taunt</b>"
+    },
+    {
+      "cardId": "FP1_002",
+      "name": "Haunted Creeper",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 1,
+        "health": 2
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Deathrattle: Summon two 1/1 Spectral Spiders.",
+      "rawText": "<b>Deathrattle:</b> Summon two 1/1 Spectral Spiders."
+    },
+    {
+      "cardId": "FP1_002t",
+      "name": "Spectral Spider",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 1
+      },
+      "collectible": false,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "",
+      "rawText": ""
+    },
+    {
+      "cardId": "EX1_049",
+      "name": "Youthful Brewmaster",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 3,
+        "health": 2
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Battlecry: Return a friendly minion from the battlefield to your hand.",
+      "rawText": "<b>Battlecry:</b> Return a friendly minion from the battlefield to your hand."
+    },
+    {
+      "cardId": "EX1_581",
+      "name": "Sap",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Return an enemy minion to your opponent's hand.",
+      "rawText": "Return an enemy minion to your opponent's hand."
+    },
+    {
+      "cardId": "EX1_014",
+      "name": "King Mukla",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 5,
+        "health": 5
+      },
+      "collectible": true,
+      "rarity": "LEGENDARY",
+      "keywords": [],
+      "text": "Battlecry: Give your opponent 2 Bananas.",
+      "rawText": "<b>Battlecry:</b> Give your opponent 2 Bananas."
+    },
+    {
+      "cardId": "EX1_014t",
+      "name": "Bananas",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 1
+      },
+      "collectible": false,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Give a minion +1/+1.",
+      "rawText": "Give a minion +1/+1."
+    },
+    {
+      "cardId": "BRM_007",
+      "name": "Gang Up",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Choose a minion. Shuffle 3 copies of it into your deck.",
+      "rawText": "Choose a minion. Shuffle 3 copies of it into your deck."
+    },
+    {
+      "cardId": "GVG_031",
+      "name": "Recycle",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 6
+      },
+      "collectible": true,
+      "rarity": "RARE",
+      "keywords": [],
+      "text": "Shuffle an enemy minion into your opponent's deck.",
+      "rawText": "Shuffle an enemy minion into your opponent's deck."
+    },
+    {
+      "cardId": "CS2_101",
+      "name": "Reinforce",
+      "type": "HERO_POWER",
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": false,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Hero Power Summon a 1/1 Silver Hand Recruit.",
+      "rawText": "<b>Hero Power</b>\nSummon a 1/1 Silver Hand Recruit."
+    },
+    {
+      "cardId": "CS2_101t",
+      "name": "Silver Hand Recruit",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 1
+      },
+      "collectible": false,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "",
+      "rawText": ""
+    },
+    {
+      "cardId": "EX1_007",
+      "name": "Acolyte of Pain",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 1,
+        "health": 3
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Whenever this minion takes damage, draw a card.",
+      "rawText": "Whenever this minion takes damage, draw a_card."
+    },
+    {
+      "cardId": "CS2_235",
+      "name": "Northshire Cleric",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 3
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Whenever a minion is healed, draw a card.",
+      "rawText": "Whenever a minion is healed, draw a card."
+    },
+    {
+      "cardId": "EX1_595",
+      "name": "Cult Master",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 4,
+        "attack": 4,
+        "health": 2
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "After a friendly minion dies, draw a card.",
+      "rawText": "After a friendly minion dies, draw a card."
+    },
+    {
+      "cardId": "NEW1_020",
+      "name": "Wild Pyromancer",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 3,
+        "health": 2
+      },
+      "collectible": true,
+      "rarity": "RARE",
+      "keywords": [],
+      "text": "After you cast a spell, deal 1 damage to ALL minions.",
+      "rawText": "After you cast a spell, deal 1 damage to ALL minions."
+    },
+    {
+      "cardId": "EX1_044",
+      "name": "Questing Adventurer",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 2,
+        "health": 2
+      },
+      "collectible": true,
+      "rarity": "RARE",
+      "keywords": [],
+      "text": "Whenever you play a card, gain +1/+1.",
+      "rawText": "Whenever you play a card, gain +1/+1."
+    },
+    {
+      "cardId": "OG_113",
+      "name": "Darkshire Councilman",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 1,
+        "health": 5
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "After you summon a minion, gain +1 Attack.",
+      "rawText": "[x]After you summon a minion,\n gain +1 Attack."
+    },
+    {
+      "cardId": "EX1_287",
+      "name": "Counterspell",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 3
+      },
+      "collectible": true,
+      "rarity": "RARE",
+      "keywords": [],
+      "text": "Secret: When your opponent casts a spell, Counter it.",
+      "rawText": "<b>Secret:</b> When your opponent casts a spell, <b>Counter</b> it."
+    },
+    {
+      "cardId": "EX1_594",
+      "name": "Vaporize",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 3
+      },
+      "collectible": true,
+      "rarity": "RARE",
+      "keywords": [],
+      "text": "Secret: When a minion attacks your hero, destroy it.",
+      "rawText": "<b>Secret:</b> When a minion attacks your hero, destroy it."
+    },
+    {
+      "cardId": "EX1_610",
+      "name": "Explosive Trap",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Secret: When your hero is attacked, deal 2 damage to all enemies.",
+      "rawText": "<b>Secret:</b> When your hero is attacked, deal $2 damage to all enemies."
+    },
+    {
+      "cardId": "EX1_130",
+      "name": "Noble Sacrifice",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 1
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Secret: When an enemy attacks, summon a 2/1 Defender as the new target.",
+      "rawText": "<b>Secret:</b> When an enemy attacks, summon a 2/1 Defender as the new target."
+    },
+    {
+      "cardId": "EX1_130a",
+      "name": "Defender",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 2,
+        "health": 1
+      },
+      "collectible": false,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "",
+      "rawText": ""
+    },
+    {
+      "cardId": "CS2_097",
+      "name": "Truesilver Champion",
+      "type": "WEAPON",
+      "baseStats": {
+        "manaCost": 4,
+        "attack": 4,
+        "durability": 2
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Whenever your hero attacks, restore 2 Health to it.",
+      "rawText": "Whenever your hero attacks, restore 2_Health to it."
+    },
+    {
+      "cardId": "FP1_021",
+      "name": "Death's Bite",
+      "type": "WEAPON",
+      "baseStats": {
+        "manaCost": 4,
+        "attack": 4,
+        "durability": 2
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Deathrattle: Deal 1 damage to all minions.",
+      "rawText": "<b>Deathrattle:</b> Deal 1 damage to all minions."
+    },
+    {
+      "cardId": "EX1_132",
+      "name": "Eye for an Eye",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 1
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Secret: When your hero takes damage, deal that much damage to the enemy hero.",
+      "rawText": "<b>Secret:</b> When your hero takes damage, deal_that much damage to the enemy hero."
+    },
+    {
+      "cardId": "CS2_142",
+      "name": "Kobold Geomancer",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 2,
+        "health": 2
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [
+        "SPELL_DAMAGE"
+      ],
+      "text": "Spell Damage +1",
+      "rawText": "<b>Spell Damage +1</b>"
+    },
+    {
+      "cardId": "EX1_277",
+      "name": "Arcane Missiles",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 1
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [],
+      "text": "Deal 3 damage randomly split among all enemies.",
+      "rawText": "Deal $3 damage randomly split among all enemies."
+    },
+    {
+      "cardId": "EX1_082",
+      "name": "Mad Bomber",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 3,
+        "health": 2
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Battlecry: Deal 3 damage randomly split between all other characters.",
+      "rawText": "<b>Battlecry:</b> Deal 3 damage randomly split between all other characters."
+    },
+    {
+      "cardId": "EX1_617",
+      "name": "Deadly Shot",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 3
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Destroy a random enemy minion.",
+      "rawText": "Destroy a random enemy minion."
+    },
+    {
+      "cardId": "KAR_009",
+      "name": "Babbling Book",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 1
+      },
+      "collectible": true,
+      "rarity": "RARE",
+      "keywords": [],
+      "text": "Battlecry: Add a random Mage spell to your hand.",
+      "rawText": "<b>Battlecry:</b> Add a random Mage spell to your hand."
+    },
+    {
+      "cardId": "UNG_072",
+      "name": "Stonehill Defender",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 1,
+        "health": 4
+      },
+      "collectible": true,
+      "rarity": "RARE",
+      "keywords": [
+        "TAUNT"
+      ],
+      "text": "Taunt Battlecry: Discover a Taunt minion.",
+      "rawText": "<b>Taunt</b>\n<b>Battlecry:</b> <b>Discover</b> a <b>Taunt</b>_minion."
+    },
+    {
+      "cardId": "CS2_125",
+      "name": "Ironfur Grizzly",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 3,
+        "health": 3
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [
+        "TAUNT"
+      ],
+      "text": "Taunt",
+      "rawText": "<b>Taunt</b>"
+    },
+    {
+      "cardId": "CS1_042",
+      "name": "Goldshire Footman",
+      "type": "MINION",
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 2
+      },
+      "collectible": true,
+      "rarity": "FREE",
+      "keywords": [
+        "TAUNT"
+      ],
+      "text": "Taunt",
+      "rawText": "<b>Taunt</b>"
+    },
+    {
+      "cardId": "EX1_154",
+      "name": "Wrath",
+      "type": "SPELL",
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": true,
+      "rarity": "COMMON",
+      "keywords": [],
+      "text": "Choose One - Deal 3 damage to a minion; or 1 damage and draw a card.",
+      "rawText": "<b>Choose One -</b>\nDeal $3 damage to a minion; or $1 damage\nand draw a card."
+    }
+  ]
+}

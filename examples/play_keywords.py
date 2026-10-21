@@ -11,10 +11,10 @@ def run(seed=0):
     engine = MatchEngine(load())
     pool = [
         'CS2_124',
-        'GIL_580',
+        'GIL_113',
         'EX1_033',
         'CS2_024',
-        'EX1_046',
+        'CS2_188',
         'CS2_106',
         'EX1_096',
         'EX1_015',

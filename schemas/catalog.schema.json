@@ -1,19 +1,19 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Foundation catalog 1.11 (seeded randomness and choices)",
+  "title": "Foundation catalog 1.12 (pinned 24118 card profile)",
   "type": "object",
   "properties": {
     "schemaVersion": {
-      "const": "1.11"
+      "const": "1.12"
     },
     "catalogId": {
-      "const": "foundation-v10"
+      "const": "foundation-v12"
     },
     "rulesProfile": {
-      "const": "historical-foundation-fixtures"
+      "const": "wild-11.0.0.24118-subset"
     },
     "basis": {
-      "const": "HISTORICAL_TEST_FIXTURE"
+      "const": "PINNED_CARD_DATA_SUBSET"
     },
     "cards": {
       "type": "array",
@@ -1649,7 +1649,7 @@
       "type": "object",
       "properties": {
         "schemaVersion": {
-          "const": "1.11"
+          "const": "1.12"
         },
         "cardId": {
           "type": "string",

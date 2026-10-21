@@ -1,3 +1,111 @@
+Review decisions: choice visibility, pinned card data, and runtime
+================================================================
+Target profile
+--------------
+Choose Wild build 11.0.0.24118 (25 April 2018), supported-card subset. This is
+late enough for Rabid Worgen/The Witchwood and retains the older Flamestrike
+(4 damage) and Fire Elemental (3 damage) fixtures. Wild eligibility retains the
+rotated Naxxramas, Goblins vs Gnomes and Blackrock Mountain cards legitimately.
+All 49 collectibles and all 11 supporting tokens/powers exist in the source;
+none needs a later-era exception. This is not the full Wild pool or verified
+client-log conformance. Constructed heroes remain Mage, Priest and Paladin.
+
+Pinned data: HearthSim/hsdata CardDefs.xml, build 24118, commit
+  af94b04fdff91a1900f4adfc873d89c76aa298cd
+  https://github.com/HearthSim/hsdata/blob/af94b04fdff91a1900f4adfc873d89c76aa298cd/CardDefs.xml
+HearthSim describes this as extracted per-build card data:
+  https://hearthsim.info/docs/cards/
+The manifest stores the revision, raw URL, full XML SHA-256 and extracted-facts
+hash. docs/sources/card-profile.json preserves selected raw text and normalized
+facts for every supported definition. tools/audit_profile.py reproduces the
+extract from the pinned XML; tests compare all 60 definitions to those facts.
+Normalization strips rendering tags, [x], numeric damage/heal markers ($/#),
+layout underscores and repeated whitespace. It does not paraphrase rules.
+The full old/profile cost, stats, rarity, keyword and text comparison is in
+card-profile-audit.txt. It includes unchanged cards, tokens and hero powers.
+
+Corrections: Fiery War Axe costs 3; Abusive Sergeant has 1 Attack; Babbling Book
+has 1 Health; Stonehill Defender has 4 Health. Token rarities and normalized
+Blessing of Kings/Cult Master/hero-power text now match the build. Two wrong
+native identities were also corrected: Rabid Worgen is GIL_113 (GIL_580 is Town
+Crier), and Abusive Sergeant is CS2_188 (EX1_046 is Dark Iron Dwarf). Card revision
+labels such as foundation-v1 are opaque stable definition keys, not client eras;
+the manifest's build/commit and current catalog fingerprint pin all live values.
+
+Choice visibility and persistence
+---------------------------------
+Battlecry Discover: card leaves hand, cost is spent, minion enters the board and
+all preceding effects/events are visible before choosing. Project a saved prefix
+through the existing per-player allowlist. Only the chooser receives offers.
+An offered Stonehill may share the now-public played card's identity: that is not
+an offer leak. Tests check offer IDs and hidden definitions, not the absence of
+an identity independently public on the board. RESOLVING public spells are also
+visible during later triggered/Discover prompts; resolving Secrets remain hidden.
+
+Root Choose One is a pre-play decision: chooser sees hand/unspent mana; opponent
+gets the unchanged pre-play view, including no choice marker. Subsequent/nested
+or off-turn choices use their actual prefix. Source check: the Choose One notes
+state that selection precedes counting the card as played, with Counterspell as
+an example:
+  https://hearthstone.fandom.com/wiki/Choose_One
+This is a community-maintained mechanics source, not a captured 24118 client log.
+Blizzard describes the modes being chosen when playing the card:
+  https://hearthstone.blizzard.com/en-us/expansions-adventures/into-the-emerald-dream
+The community timing statement supports the requested pre-play projection;
+strict historical ordering still needs client-log evidence.
+
+Execution stays rooted in the committed checkpoint. The private continuation
+also stores a detached provisional prefix and its pre-play visibility policy.
+Runtime stacks/queues are excluded. Choosing replays from the start with hashed
+answers; final JSON bytes equal the uninterrupted, fully answered old execution
+path under the same catalog. Effects/events/costs are never applied twice.
+Checkpoint/Session restore replays and compares the whole continuation, including
+the prefix. Concession ends at that visible prefix without running more effects;
+terminal checkpoints may therefore contain resolving entities or unsettled deaths.
+API and checkpoint versions are 2.0, rules version foundation-rules-12. Version
+1.0 is deliberately rejected, including old snapshots; no implicit migration.
+
+Era-sensitive rules and limitations
+-----------------------------------
+Policy                         Profile followed / evidence status
+Freeze thawing                 Existing missed-attack-opportunity fixture policy,
+                               targeting the 2018 rules; no 24118 trace verified.
+Death processing               DEATH_WAVES_FIFO / depth-first reactions are explicit
+                               project policies, not newly claimed 24118 parity.
+Counterspell/Overload           Keep current no-Overload-on-counter behavior, per
+                               archived Blizzard answer already cited in
+                               reactions-stage9.txt; no reversal in this work.
+Health/aura loss                CAP_CURRENT_ON_MAX_LOSS remains the tested policy;
+                               full historical replacement layers are unsupported.
+Discover pools                 Catalog-scoped Neutral Taunts, uniform; deliberate
+                               subset deviation from 2018 class weighting/pools.
+Choose One execution hooks     Existing answer replay/hook order is retained for
+                               byte-identical results. Countered Wrath still skips
+                               its prompt, as the existing test specifies; this is
+                               a known UI/timing gap, not full client parity.
+Targeting                      Wrath branches still share a preselected target;
+                               per-branch target choice remains future scope.
+
+There is no disagreement with the three requested corrections. Pinning card data
+does not establish all rules timing as identical to that client. Stage 12 still
+needs captured client logs, a conformance matrix and broader pool/hero coverage.
+
+Test runtime
+------------
+See performance-review.txt for measured before/after totals and 15 slowest tests.
+No test methods or distinct-rule assertions were removed. HS_RANDOM_GAMES controls
+long randomized workloads (default 1, manual workflow default 100). Integration
+checks sample ordinary decisions but always cover new phases and every choice;
+focused tests retain exact Discover/Choose One, restore, privacy and replay checks.
+Content-keyed successful catalog validation and cached schema construction avoid
+validating the same definitions repeatedly in fixture setup. Mutable catalogs are
+re-keyed every call; tuples/Python-only values cannot alias valid JSON. The cache
+is bounded and never skips mutated or invalid data. Event projection remains
+linear in full log length; no unsafe mutable-state view cache was introduced.
+
+
+Earlier review history (superseded by current decisions above)
+==============================================================
 Historical decision record. The hardening pass supersedes instructions to freeze
 stage artifacts or pin examples. Use current requirements.txt and CHANGELOG.txt.
 

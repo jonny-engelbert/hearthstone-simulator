@@ -21,8 +21,8 @@ Current measured results are in CHANGELOG.txt, rather than per-stage reports.
    pending Overload, following the archived Blizzard explanation.
 
 3. Public legality and random-game properties
-   test_actions.py exercises every listed action from each state in six seeded
-   random games, rejects sampled invalid targets/positions/sources atomically,
+   test_actions.py exercises every listed action from each state in HS_RANDOM_GAMES seeded
+   random games (default 1), rejects sampled invalid targets/positions/sources atomically,
    and checks every mulligan subset, capacities, Secrets and power usage.
    Drive games exclusively through legal_actions/apply, excluding concession
    from random choice so games reach natural or turn-limit results.
@@ -66,7 +66,7 @@ canonical pool order, full hands, countered spells and bounded resolution.
 Paused commands preserve committed board/resource/RNG/event invariants; verify
 JSON branching, nested and off-turn choices, Deathrattle and turn-start resumption,
 wrong/stale answers, private generated Secrets, and non-interference of hidden
-offer/continuation changes. The complete seed-8 demo replays every action through
+offer/continuation changes. The complete seed-0 demo replays every action through
 JSON checkpoints and includes both Discover and Choose One. The random-game
 driver selects the pending chooser rather than assuming the active player.
 CI also runs on stacked pull requests whose base is another feature branch.
@@ -80,9 +80,21 @@ references and sandbox separation. The catalog fingerprint pins the pool.
 Check schema/execution agreement on malformed action values, closed projections,
 version negotiation, stale/duplicate commands, actor identity supplied by host,
 atomic failures and detached observations. Validate observations and concrete
-actions throughout four complete seeded games, including pending choices. Restore
+actions in budgeted seeded games, sampling ordinary checkpoints and always
+covering choices and each new phase. Restore
 JSON checkpoints at ordinary/pending boundaries; reject version/catalog/budget
 mismatches, checksum damage, invalid invariants and forged continuation contents
 even when their checksum is recomputed. Check finished games and resumed session
 sequences. The example's complete seed-3 Mage/Priest constructed game uses views
 only, resumes Discover privately, and replays the exact command sequence.
+
+Review regression coverage
+--------------------------
+test_profile_and_choices.py compares every card against the pinned build facts,
+and checks that successful-validation caching cannot mask mutations or Python-
+only invalid types. Assert Discover prefix board/mana/hand/event visibility for
+both players, pre-play Choose One privacy, byte-identical final results against
+uninterrupted answer replay, earlier draw visibility, nested choices, forged
+prefix rejection, concession and exact Session/checkpoint JSON restoration.
+Run tools/time_tests.py for the full suite plus the 15 slowest tests; reports are
+saved under outputs/. Default/CI random budget 1; manual CI budget 100.
