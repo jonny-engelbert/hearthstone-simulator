@@ -1,0 +1,1137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hearthstone-foundation:integration:1.0",
+  "title": "Foundation integration contracts 1.0",
+  "$defs": {
+    "player": {
+      "type": "integer",
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "reference": {
+      "type": "object",
+      "properties": {
+        "cardId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "cardId",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "action": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "mulligan"
+            },
+            "replace": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "type",
+            "replace"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "play"
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            },
+            "target": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "position": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 7
+            }
+          },
+          "required": [
+            "type",
+            "source"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "hero_power"
+            },
+            "target": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "attack"
+            },
+            "attacker": {
+              "type": "string",
+              "minLength": 1
+            },
+            "defender": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "type",
+            "attacker",
+            "defender"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "end_turn"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "concede"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "choose"
+            },
+            "choice": {
+              "type": "string",
+              "minLength": 1
+            },
+            "option": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "type",
+            "choice",
+            "option"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "command": {
+      "type": "object",
+      "properties": {
+        "apiVersion": {
+          "const": "1.0"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "action": {
+          "$ref": "#/$defs/action"
+        }
+      },
+      "required": [
+        "apiVersion",
+        "sequence",
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "resource": {
+      "type": "object",
+      "properties": {
+        "cap": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "permanent": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "filled": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "temporary": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "locked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pendingOverload": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "cap",
+        "permanent",
+        "filled",
+        "temporary",
+        "locked",
+        "pendingOverload"
+      ],
+      "additionalProperties": false
+    },
+    "stats": {
+      "type": "object",
+      "properties": {
+        "attack": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "health": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "entity": {
+      "type": "object",
+      "properties": {
+        "armor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "attack": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ready": {
+          "type": "boolean"
+        },
+        "effectiveStats": {
+          "$ref": "#/$defs/stats"
+        },
+        "owner": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "damage": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "zone": {
+          "enum": [
+            "PLAY",
+            "HAND",
+            "SECRET",
+            "GRAVEYARD"
+          ]
+        },
+        "attacksThisTurn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kind": {
+          "enum": [
+            "HERO",
+            "MINION",
+            "SPELL",
+            "WEAPON",
+            "HERO_POWER"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "controller": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "cardId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "silenced": {
+          "type": "boolean"
+        },
+        "durability": {
+          "type": "integer"
+        },
+        "maxHealth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "owner",
+        "controller",
+        "zone",
+        "damage",
+        "armor",
+        "ready",
+        "attacksThisTurn",
+        "keywords"
+      ],
+      "additionalProperties": false
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "damageAfter": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "damageClass": {
+          "type": "string"
+        },
+        "player": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "remaining": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "window": {
+          "type": "string"
+        },
+        "temporary": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "entity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "weapon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "original": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "phase": {
+          "type": "string"
+        },
+        "firstPlayer": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "kind": {
+          "type": "string"
+        },
+        "controller": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "fromZone": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "damageBefore": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "amount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "to": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "ADD_TO_HAND",
+            "ATTACK",
+            "ATTACK_CANCELLED",
+            "ATTACK_REDIRECTED",
+            "BUFF",
+            "BUFF_EXPIRED",
+            "BURN",
+            "CHOICE_RESOLVED",
+            "CONCEDE",
+            "COPY",
+            "COPY_FAILED",
+            "DAMAGE",
+            "DEATHRATTLE",
+            "DEATH_BATCH",
+            "DESTROY",
+            "DISCARD",
+            "DRAW",
+            "DRAW_ATTEMPT",
+            "DURABILITY",
+            "EQUIP",
+            "FATIGUE",
+            "FREEZE",
+            "GENERATED",
+            "HEAL",
+            "HERO_POWER",
+            "MANA_CHANGED",
+            "MANA_EXPIRE",
+            "MANA_REFILL",
+            "MANA_SPENT",
+            "MATCH_SETUP",
+            "MULLIGAN_SUBMITTED",
+            "OVERLOAD",
+            "PHASE",
+            "PLAY",
+            "REACTION",
+            "REACTION_WINDOW",
+            "REVEAL",
+            "SECRET_REVEALED",
+            "SECRET_SET",
+            "SHUFFLE",
+            "SILENCE",
+            "SPELL_COUNTERED",
+            "STATS_CHANGED",
+            "SUMMON",
+            "SUMMON_FAILED",
+            "THAW",
+            "TRANSFORM",
+            "TURN_LIMIT",
+            "TURN_TRIGGER",
+            "WEAPON_DESTROYED",
+            "ZONE_CHANGE",
+            "ZONE_MOVE_FAILED"
+          ]
+        },
+        "permanent": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "attacker": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "defender": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "policy": {
+          "type": "string"
+        },
+        "target": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "before": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "#/$defs/stats"
+            }
+          ]
+        },
+        "after": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "#/$defs/stats"
+            }
+          ]
+        },
+        "modifiers": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "#/$defs/stats"
+            }
+          ]
+        },
+        "cardId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resource": {
+          "$ref": "#/$defs/resource"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "choice": {
+      "type": "object",
+      "properties": {
+        "player": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "kind": {
+          "enum": [
+            "DISCOVER",
+            "CHOOSE_ONE"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "label": {
+                "type": "string"
+              },
+              "definition": {
+                "$ref": "#/$defs/reference"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "player",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "playerSummary": {
+      "type": "object",
+      "properties": {
+        "player": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "deckCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hand": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cards": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/entity"
+              }
+            }
+          },
+          "required": [
+            "count",
+            "cards"
+          ],
+          "additionalProperties": false
+        },
+        "secrets": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/entity"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "const": "a Secret"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "player",
+        "deckCount",
+        "hand",
+        "secrets"
+      ],
+      "additionalProperties": false
+    },
+    "view": {
+      "type": "object",
+      "properties": {
+        "activePlayer": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "firstPlayer": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "phase": {
+          "enum": [
+            "MULLIGAN",
+            "MAIN",
+            "CHOICE",
+            "FINISHED"
+          ]
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "result": {
+          "enum": [
+            null,
+            "DRAW",
+            "PLAYER_0_WINS",
+            "PLAYER_1_WINS"
+          ]
+        },
+        "player": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entity"
+          }
+        },
+        "players": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/playerSummary"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/event"
+          }
+        },
+        "mana": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/resource"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "fatigue": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "heroPowerUsesThisTurn": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "choice": {
+          "$ref": "#/$defs/choice"
+        }
+      },
+      "required": [
+        "activePlayer",
+        "firstPlayer",
+        "phase",
+        "turn",
+        "result",
+        "player",
+        "entities",
+        "players",
+        "events",
+        "mana",
+        "resources",
+        "fatigue",
+        "heroPowerUsesThisTurn"
+      ],
+      "additionalProperties": false
+    },
+    "observation": {
+      "type": "object",
+      "properties": {
+        "apiVersion": {
+          "const": "1.0"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "view": {
+          "$ref": "#/$defs/view"
+        },
+        "legalActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action"
+          }
+        }
+      },
+      "required": [
+        "apiVersion",
+        "sequence",
+        "view",
+        "legalActions"
+      ],
+      "additionalProperties": false
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_choices": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_deathrattles": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_reactions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_random_steps": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "max_choices",
+        "max_deathrattles",
+        "max_reactions",
+        "max_random_steps"
+      ],
+      "additionalProperties": false
+    },
+    "privateState": {
+      "type": "object",
+      "required": [
+        "match",
+        "entities",
+        "decks",
+        "events",
+        "phase",
+        "result",
+        "rng",
+        "resources",
+        "mana",
+        "mulligan",
+        "nextChoiceId",
+        "nextPlayOrder",
+        "activePlayer",
+        "firstPlayer",
+        "turn",
+        "playerTurns",
+        "cardsPlayedThisTurn",
+        "fatigue",
+        "heroPowers",
+        "heroPowerUsesThisTurn",
+        "deathHistory"
+      ],
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "decks": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type"
+            ]
+          }
+        },
+        "rng": {
+          "type": "object",
+          "properties": {
+            "algorithm": {
+              "const": "splitmix64-v1"
+            },
+            "state": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "draws": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "algorithm",
+            "state",
+            "draws"
+          ],
+          "additionalProperties": false
+        },
+        "phase": {
+          "enum": [
+            "MULLIGAN",
+            "MAIN",
+            "CHOICE",
+            "FINISHED"
+          ]
+        },
+        "result": {
+          "enum": [
+            null,
+            "DRAW",
+            "PLAYER_0_WINS",
+            "PLAYER_1_WINS"
+          ]
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/resource"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "mana": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "activePlayer": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "firstPlayer": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "playerTurns": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "cardsPlayedThisTurn": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "fatigue": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "heroPowers": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "heroPowerUsesThisTurn": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "nextChoiceId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "nextPlayOrder": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "match": {
+          "type": "object"
+        },
+        "mulligan": {
+          "type": "object"
+        },
+        "deathHistory": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "properties": {
+        "checkpointVersion": {
+          "const": "1.0"
+        },
+        "rulesVersion": {
+          "const": "foundation-rules-11"
+        },
+        "catalogHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "limits": {
+          "$ref": "#/$defs/limits"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stateHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "state": {
+          "$ref": "#/$defs/privateState"
+        }
+      },
+      "required": [
+        "checkpointVersion",
+        "rulesVersion",
+        "catalogHash",
+        "limits",
+        "sequence",
+        "stateHash",
+        "state"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/command"
+    },
+    {
+      "$ref": "#/$defs/observation"
+    },
+    {
+      "$ref": "#/$defs/checkpoint"
+    }
+  ]
+}

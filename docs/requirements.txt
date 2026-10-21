@@ -7,7 +7,8 @@ Data and versioning
 -------------------
 FND-01: Definitions use exact (cardId, revision) references; instances have unique
 IDs and owner/controller/zone state. Display text is never executable logic.
-FND-02: One current catalog, schema and hash manifest, updated in place. Git
+FND-02: One current catalog, card schema, integration schema and hash manifest,
+updated in place. Git
 preserves releases. Old revision labels identify definitions, not rule branches.
 FND-03: Reject unknown fields, operations, versions, incompatible kinds and
 unresolved references. Validate structure before semantic constraints. Diagnostics
@@ -84,8 +85,7 @@ restore stays plain and deterministic. Payload list copies are shallow O(n),
 not deep copies of all prior events; a fully persistent log is not implemented.
 No new per-stage snapshot/doc/report files: update current files and CHANGELOG.
 Historical stage notes retain detailed fixture policies; code/tests are current.
-Future: constructed deck legality, typed public contracts,
-and a single pinned client/card profile with client-log conformance evidence.
+Future: a single pinned client/card profile with client-log conformance evidence.
 
 Seeded randomness and decision transactions (stage 10)
 -----------------------------------------------------
@@ -116,3 +116,73 @@ scripts or continuation data. No unchosen private offer is published in events.
 Defaults: 32 choices per action, 1000 random selections, eight effect nesting
 levels. Budget failures and invalid/stale choices preserve the input state. No
 Python generators, stack frames, engine globals or external state are serialized.
+
+Constructed decks and integration contracts (stage 11)
+------------------------------------------------------
+DECK-01: new_constructed_game selects FOUNDATION_CONSTRUCTED_V1. Its pool is
+exactly the current catalog's collectible MINION/SPELL/WEAPON definitions, pinned
+by the canonical catalog SHA-256 returned by contract() (definitions sorted
+by cardId/revision, so source-array ordering is immaterial). Supported heroes are
+MAGE/Fireblast, PRIEST/Lesser Heal and PALADIN/Reinforce. Other heroes lack their
+implemented powers and are rejected. A deck has exactly 30 cards, Neutral or
+matching hero class, at most two of each cardId, one if any catalog revision of
+that identity is Legendary. Copy identity spans revisions; alternate-print
+aliases are not present and require an explicit format extension. Strings resolve
+only an unambiguous definition; exact references normalize to cardId/revision.
+Reject unknown formats/classes/references, noncollectibles, tokens, powers, wrong
+classes and copy violations before setup. Input decks are never mutated. Mana
+cap is ten and powers follow the chosen classes; arbitrary overrides are absent.
+DECK-02: This is a supported historical foundation format, not current Standard,
+Wild, Arena, collection ownership or a complete live-client deck validator.
+Starting-deck restrictions are not re-applied after generation, transformation,
+or shuffle effects. new_game remains the explicitly marked FOUNDATION_SANDBOX
+fixture API with configurable deck sizes, powers and resources. Managed states
+now also bind the catalog fingerprint, preventing accidental cross-catalog use.
+The familiar 30-card shape is also visible in Blizzard's deck builder:
+https://hearthstone.blizzard.com/en-us/deckbuilder/
+The selected class/copy/pool restrictions above are this project's pinned policy.
+
+API-01: schemas/integration.schema.json is the one current integration schema,
+separate from the executable card-language schema. Draft 2020-12 $defs name
+command, action, observation, view, event and checkpoint contracts. API version
+1.0 envelopes are closed; commands contain apiVersion, sequence and action.
+Actions retain the documented existing dictionaries; target/position may be
+null to mean omitted. Python booleans/floats are rejected for integer arguments.
+An action schema describes shape; execution validators decide live legality.
+Observations contain apiVersion, sequence, a detached view and legalActions.
+Events in views use the typed field allowlist in $defs/event; sensitive fields
+can be absent due to redaction. These are full projections, not append-only
+incremental event streams: visibility may change when a card becomes public.
+Raw event logs and private state fields are opaque implementation details.
+API-02: Session owns a detached private state. observe(player) is the client
+boundary. submit(player, command) accepts a command only at the current sequence,
+executes atomically, then increments it once, including a pending-choice pause.
+Failed, duplicate or stale submissions leave sequence/state unchanged; refresh
+observations after a stale-command error. The host supplies authenticated player
+identity separately, serializes submissions and stores private checkpoints. This
+is a synchronous integration adapter, with no network, authentication, locking,
+or durable database implementation. Clients must never receive checkpoint().
+API-03: engine.checkpoint(state, sequence=0), engine.restore(checkpoint),
+Session.checkpoint() and Session.resume(engine, checkpoint) persist private JSON.
+Checkpoint 1.0 pins rulesVersion foundation-rules-11, catalog fingerprint, all
+resolution budgets, session sequence, payload and checksum. Restore rejects
+unknown versions, incompatible catalogs/budgets and corrupted payloads. Validate
+boundary phases, IDs, definitions/kinds, zones, deck membership, hero identities,
+powers/classes, resource consistency/caps, entry chronology, capacities and
+mulligan selections. Pending continuations must replay to the exact saved state;
+nested pending checkpoints and unfinished runtime frames are rejected. Restored
+logs regain immutable payloads. Checksums detect corruption, not authenticity;
+private checkpoints are trusted server storage, not hostile client submissions.
+Views cannot be restored. Internal state payloads are opaque and supported only
+under their exact checkpoint/rules version; legacy raw JSON has no compatibility
+promise. Metadata-only catalog changes also invalidate checkpoints deliberately.
+API-04: Consumers negotiate exact apiVersion using engine.contract(). Changed
+required fields, meanings, event variants or enum values require a new API
+version; old versions are rejected unless explicit migration support is added.
+Checkpoint layout changes require a checkpoint version change; execution changes
+require a rules version change. No implicit migrations or old-version branches.
+Catalog identity alone is insufficient: exact fingerprint compatibility applies.
+Python ValueError indicates invalid/stale input; its human diagnostic text is not
+a stable machine error-code contract. examples/play_client.py demonstrates a
+complete constructed game from observations only, command replay and private
+server checkpoint resumption during Discover.

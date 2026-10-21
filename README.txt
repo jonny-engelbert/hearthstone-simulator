@@ -10,13 +10,15 @@ Run with Python 3.10+ from this folder:
   python3 -m unittest discover -s tests -q
   python3 -m examples.play_reactions
   python3 -m examples.play_random_choices
+  python3 -m examples.play_client
   python3 tools/bench.py --games 100 --seed 0
 
 Project map
 -----------
 hearthstone/                 Rules, match actions, zones, resources, reactions
 cards/foundation.json        The single current executable card catalog
-schemas/catalog.schema.json The single current structural schema
+schemas/catalog.schema.json Current executable card-language schema
+schemas/integration.schema.json Versioned client/persistence contracts
 cards/manifest.json          Current profile and catalog/schema hashes
 tests/                      Behavioral and validation tests
 examples/                   Seeded complete-game examples
@@ -29,11 +31,11 @@ docs/roadmap.txt            Remaining milestones
 docs/sources/               Original supplied documents, retained as evidence
 CHANGELOG.txt               Concise changes and verification notes
 
-Development policy: change the current catalog/schema/manifest in place. Git
+Development policy: change the current catalog, schemas and manifest in place. Git
 history preserves earlier releases; no frozen per-stage copies or compatibility
 branches. Card revision references identify definitions, not alternate engine rules.
 Historical stage notes explain timing decisions; current code/tests take precedence.
-Do not edit the supplied Google documents. Constructed deck legality and a pinned client-log conformance profile remain work.
+Do not edit the supplied Google documents. A pinned client-log conformance profile remains work.
 
 Current public API
 ------------------
@@ -52,8 +54,7 @@ data. The log sequence is independent in each state. See docs/requirements.txt
 and docs/test-plan.txt for the precise API/privacy and testing contracts.
 
 Current: 60 definitions; schema 1.11; catalog foundation-v10.
-Remaining: deck legality/API contracts and pinned-profile conformance
-(two planned stages, range one to three).
+Remaining: pinned-profile conformance (one planned stage; may split with scope).
 
 Publishing and CI
 -----------------
@@ -86,3 +87,27 @@ for the explicit profile and protocol limits. Generated/Discovered hand cards,
 unchosen offers and full-hand generated discards stay private. Example output
 outputs/stage10-demo.json is an omniscient debug trace and must not be sent to
 players; use view for client data.
+
+Constructed games and clients (stage 11)
+----------------------------------------
+  from hearthstone.contracts import Session
+  state = engine.new_constructed_game([deck0, deck1], ['MAGE', 'PRIEST'], seed=3)
+  session = Session(engine, state)
+  observation = session.observe(player)
+  command = {'apiVersion': '1.0', 'sequence': observation['sequence'],
+             'action': observation['legalActions'][0]}
+  observation = session.submit(player, command)
+
+FOUNDATION_CONSTRUCTED_V1 supports Mage, Priest and Paladin: exactly 30 collectible
+class/Neutral cards, two copies per cardId, one Legendary. The current catalog
+fingerprint pins the format pool. Hero powers follow the classes. This historical
+format does not claim Standard/Wild legality. new_game remains a sandbox for
+arranged tests. contract() describes versions, limits and the exact format pool.
+
+Client commands/observations use integration schema 1.0. The host supplies player
+identity and serializes submissions; stale sequences are rejected atomically.
+Send observe(player) to clients. Session.checkpoint() belongs in private server
+storage; Session.resume(engine, checkpoint) restores JSON with exact catalog,
+rules and budget compatibility checks. Private checkpoints expose both decks,
+RNG and pending offers. They must never be used as player observations. See
+requirements.txt for versioning, privacy, trust and persistence limits.

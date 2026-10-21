@@ -133,3 +133,13 @@ Choose One with a shared target, damage branches and draw: Wrath.
 Nested/off-turn/Deathrattle/turn-start choices additionally use modified definitions
 of Stonehill Defender, Cult Master, Loot Hoarder and Chillwind Yeti, not claims
 that those cards normally request choices. Full-game replay covers both real types.
+
+Stage 11 integration coverage
+-----------------------------
+Constructed class/power checks: Fireball, Northshire Cleric, Truesilver Champion;
+Neutral legality: Chillwind Yeti; Legendary singleton: King Mukla. Coin, Sheep and
+Fireblast are rejected as starting-deck cards. Cross-revision copy counting uses
+a deliberately duplicated Yeti definition. Existing sandbox behavior is retained.
+Versioned commands/views/events, stale-input rejection, private checkpoints and
+complete view-only client play are covered in test_contracts.py. Discover restore
+uses Stonehill Defender. These integration contracts add no new card definitions.
