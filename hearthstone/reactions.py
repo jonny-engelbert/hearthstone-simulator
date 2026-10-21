@@ -15,12 +15,14 @@ class ReactionScheduler:
     def _begin_reactions(self, state):
         state.setdefault('scheduler', dict(nextEventId=1))
         state['_reactionCount'] = 0
+        state['_randomCount'] = 0
 
     @staticmethod
     def _finish_reactions(state):
         if state.get('_reactionPending') or state.get('_reactionDraining'):
             raise RuntimeError('unfinished reaction work at action boundary')
         state.pop('_reactionCount', None)
+        state.pop('_randomCount', None)
         return state
 
     @staticmethod
@@ -235,6 +237,7 @@ class ReactionScheduler:
                         )
                     if job['ability']['kind'] == 'SECRET':
                         source['zone'] = 'GRAVEYARD'
+                        source.pop('privateTo', None)
                         state['events'].append(
                             dict(
                                 type='SECRET_REVEALED',

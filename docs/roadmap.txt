@@ -1,26 +1,24 @@
-Remaining milestones after the pre-stage-10 hardening pass
-=========================================================
-Estimate updated 2026-10-21: three planned stages; reasonable range two to four.
+Remaining milestones after stage 10
+==================================
+Estimate updated 2026-10-21: two planned stages; reasonable range one to three.
 Target: a useful headless foundational simulator, not the entire card collection.
-Stages 1-9 and the hardening pass are implemented. Legal-action enumeration,
-per-player views, random legal-game invariants and modest performance groundwork
-were pulled forward from the former stage-11/12 plan.
-
-10. Random effects and pausable choices
-    Random targets/card pools, Discover/Choose One, typed pending choices and
-    deterministic resume. Add private generation/choice visibility and replay
-    tests before exposing those events in views.
+Stages 1-10 and the hardening pass are implemented. The current catalog contains
+60 definitions. Stage 10 adds seeded random outcomes, private generation, Discover,
+Choose One, bounded JSON-resumable atomic decision transactions and complete-game
+replay. Uniform catalog-scoped pools and shared-target choices are explicit
+fixture policies; client animation timing is not modeled.
 
 11. Deck legality and stable integration contracts
     Pin supported deck/class/format rules; validate constructed decks. Formalize
     action/event/view/checkpoint schemas and compatibility policy; provide a
-    small public client/AI integration example using the new APIs.
+    small public client/AI integration example using the supported APIs.
 
 12. Pinned-profile conformance
     Choose one explicit client/card revision profile, broaden representative
     decks, compare client logs and declare a reproducible conformance matrix.
+    Extend Discover eligibility/weighting and choice targeting as that pool needs.
     Continue invariant/performance checks on the larger supported pool.
 
-Stages 11/12 may merge if the target remains small; choice scheduling or client
-conformance may need a split. No delivery-date promise. Full Hearthstone coverage,
-modern card types and advanced stat/replacement layers are additional scope.
+These may merge if the target stays small; client conformance may need a split.
+No delivery-date promise. Full Hearthstone coverage, modern card types and
+advanced stat/replacement layers remain additional scope.

@@ -38,7 +38,7 @@ class ZoneOperations:
             index = len(state['entities'])
         state['entities'].insert(index, entity)
 
-    def _generated(self, state, reference, player, source_id, zone):
+    def _generated(self, state, reference, player, source_id, zone, private=False):
         counter = state.get('nextEntityId', 1)
         if type(counter) is not int or counter < 1:
             raise ValueError('invalid nextEntityId')
@@ -54,17 +54,20 @@ class ZoneOperations:
         )
         state['nextEntityId'] = counter + 1
         entity['createdBy'] = source_id
+        if private:
+            entity['privateTo'] = player
         state['entities'].append(entity)
-        state['events'].append(
-            dict(
-                type='GENERATED',
-                entity=entity['id'],
-                source=source_id,
-                cardId=entity['cardId'],
-                revision=entity['revision'],
-                player=player,
-            )
+        event = dict(
+            type='GENERATED',
+            entity=entity['id'],
+            source=source_id,
+            cardId=entity['cardId'],
+            revision=entity['revision'],
+            player=player,
         )
+        if private:
+            event['visibility'] = 'CONTROLLER_ONLY'
+        state['events'].append(event)
         return entity
 
     def _reset_for_zone(self, entity, zone, player):

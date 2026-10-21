@@ -80,3 +80,36 @@ unit/property tests, with an aggregate CI gate and configurable manual game coun
 Added tools/publish.py: require a clean feature branch, run local checks, then push.
 AGENTS.md makes checked branch publication and PR/CI verification the default for
 future completed project work; merging still requires an explicit user request.
+
+Stage 10: random effects and pausable choices (2026-10-21)
+---------------------------------------------------------
+Current catalog foundation-v10 / schema 1.11, updated in place: 60 definitions.
+Added Arcane Missiles, Mad Bomber, Deadly Shot, Babbling Book, Stonehill Defender,
+Ironfur Grizzly, Goldshire Footman and Wrath. New card facts are pinned to the
+HearthSim/hs-data revision recorded in docs/sources/stage10-card-facts.json.
+Book and Stonehill use verified newer Health (1/2, 1/5); this remains a mixed
+fixture profile, not a claim of single-client-patch conformance.
+
+Seeded random recipients, sequential missiles with death/reaction retargeting,
+extra Spell Damage hits, and filtered collectible card pools use saved RNG state.
+Random/Discovered cards and full-hand generated discards are private; public play
+or Secret reveal exposes the appropriate identity without exposing old offers.
+
+Typed CHOICE requests and choose actions use bounded deterministic transaction
+replay from a private JSON checkpoint. A pause retains committed board/resources/
+RNG/events; the final selection commits the command once. Supports nested choices,
+off-turn listeners, Deathrattles and turn-start resume without serializing Python
+stacks or exposing half-resolved deaths. Countered effects skip choices/randomness.
+Pool scope/weighting, shared-target Choose One and atomic protocol timing are
+explicit in docs/requirements.txt; these are not inferred from card text.
+
+Validation: 434 tests passed in 47.625s, including 36 new stage-10 scenarios.
+The 100-seed action/invariant stress run passed in 93.137s; every listed action
+was exercised at every visited state. The new seed-8 complete example replays
+109 actions through JSON checkpoints and includes both Discover and Choose One:
+  python3 -m examples.play_random_choices
+Its outputs/stage10-demo.json is a private omniscient debug trace. Catalog,
+manifest, formatting and whitespace checks pass. CI now covers stacked PR bases.
+
+Two milestones remain: deck legality/integration contracts and pinned-profile
+conformance (planning range one to three stages). See docs/roadmap.txt.

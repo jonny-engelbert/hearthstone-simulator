@@ -63,6 +63,14 @@ class CatalogTests(unittest.TestCase):
             ('Silver Hand Recruit', 'CS2_101t'),
         }
         new |= {
+            ('Arcane Missiles', 'EX1_277'),
+            ('Mad Bomber', 'EX1_082'),
+            ('Deadly Shot', 'EX1_617'),
+            ('Babbling Book', 'KAR_009'),
+            ('Stonehill Defender', 'UNG_072'),
+            ('Ironfur Grizzly', 'CS2_125'),
+            ('Goldshire Footman', 'CS1_042'),
+            ('Wrath', 'EX1_154'),
             ('Kobold Geomancer', 'CS2_142'),
             ('Acolyte of Pain', 'EX1_007'),
             ('Northshire Cleric', 'CS2_235'),
@@ -107,7 +115,7 @@ class CatalogTests(unittest.TestCase):
                     {
                         'extra': ('madeUp', 'Additional properties'),
                         'op': 'UNKNOWN_OP',
-                        'version': ("'schemaVersion'", "'1.10' was expected"),
+                        'version': ("'schemaVersion'", "'1.11' was expected"),
                         'policy': ("'legalityPolicy'", "'UNKNOWN' is not one of"),
                     }[mutation],
                 )

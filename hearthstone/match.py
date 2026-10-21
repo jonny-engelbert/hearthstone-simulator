@@ -6,11 +6,15 @@ from .events import copy_state
 
 from .catalog import load
 from .prototype import Prototype
+from .choices import ChoiceTransactions
 from . import resources, rng
 
 
-class MatchEngine(Prototype):
-    def __init__(self, catalog=None, **kwargs):
+class MatchEngine(ChoiceTransactions, Prototype):
+    def __init__(self, catalog=None, max_choices=32, **kwargs):
+        if type(max_choices) is not int or max_choices < 1:
+            raise ValueError('max_choices must be a positive integer')
+        self.max_choices = max_choices
         catalog = load() if catalog is None else catalog
         super().__init__(catalog, **kwargs)
         self.catalog_id = catalog['catalogId']
@@ -28,10 +32,40 @@ class MatchEngine(Prototype):
             raise ValueError('use a managed state from new_game with this catalog')
 
     def play(self, state, player, source_id, target_id=None, position=None):
+        action = dict(type='play', source=source_id)
+        if target_id is not None:
+            action['target'] = target_id
+        if position is not None:
+            action['position'] = position
+        return self.apply(state, player, action)
+
+    def attack(self, state, player, attacker_id, defender_id):
+        return self.apply(
+            state,
+            player,
+            dict(type='attack', attacker=attacker_id, defender=defender_id),
+        )
+
+    def mulligan(self, state, player, replace):
+        return self.apply(state, player, dict(type='mulligan', replace=replace))
+
+    def end_turn(self, state, player):
+        return self.apply(state, player, dict(type='end_turn'))
+
+    def hero_power(self, state, player, target_id=None):
+        action = dict(type='hero_power')
+        if target_id is not None:
+            action['target'] = target_id
+        return self.apply(state, player, action)
+
+    def concede(self, state, player):
+        return self.apply(state, player, dict(type='concede'))
+
+    def _play(self, state, player, source_id, target_id=None, position=None):
         self._managed(state)
         return super().play(state, player, source_id, target_id, position)
 
-    def attack(self, state, player, attacker_id, defender_id):
+    def _attack(self, state, player, attacker_id, defender_id):
         self._managed(state)
         return super().attack(state, player, attacker_id, defender_id)
 
@@ -85,6 +119,7 @@ class MatchEngine(Prototype):
             hero_powers = ['CS2_034', 'CS2_034']
         if not isinstance(hero_powers, list) or len(hero_powers) != 2:
             raise ValueError('provide two hero powers')
+        state['nextChoiceId'] = 1
         state['heroPowers'] = [None, None]
         state['heroPowerUsesThisTurn'] = [0, 0]
         for player, reference in enumerate(hero_powers):
@@ -162,7 +197,7 @@ class MatchEngine(Prototype):
             raise ValueError('invalid mulligan selections or too few replacement cards')
         return hand
 
-    def mulligan(self, state, player, replace):
+    def _mulligan(self, state, player, replace):
         hand = self._validate_mulligan(state, player, replace)
         next_state = copy_state(state)
         # Canonical hand order makes replacement-list order irrelevant.
@@ -285,7 +320,7 @@ class MatchEngine(Prototype):
         if state['result'] is None:
             self._phase(state, 'MAIN')
 
-    def end_turn(self, state, player):
+    def _end_turn(self, state, player):
         self._managed(state)
         self._player(player)
         if (
@@ -392,7 +427,7 @@ class MatchEngine(Prototype):
             raise ValueError('insufficient mana')
         return power, card, ability, target
 
-    def hero_power(self, state, player, target_id=None):
+    def _hero_power(self, state, player, target_id=None):
         """Activate the configured power once per own turn; it is not a card play."""
         next_state = copy_state(state)
         self._refresh_stats(next_state)
@@ -413,7 +448,7 @@ class MatchEngine(Prototype):
         self._result(next_state)
         return self._finish_reactions(next_state)
 
-    def concede(self, state, player):
+    def _concede(self, state, player):
         self._managed(state)
         self._player(player)
         if state['result'] is not None:
@@ -452,7 +487,15 @@ class MatchEngine(Prototype):
         if state['result'] is not None:
             return []
         actions = []
-        if state['phase'] == 'MULLIGAN':
+        if state['phase'] == 'CHOICE':
+            request = state['pendingChoice']
+            if request['player'] == player:
+                for option in request['options']:
+                    self._validate_choice(state, player, request['id'], option['id'])
+                    actions.append(
+                        dict(type='choose', choice=request['id'], option=option['id'])
+                    )
+        elif state['phase'] == 'MULLIGAN':
             hand = state['mulligan']['initialHands'][player]
             for count in range(len(hand) + 1):
                 for subset in combinations(hand, count):
@@ -523,6 +566,7 @@ class MatchEngine(Prototype):
             'attack': ({'attacker', 'defender'}, set()),
             'end_turn': (set(), set()),
             'concede': (set(), set()),
+            'choose': ({'choice', 'option'}, set()),
         }
         kind = action['type']
         if kind not in fields:
@@ -531,10 +575,24 @@ class MatchEngine(Prototype):
         keys = set(action) - {'type'}
         if not required <= keys or not keys <= required | optional:
             raise ValueError('invalid action fields')
+        self._managed(state)
+        self._player(player)
+        if kind == 'choose':
+            return self.choose(state, player, action['choice'], action['option'])
+        if state['phase'] == 'CHOICE' and kind != 'concede':
+            raise ValueError('resolve the pending choice first')
+        result = self._run_decision(state, player, action)
+        if result['result'] is not None:
+            result.pop('pendingChoice', None)
+            result.pop('continuation', None)
+        return result
+
+    def _perform(self, state, player, action):
+        kind = action['type']
         if kind == 'mulligan':
-            return self.mulligan(state, player, action['replace'])
+            return self._mulligan(state, player, action['replace'])
         if kind == 'play':
-            return self.play(
+            return self._play(
                 state,
                 player,
                 action['source'],
@@ -542,12 +600,12 @@ class MatchEngine(Prototype):
                 action.get('position'),
             )
         if kind == 'hero_power':
-            return self.hero_power(state, player, action.get('target'))
+            return self._hero_power(state, player, action.get('target'))
         if kind == 'attack':
-            return self.attack(state, player, action['attacker'], action['defender'])
+            return self._attack(state, player, action['attacker'], action['defender'])
         if kind == 'end_turn':
-            return self.end_turn(state, player)
-        return self.concede(state, player)
+            return self._end_turn(state, player)
+        return self._concede(state, player)
 
     def begin_combat_turn(self, state, player):
         raise ValueError('managed matches refresh through end_turn only')
