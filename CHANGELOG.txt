@@ -1,3 +1,19 @@
+Stage 11 (2026-10-21): deck legality and integration contracts
+============================================================
+- Add FOUNDATION_CONSTRUCTED_V1: 30-card Mage/Priest/Paladin class/Neutral
+  decks, two-copy/Legendary-singleton limits across revisions, exact references,
+  and class-bound powers. Retain explicit sandbox setup for arranged fixtures.
+- Add integration schema 1.0 for actions, commands, views, public events and
+  private checkpoints; pin its hash in the current manifest. Bind managed states
+  to a canonical catalog fingerprint that ignores definition-array ordering.
+- Add server-owned Session observations/submissions, stale-command protection,
+  detached private persistence, rules/catalog/budget compatibility checks and
+  exact pending-choice continuation replay. Document versioning/trust limits.
+- Add 18 tests (452 total). Catalog/manifest/style checks and full suite pass.
+  Additional checks validate 308 decision boundaries across three seeded games.
+  The view-only seed-3 constructed client completes 56 commands, resumes Discover
+  from JSON and replays exactly. Catalog stays at 60 definitions/schema 1.11.
+
 Hardening pass (2026-10-21, before stage 10)
 ==========================================
 1. Git/history: existing baseline 0f37497 already preserves the entire original

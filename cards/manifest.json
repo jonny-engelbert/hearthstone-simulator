@@ -14,11 +14,17 @@
     {
       "path": "schemas/catalog.schema.json",
       "sha256": "434b50ce3bc47c68cb5be8fa6172981ff099ae70e1fa072bf9c0cb95da526edf"
+    },
+    {
+      "path": "schemas/integration.schema.json",
+      "sha256": "d6eb03c4c1013032f04af9b501e97caa2b0dfd8616ff04c2ef5f13710cc03e17"
     }
   ],
   "deathResolutionPolicy": "DEATH_WAVES_FIFO",
   "healthModifierPolicy": "CAP_CURRENT_ON_MAX_LOSS",
   "resourcePolicy": "CAPPED_TEMPORARY_MANA",
   "zoneTransitionPolicy": "RESET_ON_EXIT_BASE_DECK_COPIES",
-  "reactionPolicy": "DEPTH_FIRST_REACTIONS_DEATH_WAVES_V1"
+  "reactionPolicy": "DEPTH_FIRST_REACTIONS_DEATH_WAVES_V1",
+  "integrationSchemaVersion": "1.0",
+  "rulesVersion": "foundation-rules-11"
 }

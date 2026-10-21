@@ -70,3 +70,19 @@ offer/continuation changes. The complete seed-8 demo replays every action throug
 JSON checkpoints and includes both Discover and Choose One. The random-game
 driver selects the pending chooser rather than assuming the active player.
 CI also runs on stacked pull requests whose base is another feature branch.
+
+Stage 11 additions
+------------------
+test_contracts.py validates all three supported constructed classes, matching
+powers, normalized references, 30-card size, class/collectible/copy restrictions,
+Legendary singletons, cross-revision copy identity, unsupported formats, invalid
+references and sandbox separation. The catalog fingerprint pins the pool.
+Check schema/execution agreement on malformed action values, closed projections,
+version negotiation, stale/duplicate commands, actor identity supplied by host,
+atomic failures and detached observations. Validate observations and concrete
+actions throughout four complete seeded games, including pending choices. Restore
+JSON checkpoints at ordinary/pending boundaries; reject version/catalog/budget
+mismatches, checksum damage, invalid invariants and forged continuation contents
+even when their checksum is recomputed. Check finished games and resumed session
+sequences. The example's complete seed-3 Mage/Priest constructed game uses views
+only, resumes Discover privately, and replays the exact command sequence.

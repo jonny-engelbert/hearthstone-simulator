@@ -18,6 +18,17 @@ class MatchEngine(ChoiceTransactions, Prototype):
         catalog = load() if catalog is None else catalog
         super().__init__(catalog, **kwargs)
         self.catalog_id = catalog['catalogId']
+        from .contracts import digest
+
+        self.catalog_hash = digest(
+            dict(
+                catalog,
+                cards=sorted(
+                    catalog['cards'],
+                    key=lambda card: (card['cardId'], card['revision']),
+                ),
+            )
+        )
 
     @staticmethod
     def _player(player):
@@ -28,6 +39,7 @@ class MatchEngine(ChoiceTransactions, Prototype):
         if (
             not isinstance(state, dict)
             or state.get('match', {}).get('catalogId') != self.catalog_id
+            or state.get('match', {}).get('catalogHash') != self.catalog_hash
         ):
             raise ValueError('use a managed state from new_game with this catalog')
 
@@ -69,6 +81,57 @@ class MatchEngine(ChoiceTransactions, Prototype):
         self._managed(state)
         return super().attack(state, player, attacker_id, defender_id)
 
+    def validate_deck(self, deck, hero_class, format_id='FOUNDATION_CONSTRUCTED_V1'):
+        from .decks import validate_deck
+
+        return validate_deck(self, deck, hero_class, format_id)
+
+    def new_constructed_game(
+        self,
+        decks,
+        classes,
+        seed,
+        first_player=None,
+        turn_limit=90,
+        format_id='FOUNDATION_CONSTRUCTED_V1',
+    ):
+        from .decks import HERO_POWERS
+
+        if not isinstance(decks, list) or len(decks) != 2:
+            raise ValueError('provide two deck lists')
+        if not isinstance(classes, list) or len(classes) != 2:
+            raise ValueError('provide two hero classes')
+        exact = [
+            self.validate_deck(deck, cls, format_id)
+            for deck, cls in zip(decks, classes)
+        ]
+        state = self.new_game(
+            exact,
+            seed,
+            first_player=first_player,
+            turn_limit=turn_limit,
+            hero_powers=[HERO_POWERS[cls] for cls in classes],
+        )
+        state['match'].update(
+            profile=format_id, classes=list(classes), catalogHash=self.catalog_hash
+        )
+        return state
+
+    def contract(self):
+        from .contracts import description
+
+        return description(self)
+
+    def checkpoint(self, state, sequence=0):
+        from .contracts import checkpoint
+
+        return checkpoint(self, state, sequence)
+
+    def restore(self, checkpoint):
+        from .contracts import restore
+
+        return restore(self, checkpoint)
+
     def new_game(
         self,
         decks,
@@ -81,8 +144,8 @@ class MatchEngine(ChoiceTransactions, Prototype):
     ):
         """Set up a sandbox match; stop at both mulligan decisions.
 
-        Deck size and collectible definitions are validated here. Constructed
-        class/copy/format legality is a later stage; the profile records this.
+        Deck size and collectible definitions are validated here. Use
+        new_constructed_game for pinned class/copy/format restrictions.
         """
         if type(deck_size) is not int or not 4 <= deck_size <= 99:
             raise ValueError('deck_size must be an integer from 4 to 99')
@@ -98,6 +161,7 @@ class MatchEngine(ChoiceTransactions, Prototype):
         state.update(
             match=dict(
                 catalogId=self.catalog_id,
+                catalogHash=self.catalog_hash,
                 profile='FOUNDATION_SANDBOX',
                 seed=seed,
                 deckSize=deck_size,
@@ -575,6 +639,9 @@ class MatchEngine(ChoiceTransactions, Prototype):
         keys = set(action) - {'type'}
         if not required <= keys or not keys <= required | optional:
             raise ValueError('invalid action fields')
+        from .contracts import validate_action_values
+
+        validate_action_values(action)
         self._managed(state)
         self._player(player)
         if kind == 'choose':
