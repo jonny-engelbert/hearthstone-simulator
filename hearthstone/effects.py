@@ -35,6 +35,10 @@ class EffectOperations:
         'SILENCE': '_effect_silence',
         'FREEZE': '_effect_freeze',
         'DEAL_DAMAGE': '_effect_deal_damage',
+        'RANDOM_DAMAGE': '_effect_random_damage',
+        'ADD_RANDOM_CARD': '_effect_add_random_card',
+        'DISCOVER': '_effect_discover',
+        'CHOOSE_ONE': '_effect_choose_one',
     }
     # These operations already perform their own stat updates, or cannot
     # change board stats. Preserve the existing effect/reaction checkpoints.
@@ -82,6 +86,17 @@ class EffectOperations:
                 if context.target and context.target['zone'] == 'PLAY'
                 else []
             )
+        if recipient['kind'] == 'RANDOM':
+            candidates = [
+                entity
+                for entity in self.select(
+                    state, recipient['selector'], context.player, context.source_id
+                )
+                if not entity.get('pendingDestroy')
+                and self.current_health(state, entity) > 0
+            ]
+            chosen = self._random_pick(state, candidates)
+            return [chosen] if chosen is not None else []
         if recipient['kind'] == 'QUERY':
             return self.select(
                 state, recipient['selector'], context.player, context.source_id

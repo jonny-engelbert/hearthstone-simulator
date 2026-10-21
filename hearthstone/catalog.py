@@ -6,7 +6,7 @@ from pathlib import Path
 from jsonschema import Draft202012Validator, FormatChecker
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMAS = {'1.10': 'catalog.schema.json'}
+SCHEMAS = {'1.11': 'catalog.schema.json'}
 
 
 def _structural_errors(error):
@@ -32,6 +32,28 @@ def _structural_errors(error):
     yield f"{list(error.absolute_path)}: {error.message}"
 
 
+def _effects(effects):
+    for effect in effects:
+        yield effect
+        if effect['op'] == 'CHOOSE_ONE':
+            for option in effect['options']:
+                yield from _effects(option['effects'])
+
+
+def _excessive_nesting(catalog):
+    work = [(catalog, 0)]
+    while work:
+        value, depth = work.pop()
+        if depth > 8:
+            return True
+        if isinstance(value, dict):
+            for key, child in value.items():
+                work.append((child, depth + (key == 'effects')))
+        elif isinstance(value, list):
+            work.extend((child, depth) for child in value)
+    return False
+
+
 def validate(catalog):
     if (
         not isinstance(catalog, dict)
@@ -39,6 +61,8 @@ def validate(catalog):
         or catalog['schemaVersion'] not in SCHEMAS
     ):
         return ['unsupported catalog schemaVersion']
+    if _excessive_nesting(catalog):
+        return ['effect nesting exceeds eight levels']
     schema = json.loads(
         (ROOT / 'schemas' / SCHEMAS[catalog['schemaVersion']]).read_text()
     )
@@ -129,7 +153,27 @@ def validate(catalog):
                     policy = 'HERO_POWER_SELECTED_TARGET'
                 if targeting['legalityPolicy'] != policy:
                     errors.append(f'{label}: incompatible targeting policy')
-            for effect in ability['effects']:
+            for effect in _effects(ability['effects']):
+                if effect['op'] == 'CHOOSE_ONE':
+                    ids = [option['id'] for option in effect['options']]
+                    if len(ids) != len(set(ids)):
+                        errors.append(f'{label}: duplicate choice option ID')
+                    continue
+                if effect['op'] in ('DISCOVER', 'ADD_RANDOM_CARD'):
+                    continue
+                if effect['op'] == 'RANDOM_DAMAGE':
+                    cls = (
+                        'SPELL'
+                        if expected in ('SPELL_EFFECT', 'SECRET')
+                        else (
+                            'HERO_POWER'
+                            if expected == 'HERO_POWER_EFFECT'
+                            else 'ABILITY'
+                        )
+                    )
+                    if effect['damageClass'] != cls:
+                        errors.append(f'{label}: incompatible damage class')
+                    continue
                 trigger = ability.get('trigger', {})
                 if effect.get('amount', {}).get(
                     'kind'
@@ -256,7 +300,7 @@ def validate(catalog):
                 ):
                     selector = (
                         recipient.get('selector')
-                        if recipient['kind'] == 'QUERY'
+                        if recipient['kind'] in ('QUERY', 'RANDOM')
                         else (targeting or {}).get('selector')
                     )
                     if (
@@ -286,6 +330,17 @@ def validate(catalog):
                         errors.append(f'{label}: transform result must be a minion')
                     if not targeting or targeting['selector']['entityKind'] != 'MINION':
                         errors.append(f'{label}: transform requires minion targeting')
+        all_effects = [
+            effect
+            for ability in card['abilities']
+            if ability['kind'] != 'AURA'
+            for effect in _effects(ability['effects'])
+        ]
+        for op in ('DISCOVER', 'CHOOSE_ONE'):
+            if any(effect['op'] == op for effect in all_effects) != (
+                op in card['mechanics']
+            ):
+                errors.append(f'{label}: {op} label and effect disagree')
         if transforms != ('TRANSFORM' in card['mechanics']):
             errors.append(f'{label}: TRANSFORM label and effect disagree')
     return errors

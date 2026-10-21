@@ -57,7 +57,11 @@ def random_game(engine, seed, inspect=None):
         player = (
             next(p for p in (0, 1) if state['mulligan']['choices'][p] is None)
             if state['phase'] == 'MULLIGAN'
-            else state['activePlayer']
+            else (
+                state['pendingChoice']['player']
+                if state['phase'] == 'CHOICE'
+                else state['activePlayer']
+            )
         )
         actions = engine.legal_actions(state, player)
         choices = [a for a in actions if a['type'] != 'concede']

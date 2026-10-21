@@ -39,7 +39,7 @@ Current measured results are in CHANGELOG.txt, rather than per-stage reports.
    or handle may occur in projected entities/events; DRAW is redacted, BURN and
    REVEAL remain public. Public bounces retain known hand cards. Mutation of a
    detached view does not affect the game. Current generation is deterministic;
-   private random choices require additional visibility tests in stage 10.
+   private random choices use explicit controller-only events and offer projections.
    test_events.py checks frozen nested payloads, shallow sharing, independent
    branch sequences, JSON restore and failed-action rollback.
 
@@ -55,3 +55,18 @@ Current measured results are in CHANGELOG.txt, rather than per-stage reports.
 
 Limit: these tests validate the stated historical fixture policies, not complete
 Hearthstone or live-patch parity. Client logs and broader card coverage remain.
+
+Stage 10 additions
+------------------
+test_random_choices.py covers 36 schema, random, choice, privacy, scheduling and
+complete-game scenarios. Exercise Arcane Missiles (including extra Spell Damage
+hits), Mad Bomber self-exclusion, Deadly Shot eligibility, Book private generation,
+Stonehill offers, and both Wrath branches. Check empty/small pools, seed variation,
+canonical pool order, full hands, countered spells and bounded resolution.
+Paused commands preserve committed board/resource/RNG/event invariants; verify
+JSON branching, nested and off-turn choices, Deathrattle and turn-start resumption,
+wrong/stale answers, private generated Secrets, and non-interference of hidden
+offer/continuation changes. The complete seed-8 demo replays every action through
+JSON checkpoints and includes both Discover and Choose One. The random-game
+driver selects the pending chooser rather than assuming the active player.
+CI also runs on stacked pull requests whose base is another feature branch.

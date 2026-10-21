@@ -1,6 +1,6 @@
 Current card definition and execution contract
 =============================================
-Updated 2026-10-21: schema 1.10; catalog foundation-v9.1; 52 definitions.
+Updated 2026-10-21: schema 1.11; catalog foundation-v10; 60 definitions.
 Profile: historical-foundation-fixtures, not one verified live-client patch.
 
 Data and versioning
@@ -58,20 +58,23 @@ can cancel or redirect; a returned state has no pending reaction frames.
 
 Public APIs and privacy
 -----------------------
-apply accepts mulligan/play/hero_power/attack/end_turn/concede dictionaries.
+apply accepts mulligan/play/hero_power/attack/end_turn/concede/choose dictionaries.
 legal_actions reuses execution validators; returns canonical concrete actions.
 Enumerate all mulligan subsets (at most 16), each legal target and each minion
 position. Omitted target means none; minion positions are explicit. Equivalent
 optional-null/default spellings accepted by apply are not duplicated in the list.
-Finished games return []; inactive/waiting players can only concede.
+Finished games return []; inactive/waiting players can only concede, except
+that a pending choice belongs to its explicitly named player, even off-turn.
 view returns own hand, public entities, counts, public resources and filtered
 events. Deck instances/order are hidden for both; opponent hand/Secrets have no
-private handles. Public bounce/reveal/exact generation can identify hand cards;
+private handles. Public bounce/reveal/exact public generation can identify hand cards;
 drawing/shuffling clears that knowledge. No RNG, scheduler, stamps, provenance
 pointers, death snapshots, mulligan choices or setup deck lists cross this API.
 Full states, raw event logs and checkpoints remain private debug data. Views are
-not restorable checkpoints. New private random generation will require an
-explicit visibility policy when introduced in stage 10.
+not restorable checkpoints. Random/Discovered cards use CONTROLLER_ONLY events
+and privateTo instance visibility, including full-hand generation discards.
+Playing a normal card makes it public; Secrets stay hidden until countered or
+revealed. Private generation events stay redacted even after later public play.
 
 State copies and development policy
 ----------------------------------
@@ -81,5 +84,35 @@ restore stays plain and deterministic. Payload list copies are shallow O(n),
 not deep copies of all prior events; a fully persistent log is not implemented.
 No new per-stage snapshot/doc/report files: update current files and CHANGELOG.
 Historical stage notes retain detailed fixture policies; code/tests are current.
-Future: random effects/choices, constructed deck legality, typed public contracts,
+Future: constructed deck legality, typed public contracts,
 and a single pinned client/card profile with client-log conformance evidence.
+
+Seeded randomness and decision transactions (stage 10)
+-----------------------------------------------------
+Random recipients are uniform over live eligible characters in selector/entity
+order. They use effect eligibility, not selected-target restrictions. Empty sets
+consume no RNG. RANDOM_DAMAGE reselects after each hit and its reactions/deaths;
+Spell Damage adds hits, not damage per hit. Results retain the existing atomic
+card-result checkpoint. Countered effects consume no random draws.
+Card pools are explicit filters over current collectible catalog definitions,
+sorted by (cardId, revision), not the full Hearthstone collection. ADD_RANDOM_CARD
+samples once; DISCOVER offers up to three distinct definitions without replacement.
+The Stonehill fixture uses only Neutral Taunt minions, uniformly, without historical
+class weighting. New card stats follow the pinned extracted data (Book 1/2, Stonehill
+1/5); the full catalog still mixes historical fixtures, not a single client patch.
+CHOOSE_ONE offers labeled effect branches; these share the ability's preselected
+target (Wrath). Branch-specific targeting and full-format Discover pools are future
+content/API extensions, not silently inferred from text.
+A pending CHOICE is an atomic command-parameter transaction: board, resources,
+RNG and event history stay at the last committed boundary. Only pendingChoice
+and a private JSON continuation are added. The pure command prefix is replayed
+from its checkpoint with saved, hashed answers; the final selection commits all
+costs, outcomes and events exactly once. This deliberately avoids exposing partial
+Deathrattle/reaction states. It is a protocol policy, not client animation timing.
+choose(state, player, choice_id, option_id) and apply's choose dictionary resume.
+Only that chooser may choose; both players can concede, which discards the command.
+Other actions are blocked. Views show offers only to the chooser, without effect
+scripts or continuation data. No unchosen private offer is published in events.
+Defaults: 32 choices per action, 1000 random selections, eight effect nesting
+levels. Budget failures and invalid/stale choices preserve the input state. No
+Python generators, stack frames, engine globals or external state are serialized.

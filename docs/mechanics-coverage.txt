@@ -1,6 +1,6 @@
 Implemented mechanics and card-backed coverage
 ===============================================
-Current: foundation-v9.1; 52 definitions. Validation is summarized in CHANGELOG.txt.
+Current: foundation-v10; 60 definitions. Validation is summarized in CHANGELOG.txt.
 Card-backed means real catalog definitions are exercised by behavior tests.
 Extra corner cases may use arranged states or modified in-memory definitions.
 
@@ -120,3 +120,16 @@ Evidence: tests/test_conformance.py, test_drawing.py, test_combat.py, test_death
 test_stats.py, test_match.py, test_keywords.py, test_zones.py and test_reactions.py.
 Detailed requirements and timing choices remain in the corresponding stage documents.
 Coverage establishes the historical fixture policy, not verified single-client-patch conformance.
+
+Stage 10 card-backed additions
+------------------------------
+Seeded sequential random damage and extra Spell Damage hits: Arcane Missiles.
+All-other-character random Battlecry hits: Mad Bomber.
+Random minion destruction without selected-target restrictions: Deadly Shot.
+Private random card generation and later public play/Secrets: Babbling Book.
+Discover, unique offers, private selection and full-hand handling: Stonehill Defender.
+Discover pool representatives: Sen'jin Shieldmasta, Ironfur Grizzly, Goldshire Footman.
+Choose One with a shared target, damage branches and draw: Wrath.
+Nested/off-turn/Deathrattle/turn-start choices additionally use modified definitions
+of Stonehill Defender, Cult Master, Loot Hoarder and Chillwind Yeti, not claims
+that those cards normally request choices. Full-game replay covers both real types.

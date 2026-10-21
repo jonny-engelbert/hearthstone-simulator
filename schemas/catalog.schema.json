@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Foundation catalog 1.10",
+  "title": "Foundation catalog 1.11 (seeded randomness and choices)",
   "type": "object",
   "properties": {
     "schemaVersion": {
-      "const": "1.10"
+      "const": "1.11"
     },
     "catalogId": {
-      "const": "foundation-v9.1"
+      "const": "foundation-v10"
     },
     "rulesProfile": {
       "const": "historical-foundation-fixtures"
@@ -217,6 +217,22 @@
                     "kind"
                   ],
                   "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
+                  ],
+                  "additionalProperties": false
                 }
               ]
             },
@@ -288,6 +304,22 @@
                   },
                   "required": [
                     "kind"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
                   ],
                   "additionalProperties": false
                 }
@@ -411,6 +443,22 @@
                     "kind"
                   ],
                   "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
+                  ],
+                  "additionalProperties": false
                 }
               ]
             },
@@ -486,6 +534,22 @@
                   },
                   "required": [
                     "kind"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
                   ],
                   "additionalProperties": false
                 }
@@ -599,6 +663,22 @@
                     "kind"
                   ],
                   "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
+                  ],
+                  "additionalProperties": false
                 }
               ]
             },
@@ -701,6 +781,22 @@
                   },
                   "required": [
                     "kind"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
                   ],
                   "additionalProperties": false
                 }
@@ -855,6 +951,22 @@
                     "kind"
                   ],
                   "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
+                  ],
+                  "additionalProperties": false
                 }
               ]
             },
@@ -1000,6 +1112,22 @@
                     "kind"
                   ],
                   "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
+                  ],
+                  "additionalProperties": false
                 }
               ]
             },
@@ -1083,6 +1211,22 @@
                   },
                   "required": [
                     "kind"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
                   ],
                   "additionalProperties": false
                 }
@@ -1170,6 +1314,22 @@
                     "kind"
                   ],
                   "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "RANDOM"
+                    },
+                    "selector": {
+                      "$ref": "#/$defs/selector"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "selector"
+                  ],
+                  "additionalProperties": false
                 }
               ]
             },
@@ -1227,6 +1387,112 @@
           "required": [
             "op",
             "definition"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "RANDOM_DAMAGE"
+            },
+            "selector": {
+              "$ref": "#/$defs/selector"
+            },
+            "hits": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            },
+            "damageClass": {
+              "enum": [
+                "SPELL",
+                "ABILITY",
+                "HERO_POWER"
+              ]
+            }
+          },
+          "required": [
+            "op",
+            "selector",
+            "hits",
+            "damageClass"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "ADD_RANDOM_CARD"
+            },
+            "pool": {
+              "$ref": "#/$defs/cardPool"
+            }
+          },
+          "required": [
+            "op",
+            "pool"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "DISCOVER"
+            },
+            "pool": {
+              "$ref": "#/$defs/cardPool"
+            }
+          },
+          "required": [
+            "op",
+            "pool"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "CHOOSE_ONE"
+            },
+            "options": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 4,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^option-[0-9]+$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "effects": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/$defs/effect"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "effects"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "op",
+            "options"
           ],
           "additionalProperties": false
         }
@@ -1383,7 +1649,7 @@
       "type": "object",
       "properties": {
         "schemaVersion": {
-          "const": "1.10"
+          "const": "1.11"
         },
         "cardId": {
           "type": "string",
@@ -1460,7 +1726,9 @@
             "NAXX",
             "BRM",
             "GVG",
-            "OG"
+            "OG",
+            "KARA",
+            "UNGORO"
           ]
         },
         "rarity": {
@@ -1506,7 +1774,9 @@
               "TRANSFORM",
               "DEATHRATTLE",
               "AURA",
-              "SECRET"
+              "SECRET",
+              "DISCOVER",
+              "CHOOSE_ONE"
             ]
           }
         },
@@ -1739,6 +2009,57 @@
       "required": [
         "cardId",
         "revision"
+      ],
+      "additionalProperties": false
+    },
+    "cardPool": {
+      "type": "object",
+      "properties": {
+        "cardType": {
+          "enum": [
+            "MINION",
+            "SPELL"
+          ]
+        },
+        "classes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "NEUTRAL",
+              "MAGE",
+              "SHAMAN",
+              "WARRIOR",
+              "PALADIN",
+              "PRIEST",
+              "ROGUE",
+              "DRUID",
+              "HUNTER",
+              "WARLOCK"
+            ]
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "TAUNT",
+              "CHARGE",
+              "RUSH",
+              "WINDFURY",
+              "SPELL_DAMAGE"
+            ]
+          }
+        },
+        "manaCost": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "cardType"
       ],
       "additionalProperties": false
     }

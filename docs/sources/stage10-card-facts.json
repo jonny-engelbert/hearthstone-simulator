@@ -1,0 +1,76 @@
+{
+  "source": "https://raw.githubusercontent.com/HearthSim/hs-data/e456d49d2147358dec6764cffb963c8e8d748d12/CardDefs.xml",
+  "checkedDate": "2026-10-21",
+  "cards": {
+    "CS1_042": {
+      "CARDNAME": "Goldshire Footman",
+      "CARDTEXT": "<b>Taunt</b>",
+      "COST": "1",
+      "ATK": "1",
+      "HEALTH": "2",
+      "TAUNT": "1",
+      "RARITY": "2",
+      "CARD_SET": "1635"
+    },
+    "CS2_125": {
+      "CARDNAME": "Ironfur Grizzly",
+      "CARDTEXT": "<b>Taunt</b>",
+      "COST": "3",
+      "ATK": "3",
+      "HEALTH": "3",
+      "TAUNT": "1",
+      "RARITY": "2",
+      "CARD_SET": "1635",
+      "CARDRACE": "20"
+    },
+    "EX1_082": {
+      "CARDNAME": "Mad Bomber",
+      "CARDTEXT": "<b>Battlecry:</b> Deal 3 damage randomly split between all other characters.",
+      "COST": "2",
+      "ATK": "3",
+      "HEALTH": "2",
+      "RARITY": "1",
+      "CARD_SET": "3"
+    },
+    "EX1_154": {
+      "CARDNAME": "Wrath",
+      "CARDTEXT": "<b>Choose One -</b>\nDeal $3 damage to a minion; or $1 damage\nand draw a card.",
+      "COST": "2",
+      "RARITY": "1",
+      "CARD_SET": "3"
+    },
+    "EX1_277": {
+      "CARDNAME": "Arcane Missiles",
+      "CARDTEXT": "Deal $3 damage randomly split among all enemies.",
+      "COST": "1",
+      "RARITY": "2",
+      "CARD_SET": "1635"
+    },
+    "EX1_617": {
+      "CARDNAME": "Deadly Shot",
+      "CARDTEXT": "Destroy a random enemy minion.",
+      "COST": "3",
+      "RARITY": "1",
+      "CARD_SET": "3"
+    },
+    "KAR_009": {
+      "CARDNAME": "Babbling Book",
+      "CARDTEXT": "<b>Battlecry:</b> Add a random Mage spell to your hand.",
+      "COST": "1",
+      "ATK": "1",
+      "HEALTH": "2",
+      "RARITY": "3",
+      "CARD_SET": "23"
+    },
+    "UNG_072": {
+      "CARDNAME": "Stonehill Defender",
+      "CARDTEXT": "<b>Taunt</b>\n<b>Battlecry:</b> <b>Discover</b> a <b>Taunt</b>_minion.",
+      "COST": "3",
+      "ATK": "1",
+      "HEALTH": "5",
+      "TAUNT": "1",
+      "RARITY": "3",
+      "CARD_SET": "27"
+    }
+  }
+}

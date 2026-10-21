@@ -76,6 +76,7 @@ EVENT_TYPES = {
     'REACTION',
     'REACTION_WINDOW',
     'CONCEDE',
+    'CHOICE_RESOLVED',
 }
 EVENT_SCALARS = {
     'type',
@@ -125,6 +126,7 @@ def player_view(engine, state, player):
         entity['id']
         for entity in state['entities']
         if entity['zone'] in ('PLAY', 'GRAVEYARD')
+        and ('privateTo' not in entity or entity['privateTo'] == player)
     }
     for event in state['events']:
         kind = event['type']
@@ -146,7 +148,11 @@ def player_view(engine, state, player):
             known_hand.add(event['entity'])
         elif kind == 'DRAW':
             known_hand.discard(event['entity'])
-        elif kind == 'GENERATED' and event.get('source') in public_sources:
+        elif (
+            kind == 'GENERATED'
+            and event.get('source') in public_sources
+            and event.get('visibility') != 'CONTROLLER_ONLY'
+        ):
             # Current generation has an exact public definition, not a random
             # private choice. Copies put in decks remain hidden below.
             known_hand.add(event['entity'])
@@ -154,6 +160,7 @@ def player_view(engine, state, player):
         entity
         for entity in state['entities']
         if entity['zone'] in ('PLAY', 'GRAVEYARD')
+        and ('privateTo' not in entity or entity['privateTo'] == player)
         or entity['zone'] in ('HAND', 'SECRET')
         and entity['controller'] == player
         or entity['zone'] == 'HAND'
@@ -215,6 +222,9 @@ def player_view(engine, state, player):
         kind = event['type']
         if kind not in EVENT_TYPES:
             continue
+        if event.get('visibility') == 'CONTROLLER_ONLY' and event['player'] != player:
+            events.append(dict(type=kind, player=event['player']))
+            continue
         # Private draw handles must never correlate with an earlier public
         # shuffle/copy or a future play, including identities embedded in IDs.
         if kind == 'DRAW' and event['player'] != player:
@@ -261,5 +271,24 @@ def player_view(engine, state, player):
                 )
             }
         events.append(output)
+    if state.get('pendingChoice'):
+        request = state['pendingChoice']
+        choice = dict(player=request['player'], kind=request['kind'])
+        if request['player'] == player:
+            choice.update(id=request['id'], source=request['source'], options=[])
+            for option in request['options']:
+                item = dict(id=option['id'])
+                if 'definition' in option:
+                    reference = option['definition']
+                    definition = engine.cards[
+                        (reference['cardId'], reference['revision'])
+                    ]
+                    item.update(
+                        definition=deepcopy(reference), label=definition['name']
+                    )
+                else:
+                    item['label'] = option['label']
+                choice['options'].append(item)
+        result['choice'] = choice
     result['events'] = events
     return result

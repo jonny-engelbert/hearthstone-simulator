@@ -13,6 +13,7 @@ class DispatchTests(unittest.TestCase):
     def test_every_schema_operation_has_a_handler(self):
         from hearthstone.catalog import ROOT
         from hearthstone.effects import EffectOperations
+        from hearthstone.prototype import Prototype
 
         schema = json.loads((ROOT / 'schemas/catalog.schema.json').read_text())
         operations = {
@@ -21,7 +22,7 @@ class DispatchTests(unittest.TestCase):
         }
         self.assertEqual(operations, set(EffectOperations.EFFECT_HANDLERS))
         for handler in EffectOperations.EFFECT_HANDLERS.values():
-            self.assertTrue(callable(getattr(EffectOperations, handler)))
+            self.assertTrue(callable(getattr(Prototype, handler)))
 
 
 class ChronologyTests(unittest.TestCase):

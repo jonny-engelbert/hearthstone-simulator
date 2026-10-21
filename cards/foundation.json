@@ -1,11 +1,11 @@
 {
-  "schemaVersion": "1.10",
-  "catalogId": "foundation-v9.1",
+  "schemaVersion": "1.11",
+  "catalogId": "foundation-v10",
   "rulesProfile": "historical-foundation-fixtures",
   "basis": "HISTORICAL_TEST_FIXTURE",
   "cards": [
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_182",
       "revision": "foundation-v1",
       "name": "Chillwind Yeti",
@@ -35,7 +35,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_179",
       "revision": "foundation-v1",
       "name": "Sen'jin Shieldmasta",
@@ -67,7 +67,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_042",
       "revision": "foundation-v1",
       "name": "Fire Elemental",
@@ -132,7 +132,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_022",
       "revision": "foundation-v1",
       "name": "Polymorph",
@@ -190,7 +190,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_tk1",
       "revision": "foundation-v1",
       "name": "Sheep",
@@ -223,7 +223,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_032",
       "revision": "foundation-v1",
       "name": "Flamestrike",
@@ -277,7 +277,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_029",
       "revision": "foundation-v1",
       "name": "Fireball",
@@ -336,7 +336,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_015",
       "revision": "foundation-v2",
       "name": "Novice Engineer",
@@ -380,7 +380,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_106",
       "revision": "foundation-v3",
       "name": "Fiery War Axe",
@@ -411,7 +411,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_096",
       "revision": "foundation-v4",
       "name": "Loot Hoarder",
@@ -455,7 +455,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_011",
       "revision": "foundation-v5",
       "name": "Voodoo Doctor",
@@ -519,7 +519,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_092",
       "revision": "foundation-v5",
       "name": "Blessing of Kings",
@@ -577,7 +577,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_222",
       "revision": "foundation-v5",
       "name": "Stormwind Champion",
@@ -626,7 +626,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_048",
       "revision": "foundation-v5",
       "name": "Spellbreaker",
@@ -686,7 +686,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "GAME_005",
       "revision": "foundation-v6",
       "name": "The Coin",
@@ -726,7 +726,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_238",
       "revision": "foundation-v6",
       "name": "Lightning Bolt",
@@ -786,7 +786,7 @@
       "overload": 1
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_034",
       "revision": "foundation-v7",
       "name": "Fireblast",
@@ -844,7 +844,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS1h_001",
       "revision": "foundation-v7",
       "name": "Lesser Heal",
@@ -900,7 +900,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_124",
       "revision": "foundation-v7",
       "name": "Wolfrider",
@@ -932,7 +932,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "GIL_580",
       "revision": "foundation-v7",
       "name": "Rabid Worgen",
@@ -964,7 +964,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_033",
       "revision": "foundation-v7",
       "name": "Windfury Harpy",
@@ -996,7 +996,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_024",
       "revision": "foundation-v7",
       "name": "Frostbolt",
@@ -1062,7 +1062,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_046",
       "revision": "foundation-v7",
       "name": "Abusive Sergeant",
@@ -1126,7 +1126,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_506",
       "revision": "foundation-v8",
       "name": "Murloc Tidehunter",
@@ -1176,7 +1176,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_506a",
       "revision": "foundation-v8",
       "name": "Murloc Scout",
@@ -1208,7 +1208,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_027",
       "revision": "foundation-v8",
       "name": "Mirror Image",
@@ -1252,7 +1252,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_mirror",
       "revision": "foundation-v8",
       "name": "Mirror Image",
@@ -1284,7 +1284,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "FP1_002",
       "revision": "foundation-v8",
       "name": "Haunted Creeper",
@@ -1334,7 +1334,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "FP1_002t",
       "revision": "foundation-v8",
       "name": "Spectral Spider",
@@ -1364,7 +1364,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_049",
       "revision": "foundation-v8",
       "name": "Youthful Brewmaster",
@@ -1424,7 +1424,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_581",
       "revision": "foundation-v8",
       "name": "Sap",
@@ -1477,7 +1477,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_014",
       "revision": "foundation-v8",
       "name": "King Mukla",
@@ -1526,7 +1526,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_014t",
       "revision": "foundation-v8",
       "name": "Bananas",
@@ -1583,7 +1583,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "BRM_007",
       "revision": "foundation-v8",
       "name": "Gang Up",
@@ -1638,7 +1638,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "GVG_031",
       "revision": "foundation-v8",
       "name": "Recycle",
@@ -1691,7 +1691,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_101",
       "revision": "foundation-v8",
       "name": "Reinforce",
@@ -1735,7 +1735,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_101t",
       "revision": "foundation-v8",
       "name": "Silver Hand Recruit",
@@ -1765,7 +1765,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_007",
       "revision": "foundation-v9",
       "name": "Acolyte of Pain",
@@ -1811,7 +1811,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_235",
       "revision": "foundation-v9",
       "name": "Northshire Cleric",
@@ -1857,7 +1857,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_595",
       "revision": "foundation-v9",
       "name": "Cult Master",
@@ -1904,7 +1904,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "NEW1_020",
       "revision": "foundation-v9",
       "name": "Wild Pyromancer",
@@ -1964,7 +1964,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_044",
       "revision": "foundation-v9",
       "name": "Questing Adventurer",
@@ -2018,7 +2018,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "OG_113",
       "revision": "foundation-v9",
       "name": "Darkshire Councilman",
@@ -2072,7 +2072,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_287",
       "revision": "foundation-v9",
       "name": "Counterspell",
@@ -2116,7 +2116,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_594",
       "revision": "foundation-v9",
       "name": "Vaporize",
@@ -2165,7 +2165,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_610",
       "revision": "foundation-v9",
       "name": "Explosive Trap",
@@ -2225,7 +2225,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_130",
       "revision": "foundation-v9",
       "name": "Noble Sacrifice",
@@ -2273,7 +2273,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_130a",
       "revision": "foundation-v9",
       "name": "Defender",
@@ -2303,7 +2303,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_097",
       "revision": "foundation-v9",
       "name": "Truesilver Champion",
@@ -2355,7 +2355,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "FP1_021",
       "revision": "foundation-v9",
       "name": "Death's Bite",
@@ -2412,7 +2412,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "EX1_132",
       "revision": "foundation-v9",
       "name": "Eye for an Eye",
@@ -2465,7 +2465,7 @@
       ]
     },
     {
-      "schemaVersion": "1.10",
+      "schemaVersion": "1.11",
       "cardId": "CS2_142",
       "revision": "hardening-v1",
       "name": "Kobold Geomancer",
@@ -2496,6 +2496,409 @@
         "https://github.com/HearthSim/hs-data/blob/master/CardDefs.xml"
       ],
       "spellDamage": 1
+    },
+    {
+      "schemaVersion": "1.11",
+      "cardId": "EX1_277",
+      "revision": "foundation-v10",
+      "name": "Arcane Missiles",
+      "type": "SPELL",
+      "classes": [
+        "MAGE"
+      ],
+      "baseStats": {
+        "manaCost": 1
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "FREE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": "Deal 3 damage randomly split among all enemies."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "op": "RANDOM_DAMAGE",
+              "hits": 3,
+              "damageClass": "SPELL",
+              "selector": {
+                "zone": "PLAY",
+                "entityKind": "CHARACTER",
+                "controller": "OPPONENT_OF_EFFECT_CONTROLLER"
+              }
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/HearthSim/hs-data/e456d49d2147358dec6764cffb963c8e8d748d12/CardDefs.xml"
+      ]
+    },
+    {
+      "schemaVersion": "1.11",
+      "cardId": "EX1_082",
+      "revision": "foundation-v10",
+      "name": "Mad Bomber",
+      "type": "MINION",
+      "classes": [
+        "NEUTRAL"
+      ],
+      "baseStats": {
+        "manaCost": 2,
+        "attack": 3,
+        "health": 2
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [
+        "BATTLECRY"
+      ],
+      "text": {
+        "enUS": "Battlecry: Deal 3 damage randomly split between all other characters."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "BATTLECRY",
+          "effects": [
+            {
+              "op": "RANDOM_DAMAGE",
+              "hits": 3,
+              "damageClass": "ABILITY",
+              "selector": {
+                "zone": "PLAY",
+                "entityKind": "CHARACTER",
+                "controller": "ANY",
+                "exclude": [
+                  "SELF"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/HearthSim/hs-data/e456d49d2147358dec6764cffb963c8e8d748d12/CardDefs.xml"
+      ]
+    },
+    {
+      "schemaVersion": "1.11",
+      "cardId": "EX1_617",
+      "revision": "foundation-v10",
+      "name": "Deadly Shot",
+      "type": "SPELL",
+      "classes": [
+        "HUNTER"
+      ],
+      "baseStats": {
+        "manaCost": 3
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [],
+      "text": {
+        "enUS": "Destroy a random enemy minion."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "op": "DESTROY",
+              "recipient": {
+                "kind": "RANDOM",
+                "selector": {
+                  "zone": "PLAY",
+                  "entityKind": "MINION",
+                  "controller": "OPPONENT_OF_EFFECT_CONTROLLER"
+                }
+              },
+              "missingRecipient": "SKIP"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/HearthSim/hs-data/e456d49d2147358dec6764cffb963c8e8d748d12/CardDefs.xml"
+      ]
+    },
+    {
+      "schemaVersion": "1.11",
+      "cardId": "KAR_009",
+      "revision": "foundation-v10",
+      "name": "Babbling Book",
+      "type": "MINION",
+      "classes": [
+        "MAGE"
+      ],
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 2
+      },
+      "collectible": true,
+      "set": "KARA",
+      "rarity": "RARE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [
+        "BATTLECRY"
+      ],
+      "text": {
+        "enUS": "Battlecry: Add a random Mage spell to your hand."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "BATTLECRY",
+          "effects": [
+            {
+              "op": "ADD_RANDOM_CARD",
+              "pool": {
+                "cardType": "SPELL",
+                "classes": [
+                  "MAGE"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/HearthSim/hs-data/e456d49d2147358dec6764cffb963c8e8d748d12/CardDefs.xml"
+      ]
+    },
+    {
+      "schemaVersion": "1.11",
+      "cardId": "UNG_072",
+      "revision": "foundation-v10",
+      "name": "Stonehill Defender",
+      "type": "MINION",
+      "classes": [
+        "NEUTRAL"
+      ],
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 1,
+        "health": 5
+      },
+      "collectible": true,
+      "set": "UNGORO",
+      "rarity": "RARE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [
+        "TAUNT"
+      ],
+      "mechanics": [
+        "BATTLECRY",
+        "DISCOVER"
+      ],
+      "text": {
+        "enUS": "Taunt Battlecry: Discover a Taunt minion."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "BATTLECRY",
+          "effects": [
+            {
+              "op": "DISCOVER",
+              "pool": {
+                "cardType": "MINION",
+                "classes": [
+                  "NEUTRAL"
+                ],
+                "keywords": [
+                  "TAUNT"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/HearthSim/hs-data/e456d49d2147358dec6764cffb963c8e8d748d12/CardDefs.xml"
+      ]
+    },
+    {
+      "schemaVersion": "1.11",
+      "cardId": "CS2_125",
+      "revision": "foundation-v10",
+      "name": "Ironfur Grizzly",
+      "type": "MINION",
+      "classes": [
+        "NEUTRAL"
+      ],
+      "baseStats": {
+        "manaCost": 3,
+        "attack": 3,
+        "health": 3
+      },
+      "collectible": true,
+      "set": "BASIC",
+      "rarity": "FREE",
+      "tribes": [
+        "BEAST"
+      ],
+      "spellSchool": null,
+      "keywords": [
+        "TAUNT"
+      ],
+      "mechanics": [],
+      "text": {
+        "enUS": "Taunt"
+      },
+      "playConditions": [],
+      "abilities": [],
+      "sources": [
+        "https://raw.githubusercontent.com/HearthSim/hs-data/e456d49d2147358dec6764cffb963c8e8d748d12/CardDefs.xml"
+      ]
+    },
+    {
+      "schemaVersion": "1.11",
+      "cardId": "CS1_042",
+      "revision": "foundation-v10",
+      "name": "Goldshire Footman",
+      "type": "MINION",
+      "classes": [
+        "NEUTRAL"
+      ],
+      "baseStats": {
+        "manaCost": 1,
+        "attack": 1,
+        "health": 2
+      },
+      "collectible": true,
+      "set": "BASIC",
+      "rarity": "FREE",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [
+        "TAUNT"
+      ],
+      "mechanics": [],
+      "text": {
+        "enUS": "Taunt"
+      },
+      "playConditions": [],
+      "abilities": [],
+      "sources": [
+        "https://raw.githubusercontent.com/HearthSim/hs-data/e456d49d2147358dec6764cffb963c8e8d748d12/CardDefs.xml"
+      ]
+    },
+    {
+      "schemaVersion": "1.11",
+      "cardId": "EX1_154",
+      "revision": "foundation-v10",
+      "name": "Wrath",
+      "type": "SPELL",
+      "classes": [
+        "DRUID"
+      ],
+      "baseStats": {
+        "manaCost": 2
+      },
+      "collectible": true,
+      "set": "EXPERT1",
+      "rarity": "COMMON",
+      "tribes": [],
+      "spellSchool": null,
+      "keywords": [],
+      "mechanics": [
+        "CHOOSE_ONE"
+      ],
+      "text": {
+        "enUS": "Choose One - Deal 3 damage to a minion; or 1 damage and draw a card."
+      },
+      "playConditions": [],
+      "abilities": [
+        {
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "op": "CHOOSE_ONE",
+              "options": [
+                {
+                  "id": "option-0",
+                  "label": "Deal 3 damage",
+                  "effects": [
+                    {
+                      "op": "DEAL_DAMAGE",
+                      "amount": {
+                        "kind": "CONSTANT",
+                        "value": 3
+                      },
+                      "recipient": {
+                        "kind": "BOUND_TARGET",
+                        "name": "chosenTarget"
+                      },
+                      "missingRecipient": "SKIP",
+                      "application": "SINGLE_HIT",
+                      "damageClass": "SPELL"
+                    }
+                  ]
+                },
+                {
+                  "id": "option-1",
+                  "label": "Deal 1 damage and draw a card",
+                  "effects": [
+                    {
+                      "op": "DEAL_DAMAGE",
+                      "amount": {
+                        "kind": "CONSTANT",
+                        "value": 1
+                      },
+                      "recipient": {
+                        "kind": "BOUND_TARGET",
+                        "name": "chosenTarget"
+                      },
+                      "missingRecipient": "SKIP",
+                      "application": "SINGLE_HIT",
+                      "damageClass": "SPELL"
+                    },
+                    {
+                      "op": "DRAW_CARD",
+                      "count": 1,
+                      "targetPlayer": "EFFECT_CONTROLLER"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "targeting": {
+            "mode": "REQUIRED",
+            "bindAs": "chosenTarget",
+            "selector": {
+              "zone": "PLAY",
+              "entityKind": "MINION",
+              "controller": "ANY"
+            },
+            "legalityPolicy": "SPELL_SELECTED_TARGET"
+          }
+        }
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/HearthSim/hs-data/e456d49d2147358dec6764cffb963c8e8d748d12/CardDefs.xml"
+      ]
     }
   ],
   "deathResolutionPolicy": "DEATH_WAVES_FIFO",

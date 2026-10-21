@@ -10,10 +10,13 @@ from .zones import ZoneOperations
 from .reactions import ReactionScheduler
 from .errors import ResolutionLimitError
 from .effects import EffectOperations
+from .random_effects import RandomEffects
 
 
-class Prototype(ZoneOperations, ReactionScheduler, EffectOperations):
-    def __init__(self, catalog, max_deathrattles=1000, max_reactions=1000):
+class Prototype(ZoneOperations, ReactionScheduler, EffectOperations, RandomEffects):
+    def __init__(
+        self, catalog, max_deathrattles=1000, max_reactions=1000, max_random_steps=1000
+    ):
         errors = validate(catalog)
         if errors:
             raise ValueError('\n'.join(errors))
@@ -23,6 +26,10 @@ class Prototype(ZoneOperations, ReactionScheduler, EffectOperations):
         if type(max_reactions) is not int or max_reactions < 1:
             raise ValueError('max_reactions must be a positive integer')
         self.max_reactions = max_reactions
+        if type(max_random_steps) is not int or max_random_steps < 1:
+            raise ValueError('max_random_steps must be a positive integer')
+        self.max_random_steps = max_random_steps
+
         self.cards = {
             (c['cardId'], c['revision']): deepcopy(c) for c in catalog['cards']
         }
@@ -317,6 +324,8 @@ class Prototype(ZoneOperations, ReactionScheduler, EffectOperations):
             source['attacksThisTurn'] = 0
             self._place_minion(next_state, source, position)
             self._stamp_enter(next_state, source)
+        if not is_secret:
+            source.pop('privateTo', None)
         next_state['events'].append(dict(type='PLAY', source=source_id))
         if card['type'] == 'MINION':
             next_state['events'].append(
@@ -367,6 +376,7 @@ class Prototype(ZoneOperations, ReactionScheduler, EffectOperations):
         self._drain_reactions(next_state)
         self._deaths(next_state)
         if card['type'] == 'SPELL' and source['zone'] != 'SECRET':
+            source.pop('privateTo', None)
             source['zone'] = 'GRAVEYARD'
         self._result(next_state)
         return self._finish_reactions(next_state)
