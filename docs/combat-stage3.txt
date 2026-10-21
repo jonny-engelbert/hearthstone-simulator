@@ -1,3 +1,7 @@
+Historical stage notes. Catalog snapshots and old test totals were retired by
+hardening. Current requirements.txt, test-plan.txt and CHANGELOG.txt supersede
+version-preservation instructions and obsolete coverage statements below.
+
 Stage 3: Fiery War Axe, weapons, combat and durability
 =====================================================
 Implemented: 2026-10-20

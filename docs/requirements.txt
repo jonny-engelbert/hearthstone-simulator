@@ -1,204 +1,85 @@
-Reviewed card definition and execution contract
-==============================================
-Date: 2026-10-20
-Current schema: 1.6; catalog: foundation-v6
-Earlier stages: schemas 1.1 through 1.5; catalogs foundation-v1 through v5
-Profile: historical-foundation-fixtures
-Status: implemented prototype requirements, separate from full engine roadmap.
+Current card definition and execution contract
+=============================================
+Updated 2026-10-21: schema 1.10; catalog foundation-v9.1; 52 definitions.
+Profile: historical-foundation-fixtures, not one verified live-client patch.
 
-1. Scope and versioning
+Data and versioning
+-------------------
+FND-01: Definitions use exact (cardId, revision) references; instances have unique
+IDs and owner/controller/zone state. Display text is never executable logic.
+FND-02: One current catalog, schema and hash manifest, updated in place. Git
+preserves releases. Old revision labels identify definitions, not rule branches.
+FND-03: Reject unknown fields, operations, versions, incompatible kinds and
+unresolved references. Validate structure before semantic constraints. Diagnostics
+identify the relevant discriminated schema branch and offending field/rule.
+FND-04: Minions require Attack/Health, weapons Attack/durability, spells/powers
+mana cost only. Keywords, mechanics and ability kinds must agree.
 
-FND-01: A definition is keyed by (cardId, revision). Instance IDs identify
-individual objects in a match and must never be used as catalog identifiers.
-Preserve upstream IDs; never invent suffixes to conceal collisions.
+Execution and combat
+--------------------
+Targeting: REQUIRED prohibits play without a legal selection;
+REQUIRED_IF_AVAILABLE requires a selection when available; OPTIONAL permits none.
+Selectors and selected-target legality are separate (area damage ignores Stealth
+and Elusive). Board/hand/deck caps: 7/10/99. Mana is never negative.
+Damage: capture a batch's recipients and Spell Damage once; resolve every hit
+before its death checkpoint. Shield, Immune and Armor use the common pipeline.
+Spell Damage: sum SPELL_DAMAGE amounts on living, non-pending, non-silenced
+friendly minions in PLAY. Ignore sources in other zones, and enemy sources.
+Only SPELL-class damage receives this bonus, not hero powers, abilities or fatigue.
+Healing: cap at damage taken. Buffs are additive. Auras are flat friendly-minion
+modifiers. Health loss uses CAP_CURRENT_ON_MAX_LOSS. Silence removes operative
+keywords, buffs, Freeze and abilities. Transform resets the instance definition.
+Combat: validate readiness, Attack, attack counts, Freeze, Rush/Charge and Taunt;
+normal hits/retaliation capture Attack before applying damage. Weapons equip,
+replace, spend durability and run destruction scripts through the same scheduler.
+Entry stamps are explicit, unique and monotonic; there is no unstamped fallback.
 
-FND-02: The catalog envelope declares schemaVersion, catalogId, rulesProfile
-and basis. The manifest records exact catalog bytes with SHA-256. Definitions
-are copied into the interpreter, so caller edits cannot mutate its catalog.
-Do not overwrite a published revision to represent different gameplay.
+Draws, zones and death resolution
+--------------------------------
+Draw explicit deck order. A full-hand draw publicly reveals/burns the card.
+Empty decks escalate fatigue, even with a full hand. Summons do not run Battlecries.
+Generated instances get fresh IDs. Bounce/shuffle reset board modifiers; Gang Up
+creates clean base-definition copies. Death snapshots preserve last-known state.
+DEATH_WAVES_FIFO: remove each ordered death batch, then resolve its snapshots
+before collecting the next wave. Flat aura refreshes and nested deaths settle
+before returning control. Reaction/Deathrattle budgets fail atomically.
 
-FND-03: All foundation catalogs are deliberately historical test fixtures, not a complete
-historical patch snapshot or current Standard/Wild card pool. Fire Elemental
-deals 3 and Flamestrike deals 4. Spell schools and Fire Elemental's later-added
-Elemental tribe are intentionally absent. Text and effect constants agree.
-The fixture does not claim current card metadata or legal constructed decks.
+Managed matches and reaction timing
+----------------------------------
+Seeded setup/mulligan, Coin, complete turns, mana growth/refill, temporary mana,
+Overload locks, power usage, readiness, expiration and Freeze thawing belong to
+MatchEngine. Fixture primitives are not legal public player actions.
+Counterspell spends mana/card and still counts a play, but suppresses spell text,
+Overload and AFTER_SPELL. The hardening review's proposed Overload reversal is
+contradicted by Blizzard's archived answer (see reactions-stage9.txt).
+Reactions snapshot eligible sources, run depth first with explicit bounded work,
+revalidate sources and complete before the next decision. Attack interruptions
+can cancel or redirect; a returned state has no pending reaction frames.
 
-2. Definition structure
+Public APIs and privacy
+-----------------------
+apply accepts mulligan/play/hero_power/attack/end_turn/concede dictionaries.
+legal_actions reuses execution validators; returns canonical concrete actions.
+Enumerate all mulligan subsets (at most 16), each legal target and each minion
+position. Omitted target means none; minion positions are explicit. Equivalent
+optional-null/default spellings accepted by apply are not duplicated in the list.
+Finished games return []; inactive/waiting players can only concede.
+view returns own hand, public entities, counts, public resources and filtered
+events. Deck instances/order are hidden for both; opponent hand/Secrets have no
+private handles. Public bounce/reveal/exact generation can identify hand cards;
+drawing/shuffling clears that knowledge. No RNG, scheduler, stamps, provenance
+pointers, death snapshots, mulligan choices or setup deck lists cross this API.
+Full states, raw event logs and checkpoints remain private debug data. Views are
+not restorable checkpoints. New private random generation will require an
+explicit visibility policy when introduced in stage 10.
 
-FND-04: Every definition provides name, type, classes, baseStats, collectible,
-set, rarity, tribes, spellSchool, keywords, mechanics, localized text,
-playConditions, abilities, and source links. In this narrow historical profile
-basic cards use set=BASIC and rarity=FREE; Loot Hoarder uses
-set=EXPERT1 and rarity=COMMON. Zero mana and zero Attack are valid; minion Health
-must be positive. Spells cannot contain Attack, Health or durability. Weapons require Attack and
-positive durability, have no Health, and do not occupy minion board slots.
-
-FND-05: JSON Schema validates structure, required fields and supported enums.
-Unknown fields, schema versions, operations and policies fail closed.
-The prototype supports MINION, SPELL and plain WEAPON, the fixture's classes and keywords,
-and at most one ability of each supported kind per definition: BATTLECRY,
-DEATHRATTLE, AURA, START_OF_TURN and END_OF_TURN on minions; SPELL_EFFECT on spells.
-Weapons have no abilities in this stage. Adding other
-types requires schema, semantic validator, interpreter, documentation and tests.
-Do not confuse the narrow supported schema with the complete future domain.
-
-FND-06: Semantic validation rejects duplicate definition keys, dangling or
-wrong-type transform references, unbound target names, incompatible ability
-and damage classes, conflicting targeting policies and inconsistent mechanic
-labels. Polymorph refers to Sheep by both cardId and revision.
-
-3. Runtime state and targeting
-
-FND-07: Instances store owner and controller separately, zone, definition
-reference, damage, armor, mutable keywords, enchantments and readiness.
-Characters track attacksThisTurn; weapon instances track current durability.
-Minions/weapon entries carry globally unique playOrder stamps. State records
-nextPlayOrder and immutable-at-capture deathHistory snapshots.
-Printed stats come from the definition. Permanent positive STAT_BUFF entries
-add Attack/Health; active flat AURA abilities add separate contributions.
-effectiveStats caches normalized values, with an explicit Health adjustment
-policy on max-Health loss. Legacy fixture strings remain opaque annotations.
-State and event logs are JSON-serializable dictionaries. Runtime fixture state
-is trusted test input, not a validated public interchange format.
-
-FND-08: REQUIRED demands one legal target; absence rejects play.
-REQUIRED_IF_AVAILABLE demands a target if any legal candidate exists, and
-otherwise allows no target. OPTIONAL allows a legal target or no target.
-The ability's targeting object is the single source of target requirements.
-playConditions must be empty until independent predicates are implemented.
-
-FND-09: A selector declares zone, entityKind, controller relation and optional
-self exclusion. Enemy relations are relative to the effect controller.
-SPELL_SELECTED_TARGET excludes enemy Stealth and Immune and all Elusive
-characters. BATTLECRY_SELECTED_TARGET excludes enemy Stealth and Immune but
-permits Elusive. Taunt restricts attack selection, not these abilities.
-Friendly Stealth and Immune do not prevent selected targeting; Immune still
-prevents damage. These are explicitly scoped fixture policies.
-
-FND-10: A source must be in the acting player's hand, with enough mana, on that
-player's decision point. Minion play requires a free slot out of seven.
-Invalid play raises an error and changes neither the input state nor its log.
-Valid play returns a new state, pays mana, and places a minion exhausted or
-resolves a spell before moving it to the graveyard. Weapon play equips it and
-replaces any prior weapon under the same controller (see WPN requirements).
-
-4. Effects and damage
-
-FND-11: DEAL_DAMAGE has a constant amount, recipient, missingRecipient=SKIP,
-application and damageClass. BOUND_TARGET uses a declared binding. QUERY
-captures an affected set at EFFECT_START. Affected-set queries do not inherit
-selected-target restrictions. Missing bound recipients skip the effect.
-
-FND-12: SINGLE_HIT uses a bound target. SINGLE_DAMAGE_BATCH uses a query.
-Compute the spell bonus and deliver that amount separately to every recipient.
-For 4 base damage and +1 Spell Damage, each affected minion takes 5 before
-prevention. Batching controls timing, not bonus distribution.
-
-FND-13: SPELL damage receives the controller's fixture spellDamage bonus.
-ABILITY damage does not. Both pass through Immune, Divine Shield, and Armor
-before increasing damage. Divine Shield is consumed only on a positive hit.
-NO_MODIFIERS is intentionally unsupported; source category must not bypass
-shared defenses. spellDamage is a fixture input, not an implemented aura.
-
-FND-14: All damage in a batch occurs before removing lethal minions together.
-The fixture emits PLAY, DAMAGE, DEATH_BATCH and TRANSFORM events, plus
-DEATHRATTLE and DESTROY in stage 4. Death checkpoints follow whole abilities
-and paired combat damage. Each wave removes all dying minions, captures
-Deathrattles in play order, drains that queue, then collects the next wave.
-General reaction windows and damage-trigger listeners are not implemented.
-This explicit fixture policy does not establish live-client timing conformance.
-
-FND-15: TRANSFORM replaces the definition with the referenced minion, clears
-damage, armor, keywords and attached modifiers, restores destination keywords,
-and preserves owner, controller and list position. The fixture retains the
-instance ID, resets readiness, and emits TRANSFORM without SUMMON or DEATH.
-Full entity identity, play-order stamping and readiness semantics require
-live-client verification before implementing the complete transform policy.
-
-FND-16: After resolving a fixture play, check hero damage and emit a final
-winner/draw marker. Reject further plays once the result is final. There are
-no damage replacement effects currently implemented.
-
-5. Future engine contract (not implemented)
-
-The original engine specification remains a roadmap after corrections recorded
-in review-and-decisions.txt. Remaining full-engine work includes draw-trigger reactions,
-advanced combat interruptions, random card effects, pending choices, legal-action enumeration,
-format legality, hidden views, save/restore, advanced stat layers, enchantment
-transitions, advanced weapon scripts, advanced hero powers, locations, replacement effects,
-quests, additional event families, board-state copies and random generated pools.
-
-Do not declare an operation supported merely because its enum is added.
-Stage-2 extension: requirements DRW-01..12 in drawing-stage2.txt add DRAW_CARD,
-ordered deck instance IDs, successful draws, full-hand burns and fatigue.
-Novice Engineer uses a new foundation-v2 definition revision; unchanged cards
-retain their original revisions. All nine versioned schemas/catalogs are supported.
-The legacy Prototype fixture has no turn runner; managed matches now use MatchEngine.
-
-Every extension must ship structural tests, semantic negative tests and
-behavioral scenarios. Every historical or uncertain timing policy needs
-recorded evidence and a versioned policy before claiming live-game parity.
-
-Stage-3 extension: WPN-01..12 in combat-stage3.txt define plain weapon equip,
-replacement, normal declared attacks, paired damage, attack counters and
-durability. The combat-turn primitive refreshes incoming-player readiness only;
-thaw/temporary-modifier phases are implemented in stage 7; managed mana/draw/turn hooks
-are now implemented in stage 6. Fiery War Axe uses
-revision foundation-v3; other definitions keep their previous exact revisions.
-
-Stage-4 extension: DTH-01..12 in deaths-stage4.txt define death snapshots,
-controller-at-death, play-order stamps, an immutable per-wave queue, iterative
-nested resolution and a bounded atomic failure mode. Generic DESTROY marks
-minions for collection at the next checkpoint. Loot Hoarder uses revision
-foundation-v4; earlier artifacts remain unchanged. Weapons with Deathrattles,
-general event listeners, summons/resurrection and advanced auras remain future work.
-
-Stage-5 extension: STA-01..12 in stats-stage5.txt define healing, positive
-permanent minion stat buffs, flat friendly-minion auras and minion silence.
-Normalize stats after board/effect changes and before death checks. The named
-CAP_CURRENT_ON_MAX_LOSS policy preserves current Health on max-Health loss
-up to the new cap, adjusting accumulated damage. Hero Health and Armor remain
-separate; healing changes damage only. Cost/set-stat modifiers, keyword
-grants and conditional/adjacent auras remain future work. See roadmap.txt.
-
-Stage-6 extension: MAT-01..16 in match-stage6.txt define the managed match
-lifecycle, deterministic setup RNG, atomic mulligans, start/main/end phases,
-automatic draws, mana buckets, temporary mana expiry, Overload and match limits.
-START_OF_TURN/END_OF_TURN use owner-scoped ordered queues. MatchEngine player
-actions reject fixture shortcuts and require managed states. Deck profile is
-FOUNDATION_SANDBOX: size and collectible definitions checked; class/copy/format
-legality follows in a later stage. CAPPED_TEMPORARY_MANA replaces the original
-spec's unverified 11-of-10 temporary-mana example for this historical profile.
-
-Stage-7 extension: KEY-01..11 in keywords-stage7.txt define hero-power actions,
-separate targeting/damage classes, Charge/Rush/Windfury combat limits, explicit
-Freeze deadlines, and timed minion buff expiration. Managed start/end phases
-perform resets and expiration. Preserve supplied KW-05 as a fixture policy,
-including next-own-turn thaw after any attack; do not claim client parity.
-Hero power configuration does not enforce deck classes. Timed modifiers use
-current global turn or effect controller's next own turn, independent of
-recipient/source lifetime. All new definitions and schemas use version 1.7.
-
-Stage-8 extension: ZON-01..14 in zones-stage8.txt define ordered board placement,
-SUMMON, ADD_CARD, RETURN_TO_HAND, SHUFFLE_INTO_DECK and SHUFFLE_COPIES. New
-entities use deterministic serialized IDs. Movement retains instance identity
-and owner but resets board effects; deck copies use the current exact base
-definition, not board state. Full-hand bounce destroys in play and preserves
-Deathrattle eligibility. Virtual death slots preserve summon positioning within
-FIFO death waves. Catalog/schema/manifest name RESET_ON_EXIT_BASE_DECK_COPIES.
-The 99-card cap follows the supplied spec; destruction on failed full-deck
-shuffle remains an explicit unverified fixture policy. Earlier catalogs retain
-legacy placement/event behavior. Reactive listeners are the next stage.
-
-Stage-9 extension: REA-01..16 in reactions-stage9.txt define TRIGGER/SECRET
-abilities, event-time immutable listener queues, source revalidation, typed
-event recipients and bounded depth-first delivery. Card play publishes before/
-after windows; damage/heal/summon/death observations use the same scheduler.
-Countered spells pay but skip text, Overload and After Spell. Secrets occupy
-five distinct slots and activate only off-turn. Combat preparation supports
-cancellation and fixed Defender redirection, followed by paired combat damage.
-Weapons support before-attack scripts and last-known destruction Deathrattles.
-DEPTH_FIRST_REACTIONS_DEATH_WAVES_V1 records the explicit historical fixture
-choices, including cancellation refund and bounded reentrant callbacks rather
-than the supplied obsolete self-deferral/two-death-phase attack-count rules.
-No client-patch conformance or per-player Secret redaction is claimed yet.
+State copies and development policy
+----------------------------------
+Actions return independent mutable game state. Historical event payloads are
+immutable and shared safely; each state owns its log sequence. JSON export/
+restore stays plain and deterministic. Payload list copies are shallow O(n),
+not deep copies of all prior events; a fully persistent log is not implemented.
+No new per-stage snapshot/doc/report files: update current files and CHANGELOG.
+Historical stage notes retain detailed fixture policies; code/tests are current.
+Future: random effects/choices, constructed deck legality, typed public contracts,
+and a single pinned client/card profile with client-log conformance evidence.

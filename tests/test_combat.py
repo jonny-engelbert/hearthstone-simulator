@@ -1,4 +1,7 @@
+from fixtures import assert_invalid, invalid_field
+from fixtures import spell_bonus
 from fixtures import enter
+
 """Stage 3: plain weapons and normal hero/minion combat."""
 from copy import deepcopy
 import json
@@ -15,33 +18,56 @@ class WeaponCatalogTests(unittest.TestCase):
         axe = next(c for c in load()['cards'] if c['cardId'] == 'CS2_106')
         self.assertEqual(axe['type'], 'WEAPON')
         self.assertEqual(axe['classes'], ['WARRIOR'])
-        self.assertEqual(axe['baseStats'], {'manaCost': 2, 'attack': 3, 'durability': 2})
+        self.assertEqual(
+            axe['baseStats'], {'manaCost': 2, 'attack': 3, 'durability': 2}
+        )
         self.assertEqual(axe['abilities'], [])
 
     def test_weapon_stat_shapes_are_strict(self):
-        for field, value in [('health', 2), ('durability', 0), ('durability', -1),
-                             ('durability', True), ('durability', 1.5), ('attack', -1)]:
+        for field, value in [
+            ('health', 2),
+            ('durability', 0),
+            ('durability', -1),
+            ('durability', True),
+            ('durability', 1.5),
+            ('attack', -1),
+        ]:
             with self.subTest(field=field, value=value):
                 catalog = load()
-                next(c for c in catalog['cards'] if c['cardId'] == 'CS2_106')['baseStats'][field] = value
-                self.assertTrue(validate(catalog))
+                next(c for c in catalog['cards'] if c['cardId'] == 'CS2_106')[
+                    'baseStats'
+                ][field] = value
+                assert_invalid(
+                    self,
+                    catalog,
+                    (
+                        ('health', 'should not be valid under')
+                        if field == 'health'
+                        else invalid_field(field, value)
+                    ),
+                )
         for field in ('attack', 'durability'):
             catalog = load()
-            del next(c for c in catalog['cards'] if c['cardId'] == 'CS2_106')['baseStats'][field]
-            self.assertTrue(validate(catalog))
+            del next(c for c in catalog['cards'] if c['cardId'] == 'CS2_106')[
+                'baseStats'
+            ][field]
+            assert_invalid(self, catalog, f"'{field}' is a required property")
 
     def test_minions_and_spells_cannot_have_durability(self):
         for index in (0, 3):
             catalog = load()
             catalog['cards'][index]['baseStats']['durability'] = 2
-            self.assertTrue(validate(catalog))
+            assert_invalid(self, catalog, ('durability', 'should not be valid under'))
 
-    def test_scripted_weapons_are_rejected_until_scheduler_exists(self):
+    def test_battlecry_weapon_is_rejected(self):
         catalog = load()
-        next(c for c in catalog['cards'] if c['cardId'] == 'CS2_106')['abilities'] = deepcopy(catalog['cards'][2]['abilities'])
-        next(c for c in catalog['cards'] if c['cardId'] == 'CS2_106')['mechanics'] = ['BATTLECRY']
-        self.assertTrue(validate(catalog))
-
+        next(c for c in catalog['cards'] if c['cardId'] == 'CS2_106')['abilities'] = (
+            deepcopy(catalog['cards'][2]['abilities'])
+        )
+        next(c for c in catalog['cards'] if c['cardId'] == 'CS2_106')['mechanics'] = [
+            'BATTLECRY'
+        ]
+        assert_invalid(self, catalog, ('mechanics', "'DEATHRATTLE' was expected"))
 
 
 class CombatTests(unittest.TestCase):
@@ -76,7 +102,9 @@ class CombatTests(unittest.TestCase):
         self.assertEqual(result['mana'][0], 8)
         self.assertEqual(self.engine.equipped_weapon(result, 0)['id'], 'axe')
         self.assertEqual(self.get(result, 'axe')['durability'], 2)
-        self.assertEqual(self.engine.current_attack(result, self.get(result, 'hero-0')), 3)
+        self.assertEqual(
+            self.engine.current_attack(result, self.get(result, 'hero-0')), 3
+        )
         self.assertIn('hero-1', self.engine.attack_targets(result, 'hero-0'))
 
     def test_replacement_destroys_old_without_touching_opponent(self):
@@ -88,16 +116,26 @@ class CombatTests(unittest.TestCase):
         self.assertEqual(self.get(result, 'old')['durability'], 2)
         self.assertEqual(self.get(result, 'enemy-axe')['zone'], 'PLAY')
         self.assertEqual(self.engine.equipped_weapon(result, 0)['id'], 'new')
-        self.assertEqual(result['events'][-2:], [
-            {'type': 'WEAPON_DESTROYED', 'weapon': 'old', 'reason': 'REPLACED'},
-            {'type': 'EQUIP', 'weapon': 'new', 'player': 0}])
+        self.assertEqual(
+            result['events'][-2:],
+            [
+                {'type': 'WEAPON_DESTROYED', 'weapon': 'old', 'reason': 'REPLACED'},
+                {'type': 'EQUIP', 'weapon': 'new', 'player': 0},
+            ],
+        )
 
     def test_weapon_does_not_use_a_minion_board_slot(self):
-        for i in range(7): self.add(f'm{i}')
+        for i in range(7):
+            self.add(f'm{i}')
         self.equip()
         self.assertEqual(self.get(self.state, 'axe')['zone'], 'PLAY')
-        self.assertEqual(sum(e['kind'] == 'MINION' and e['zone'] == 'PLAY'
-                             for e in self.state['entities']), 7)
+        self.assertEqual(
+            sum(
+                e['kind'] == 'MINION' and e['zone'] == 'PLAY'
+                for e in self.state['entities']
+            ),
+            7,
+        )
 
     def test_invalid_weapon_play_preserves_previous_weapon_and_mana(self):
         self.equip('old')
@@ -120,7 +158,10 @@ class CombatTests(unittest.TestCase):
         self.assertEqual(self.get(result, 'hero-0')['damage'], 4)
         self.assertEqual(self.get(result, 'axe')['durability'], 1)
         self.assertEqual(self.get(result, 'hero-0')['attacksThisTurn'], 1)
-        self.assertEqual([e['damageClass'] for e in self.events(result, 'DAMAGE')], ['COMBAT', 'COMBAT'])
+        self.assertEqual(
+            [e['damageClass'] for e in self.events(result, 'DAMAGE')],
+            ['COMBAT', 'COMBAT'],
+        )
 
     def test_minions_deal_simultaneous_damage_and_die_together(self):
         a = self.add('a')
@@ -129,8 +170,14 @@ class CombatTests(unittest.TestCase):
         result = self.engine.attack(self.state, 0, 'a', 'b')
         self.assertEqual(self.get(result, 'a')['damage'], 5)
         self.assertEqual(self.get(result, 'b')['damage'], 5)
-        self.assertEqual(self.events(result, 'DEATH_BATCH'), [{'type': 'DEATH_BATCH', 'targets': ['a', 'b']}])
-        self.assertEqual([e['type'] for e in result['events']], ['ATTACK', 'DAMAGE', 'DAMAGE', 'DEATH_BATCH'])
+        self.assertEqual(
+            self.events(result, 'DEATH_BATCH'),
+            [{'type': 'DEATH_BATCH', 'targets': ['a', 'b']}],
+        )
+        self.assertEqual(
+            [e['type'] for e in result['events']],
+            ['ATTACK', 'DAMAGE', 'DAMAGE', 'DEATH_BATCH'],
+        )
 
     def test_lethally_hit_defender_still_retaliates(self):
         self.add('attacker')
@@ -157,7 +204,8 @@ class CombatTests(unittest.TestCase):
                 result = self.engine.attack(self.state, 0, attacker, 'hero-1')
                 before = deepcopy(result)
                 self.assertEqual(self.engine.attack_targets(result, attacker), [])
-                with self.assertRaises(ValueError): self.engine.attack(result, 0, attacker, 'hero-1')
+                with self.assertRaises(ValueError):
+                    self.engine.attack(result, 0, attacker, 'hero-1')
                 self.assertEqual(result, before)
 
     def test_replacement_does_not_reset_hero_attack_count(self):
@@ -165,7 +213,8 @@ class CombatTests(unittest.TestCase):
         self.state = self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
         self.equip('new')
         self.assertEqual(self.get(self.state, 'hero-0')['attacksThisTurn'], 1)
-        with self.assertRaises(ValueError): self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
+        with self.assertRaises(ValueError):
+            self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
         self.assertEqual(self.get(self.state, 'new')['durability'], 2)
 
     def test_replacement_before_attack_still_allows_one_attack(self):
@@ -184,9 +233,16 @@ class CombatTests(unittest.TestCase):
         self.assertEqual(self.get(result, 'axe')['durability'], 0)
         self.assertEqual(self.get(result, 'axe')['zone'], 'GRAVEYARD')
         self.assertIsNone(self.engine.equipped_weapon(result, 0))
-        self.assertEqual(self.engine.current_attack(result, self.get(result, 'hero-0')), 0)
-        self.assertEqual(self.events(result, 'WEAPON_DESTROYED')[-1]['reason'], 'EXHAUSTED')
-        self.assertEqual(self.engine.cards[('CS2_106', 'foundation-v3')]['baseStats']['durability'], 2)
+        self.assertEqual(
+            self.engine.current_attack(result, self.get(result, 'hero-0')), 0
+        )
+        self.assertEqual(
+            self.events(result, 'WEAPON_DESTROYED')[-1]['reason'], 'EXHAUSTED'
+        )
+        self.assertEqual(
+            self.engine.cards[('CS2_106', 'foundation-v3')]['baseStats']['durability'],
+            2,
+        )
 
     def test_minion_attacking_never_spends_friendly_weapon_durability(self):
         self.equip()
@@ -198,10 +254,14 @@ class CombatTests(unittest.TestCase):
     def test_weapon_attack_is_sheathed_on_opponents_turn(self):
         self.equip()
         result = self.engine.begin_combat_turn(self.state, 1)
-        self.assertEqual(self.engine.current_attack(result, self.get(result, 'hero-0')), 0)
+        self.assertEqual(
+            self.engine.current_attack(result, self.get(result, 'hero-0')), 0
+        )
         self.assertEqual(self.engine.attack_targets(result, 'hero-0'), [])
         result = self.engine.begin_combat_turn(result, 0)
-        self.assertEqual(self.engine.current_attack(result, self.get(result, 'hero-0')), 3)
+        self.assertEqual(
+            self.engine.current_attack(result, self.get(result, 'hero-0')), 3
+        )
 
     def test_taunt_restricts_hero_and_minion_attacks(self):
         self.equip()
@@ -209,16 +269,22 @@ class CombatTests(unittest.TestCase):
         self.add('taunt', 'CS2_179', player=1)
         self.add('other', player=1)
         for attacker in ('hero-0', 'attacker'):
-            self.assertEqual(self.engine.attack_targets(self.state, attacker), ['taunt'])
-            with self.assertRaises(ValueError): self.engine.attack(self.state, 0, attacker, 'other')
+            self.assertEqual(
+                self.engine.attack_targets(self.state, attacker), ['taunt']
+            )
+            with self.assertRaises(ValueError):
+                self.engine.attack(self.state, 0, attacker, 'other')
 
     def test_stealthed_or_immune_taunt_does_not_protect_other_targets(self):
         self.equip()
         taunt = self.add('taunt', 'CS2_179', player=1)
         for keyword in ('STEALTH', 'IMMUNE'):
             taunt['keywords'] = ['TAUNT', keyword]
-            self.assertEqual(self.engine.attack_targets(self.state, 'hero-0'), ['hero-1'])
-            with self.assertRaises(ValueError): self.engine.attack(self.state, 0, 'hero-0', 'taunt')
+            self.assertEqual(
+                self.engine.attack_targets(self.state, 'hero-0'), ['hero-1']
+            )
+            with self.assertRaises(ValueError):
+                self.engine.attack(self.state, 0, 'hero-0', 'taunt')
 
     def test_divine_shield_prevents_hit_but_still_consumes_attack_and_durability(self):
         self.equip()
@@ -240,7 +306,7 @@ class CombatTests(unittest.TestCase):
 
     def test_combat_damage_uses_armor_not_spell_bonus(self):
         self.equip()
-        self.state['spellDamage'][0] = 50
+        spell_bonus(self.engine, self.state, 0, 3)
         self.get(self.state, 'hero-1')['armor'] = 2
         result = self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
         self.assertEqual(self.get(result, 'hero-1')['armor'], 0)
@@ -249,11 +315,13 @@ class CombatTests(unittest.TestCase):
     def test_exhausted_frozen_and_cannot_attack_are_rejected(self):
         self.equip()
         self.add('minion', ready=False)
-        with self.assertRaises(ValueError): self.engine.attack(self.state, 0, 'minion', 'hero-1')
+        with self.assertRaises(ValueError):
+            self.engine.attack(self.state, 0, 'minion', 'hero-1')
         for keyword in ('FROZEN', 'CANT_ATTACK'):
             self.get(self.state, 'hero-0')['keywords'] = [keyword]
             before = deepcopy(self.state)
-            with self.assertRaises(ValueError): self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
+            with self.assertRaises(ValueError):
+                self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
             self.assertEqual(self.state, before)
 
     def test_zero_attack_and_non_character_attackers_are_rejected(self):
@@ -261,7 +329,8 @@ class CombatTests(unittest.TestCase):
         self.add('axe', 'CS2_106')
         self.get(self.state, 'axe')['zone'] = 'HAND'
         for attacker in ('hero-0', 'spell', 'axe'):
-            with self.assertRaises(ValueError): self.engine.attack(self.state, 0, attacker, 'hero-1')
+            with self.assertRaises(ValueError):
+                self.engine.attack(self.state, 0, attacker, 'hero-1')
 
     def test_invalid_defenders_players_and_zones_are_atomic(self):
         self.equip()
@@ -269,13 +338,22 @@ class CombatTests(unittest.TestCase):
         self.add('hand-minion', player=1, zone='HAND')
         self.add('enemy-weapon', 'CS2_106', player=1)
         before = deepcopy(self.state)
-        for defender in ('hero-0', 'friendly', 'axe', 'hand-minion', 'enemy-weapon', 'unknown'):
+        for defender in (
+            'hero-0',
+            'friendly',
+            'axe',
+            'hand-minion',
+            'enemy-weapon',
+            'unknown',
+        ):
             with self.subTest(defender=defender), self.assertRaises(ValueError):
                 self.engine.attack(self.state, 0, 'hero-0', defender)
             self.assertEqual(self.state, before)
         for player in (-1, 1, 2, True):
-            with self.assertRaises(ValueError): self.engine.attack(self.state, player, 'hero-0', 'hero-1')
-        with self.assertRaises(ValueError): self.engine.attack(self.state, 0, 'unknown', 'hero-1')
+            with self.assertRaises(ValueError):
+                self.engine.attack(self.state, player, 'hero-0', 'hero-1')
+        with self.assertRaises(ValueError):
+            self.engine.attack(self.state, 0, 'unknown', 'hero-1')
 
     def test_combat_turn_refreshes_only_incoming_players_characters(self):
         a = self.add('a', ready=False)
@@ -325,20 +403,26 @@ class CombatTests(unittest.TestCase):
         self.get(self.state, 'hero-1')['damage'] = 27
         result = self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
         self.assertEqual(result['result'], 'PLAYER_0_WINS')
-        with self.assertRaises(ValueError): self.engine.attack(result, 0, 'hero-0', 'hero-1')
-        with self.assertRaises(ValueError): self.engine.begin_combat_turn(result, 1)
-        with self.assertRaises(ValueError): self.engine.draw(result, 0)
-        with self.assertRaises(ValueError): self.engine.play(result, 0, 'axe')
+        with self.assertRaises(ValueError):
+            self.engine.attack(result, 0, 'hero-0', 'hero-1')
+        with self.assertRaises(ValueError):
+            self.engine.begin_combat_turn(result, 1)
+        with self.assertRaises(ValueError):
+            self.engine.draw(result, 0)
+        with self.assertRaises(ValueError):
+            self.engine.play(result, 0, 'axe')
 
     def test_ambiguous_or_broken_equipped_weapon_is_rejected(self):
         self.equip()
         self.get(self.state, 'axe')['durability'] = 0
         before = deepcopy(self.state)
-        with self.assertRaises(ValueError): self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
+        with self.assertRaises(ValueError):
+            self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
         self.assertEqual(self.state, before)
         self.get(self.state, 'axe')['durability'] = 2
         self.add('other', 'CS2_106')
-        with self.assertRaises(ValueError): self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
+        with self.assertRaises(ValueError):
+            self.engine.attack(self.state, 0, 'hero-0', 'hero-1')
 
     def test_combat_is_deterministic_serializable_and_input_immutable(self):
         self.equip()
@@ -346,7 +430,9 @@ class CombatTests(unittest.TestCase):
         before = deepcopy(self.state)
         result = self.engine.attack(self.state, 0, 'hero-0', 'defender')
         self.assertEqual(self.state, before)
-        self.assertEqual(result, self.engine.attack(self.state, 0, 'hero-0', 'defender'))
+        self.assertEqual(
+            result, self.engine.attack(self.state, 0, 'hero-0', 'defender')
+        )
         self.assertEqual(result, json.loads(json.dumps(result)))
 
 

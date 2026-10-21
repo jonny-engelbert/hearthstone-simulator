@@ -1,137 +1,57 @@
-Foundation conformance test plan
-===============================
-Date: 2026-10-20
-Command: python3 -m unittest discover -s tests -v
-Current result: 382 tests pass (63 catalog/version checks, 4 RNG checks, 315 behavior scenarios).
-The 28 stage-1 tests remain, with 27 stage-2 tests in test_drawing.py.
-See drawing-stage2.txt for DRW requirements, scenarios and the draw API.
-Stage 3 adds 36 tests in test_combat.py. See combat-stage3.txt for WPN
-requirements, supported combat rules, limitations and test traceability.
-Stage 4 adds 34 tests in test_deaths.py (9 catalog, 25 behavior).
-See deaths-stage4.txt for DTH requirements and death-wave policy.
-Stage 5 adds 42 tests in test_stats.py (8 catalog, 34 behavior).
-See stats-stage5.txt for STA requirements and the Health modifier policy.
-Stage 6 adds 55 tests: 5 catalog, 4 RNG, 35 managed-match and 11 resource tests.
-See match-stage6.txt for MAT requirements and full-game replay coverage.
+Conformance and hardening test plan
+===================================
+Run: python3 -m unittest discover -s tests -q
+Catalog: python3 -m hearthstone.catalog
+Hashes: python3 -m hearthstone.manifest
+Current measured results are in CHANGELOG.txt, rather than per-stage reports.
 
-Layer 1: Structural validation
-------------------------------
-Check JSON Schema itself against Draft 2020-12. Accept all 51 current definitions and all eight preserved catalogs.
-Reject unknown fields, operations, policies and schema versions; negative mana;
-nonpositive minion Health; missing minion stats; and stats on spells.
-Tests: CatalogTests.test_schema_itself_is_valid,
-test_unknown_fields_and_operations_are_rejected,
-test_invalid_stat_shapes_are_rejected.
-Requirements: FND-04, FND-05.
+1. Catalog structure and semantics
+   Validate the schema itself and all current definitions. Reject malformed
+   stats, kinds, keywords, targeting, policies, effects and exact references.
+   Negative tests assert the expected diagnostic, never merely any error.
+   Verify the current manifest; Git history preserves previous definitions.
 
-Layer 2: Semantic validation
-----------------------------
-Check reviewed ID/name mappings, unique (ID, revision) pairs, bound targets,
-exact token revisions, transform destination type, ability/type compatibility,
-damage classification, and recipient/batch compatibility.
-Tests: all remaining CatalogTests methods.
-Requirements: FND-01, FND-03, FND-06.
-The ID/name regression oracle is separate from generic schema validation:
-a structurally valid arbitrary ID is not evidence of a real Hearthstone card.
+2. Representative-card behavior
+   tests/test_conformance.py, test_drawing.py, test_combat.py, test_deaths.py,
+   test_stats.py, test_match.py, test_keywords.py, test_zones.py, test_reactions.py.
+   See mechanics-coverage.txt and card-inventory.txt for the card mapping.
+   test_hardening.py adds live Kobold Spell Damage, source removal, unaffected
+   hero powers/fatigue/Battlecry, operation dispatch, and private player views.
+   Counterspell/Lightning Bolt regression expects spent mana, no damage and no
+   pending Overload, following the archived Blizzard explanation.
 
-Layer 3: Executable fixture scenarios
--------------------------------------
-BehaviorTests uses manually arranged states and explicit expected outcomes.
-It executes the catalog through the same generic interpreter used by the
-prototype, without card-name or card-ID branches in execution code.
+3. Public legality and random-game properties
+   test_actions.py exercises every listed action from each state in six seeded
+   random games, rejects sampled invalid targets/positions/sources atomically,
+   and checks every mulligan subset, capacities, Secrets and power usage.
+   Drive games exclusively through legal_actions/apply, excluding concession
+   from random choice so games reach natural or turn-limit results.
+   After each action: board <= 7; hand <= 10; positive minion Health in PLAY;
+   unique entity/deck IDs; matching deck membership; nonnegative mana; no pending
+   reactions. Finished games offer no actions and reject result-changing actions.
+   Periodically restore through JSON, then compare repeated complete traces.
+   Larger reproducible run:
+     HS_RANDOM_GAMES=100 python3 -m unittest discover -s tests -p test_actions.py -q
 
-Scenario families and requirement traceability:
-- Vanilla play, exhaustion, mana, full board and wrong turn: FND-10.
-- Definition independence and distinct copies: FND-01, FND-07.
-- Required/conditional/optional targeting and illegal-action atomicity:
-  FND-08, FND-09, FND-10.
-- Battlecry self exclusion and no-valid-target branch: FND-08, FND-09.
-- Spell versus Battlecry targeting, Stealth and Elusive: FND-09.
-- Battlecry versus Spell Damage, Divine Shield and Armor: FND-12, FND-13.
-- Area recipients, per-recipient bonus and grouped lethal removal:
-  FND-11, FND-12, FND-14.
-- Area damage bypasses selection protections but respects Immune: FND-09,13.
-- Polymorph clears damage/buffs and preserves control without a death:
-  FND-15 (fixture policy only).
-- Taunt limits attack choices but not Fireball: FND-09.
-- Empty-board Flamestrike remains playable: FND-08, FND-11.
-- Identical inputs return identical state/log output: FND-10.
-- Lethal damage finalizes the fixture and blocks further actions: FND-16.
+4. Privacy, replay and copy isolation
+   Swap opponent private card/Secret identities and IDs, reorder either deck,
+   and change RNG state: the player view must stay identical. No hidden identity
+   or handle may occur in projected entities/events; DRAW is redacted, BURN and
+   REVEAL remain public. Public bounces retain known hand cards. Mutation of a
+   detached view does not affect the game. Current generation is deterministic;
+   private random choices require additional visibility tests in stage 10.
+   test_events.py checks frozen nested payloads, shallow sharing, independent
+   branch sequences, JSON restore and failed-action rollback.
 
-Artificial fixture details
---------------------------
-Zero-target Fire Elemental is tested by moving the friendly hero to SET_ASIDE
-and making the enemy hero Immune. This is intentionally synthetic branch
-coverage, not a claim that such a board occurs in ordinary matches.
-OPTIONAL mode is tested using a modified in-memory definition, not presented
-as the real Fire Elemental's behavior. Shield/Elusive/Stealth/Immune states are
-injected as test inputs; the catalog need not contain their granting cards.
-spellDamage is injected; general Spell Damage auras remain deferred. Flat
-Attack/Health auras are implemented and tested in stage 5.
+5. Measured performance and code style
+   python3 tools/bench.py --games 100 --seed 0
+   Measures enumeration + execution (excluding engine/deck setup and hashing),
+   using a separate seeded driver RNG. For an alternating before/after comparison,
+   pass --event-copy deep (former copying) or --event-copy shared (current). Report actions/s and a SHA-256 digest of
+   full final states, traces and events. Compare equal workloads before/after.
+   python3 -m pip install -r requirements-dev.txt
+   python3 -m black --check hearthstone tests tools examples
+   Formatting was checked with equal ASTs and before/after passing suites.
 
-Limits of current evidence
---------------------------
-These checks establish internal consistency and selected interpreter behavior.
-They do not establish full Hearthstone correctness or current patch fidelity.
-There are no client-log differential tests, full-game fuzz tests,
-hidden views or general reaction-listener tests. Remaining gaps also include
-advanced enchantment layers, scripted weapon behavior, reactive draw listeners,
-weapon Deathrattles, resurrection or conditional/adjacent auras.
-FND-02 manifest integrity is checked by the dedicated manifest command below.
-Full instance-ID uniqueness validation is deferred with a public state schema.
-
-Manifest integrity check:
-  python3 -m hearthstone.manifest
-
-Next acceptance gates
-----------------------
-1. Before expanding the catalog, choose an explicit historical client snapshot
-   or a verified current build. Import metadata and retain provenance/hashes.
-2. Add versioned public state/action/event schemas and invariant checks.
-3. COMPLETE: draw, fatigue and full-hand behavior with Novice Engineer tests.
-4. COMPLETE: normal attack execution and plain weapons with Fiery War Axe tests.
-5. COMPLETE: death-wave scheduling, Loot Hoarder and nested minion deaths.
-   General event listeners and other reaction windows remain future work.
-6. Add seeded random-hit tests only after defining hit count scaling and when
-   random recipients are selected again (Arcane Missiles).
-Stage 5 COMPLETE: capped healing, additive permanent buffs, flat auras and silence.
-Stage 6 COMPLETE: setup, mulligans, full supported turns and resource handling.
-Three planned stages remain; see roadmap.txt.
-
-7. Verify uncertain rules against client logs, recording build and expected
-   event order. Only then claim conformance to that build.
-
-Stage 7 COMPLETE: 53 new tests in tests/test_keywords.py; 275 tests total.
-Coverage and KEY-01..11 mapping: docs/keywords-stage7.txt. All seven catalogs
-and manifests are validated, with old card definitions unchanged. New cases
-cover hero-power costs/targeting/usage resets, Charge/Rush/Windfury limits,
-weapon-count persistence, KW-05 Freeze deadlines, buff expiration at both
-turn boundaries, cleanup and JSON checkpoint determinism. A complete mixed
-card game is replayed through the public action dispatcher and JSON restore
-before every action. These checks do not establish general save-state schema
-validation or live-client conformance.
-
-Stage 8 COMPLETE: 55 new tests in tests/test_zones.py; 330 tests total.
-ZON-01..14 coverage is detailed in zones-stage8.txt. Structural tests reject
-invalid generation references, policies, counts, contexts and recipient types.
-Behavior tests cover chosen/default positioning, partial/full board summons,
-power legality, ID allocation, auras, exhausted/Charge/Rush tokens, generation
-into full hands, bounce cleanup/replay, base copies, deterministic shuffles,
-fatigue preservation, 99-card cap and Deathrattle overflow behavior. Nested
-generation respects FIFO waves and atomic budget failure. A 177-action public
-game replays through JSON checkpoints with zone and capacity invariants at
-every step. All eight frozen manifests and prefix definition continuity pass.
-These checks establish declared fixture behavior, not live-client parity.
-
-Stage 9 COMPLETE: 52 new tests in tests/test_reactions.py; 382 total.
-REA-01..16 are documented in reactions-stage9.txt. Cases cover immutable
-listener capture, nested depth-first ordering, queued-source departure/silence,
-pre-action After barriers, damage-batch timing, actual healing, fatal Acolyte
-draws, Cult Master/Deathrattle chronology, Secret slots/ownership timing,
-Counterspell and Overload suppression, live Secret damage scaling, Noble
-redirection, Vaporize attacker destruction, targetless Secret continuation,
-Eye-for-an-Eye lethal draws, weapon healing/destruction and action-wide budgets.
-The 192-action sandbox game replays through JSON checkpoints, checking Secret
-uniqueness, capacity and absence of pending work after every action. All nine
-manifests and prefix continuity are checked. Broader client-log comparisons,
-draw/discard listeners, prevention layers and per-player hidden views remain.
+Limit: these tests validate the stated historical fixture policies, not complete
+Hearthstone or live-patch parity. Client logs and broader card coverage remain.

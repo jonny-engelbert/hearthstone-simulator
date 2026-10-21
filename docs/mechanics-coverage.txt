@@ -1,6 +1,6 @@
 Implemented mechanics and card-backed coverage
 ===============================================
-Current: foundation-v9; 51 definitions. Last complete validation: 382 tests passed.
+Current: foundation-v9.1; 52 definitions. Validation is summarized in CHANGELOG.txt.
 Card-backed means real catalog definitions are exercised by behavior tests.
 Extra corner cases may use arranged states or modified in-memory definitions.
 
@@ -18,6 +18,8 @@ Freeze and turn-based thawing
   Cards: Frostbolt [CS2_024]
 Battlecry; required/required-if-available targeting
   Cards: Fire Elemental [CS2_042], Voodoo Doctor [EX1_011], Novice Engineer [EX1_015], Youthful Brewmaster [EX1_049]
+Live Spell Damage from non-silenced, living friendly minions
+  Cards: Kobold Geomancer [CS2_142]; Fireball/Flamestrike; silence/death/exit tests.
 Targeted damage
   Cards: Fireball [CS2_029], Fire Elemental [CS2_042], Lightning Bolt [EX1_238], Fireblast [CS2_034]
 Area damage and batched hits
@@ -90,7 +92,6 @@ Stealth: selected-target/attack restrictions and loss on attack; no granting car
 Immune: damage prevention and selected-target restrictions; no granting card.
 Elusive: spell/hero-power selected-target exclusion; no granting card.
 Armor: damage absorption only; no armor-gain card/operation.
-Spell Damage scaling: bonuses supplied through test state; no bonus-granting aura card.
 Start-of-next-own-turn buff expiration and temporary Health buffs: modified definitions.
 Empty/filled permanent mana gains, crystal destruction, Overload unlocking: direct resource tests.
 Start/end-of-turn ability hooks and generic AFTER_CARD_PLAY callbacks: modified definitions.
@@ -109,7 +110,11 @@ Turn handover, mana growth/refill/caps, automatic draw, readiness refresh and ph
 Concession, turn limit, winner/draw results and rejection of actions after finishing.
 Board/hand/deck limits, entity IDs, zone resets, owner/controller tracking and immutable definitions.
 Copy-on-write actions, failed-action rollback, bounded resolution, JSON checkpoints and full-game replay.
-Versioned catalog/schema validation, exact references and frozen-manifest integrity.
+Current catalog/schema validation, exact references and manifest integrity.
+Legal-action enumeration, every mulligan subset, target/position combinations.
+Per-player views and event redaction; hidden identity/ID non-interference checks.
+Seeded random legal games, every listed action executed, invariants and restore.
+Immutable historical events, branch isolation and JSON-compatible replay.
 
 Evidence: tests/test_conformance.py, test_drawing.py, test_combat.py, test_deaths.py,
 test_stats.py, test_match.py, test_keywords.py, test_zones.py and test_reactions.py.

@@ -1,19 +1,19 @@
 {
   "manifestVersion": "1.0",
-  "catalogId": "foundation-v9",
-  "schemaVersion": "1.9",
+  "catalogId": "foundation-v9.1",
+  "schemaVersion": "1.10",
   "rulesProfile": "historical-foundation-fixtures",
   "basis": "HISTORICAL_TEST_FIXTURE",
   "targetClientBuild": null,
-  "createdDate": "2026-10-20",
+  "createdDate": "2026-10-21",
   "files": [
     {
       "path": "cards/foundation.json",
-      "sha256": "f06b9f3d4a574c99e63c013d5234e0302678e21b98186078e6ccfc47336ed80f"
+      "sha256": "7e3d42140a18ca5a60968fb1d7edc5b484740f8e537fbc288e30177f3e32b384"
     },
     {
       "path": "schemas/catalog.schema.json",
-      "sha256": "03b1ac2f5eca93be4638dafe36f3a74c4fc5e21501221845801ea3127b750e08"
+      "sha256": "d6eca0c459afc948511819808c56e3a0615a0a17ac0f96bd49d9e236bbcd4ee9"
     }
   ],
   "deathResolutionPolicy": "DEATH_WAVES_FIFO",

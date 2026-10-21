@@ -1,3 +1,7 @@
+Historical stage notes. Catalog snapshots and old test totals were retired by
+hardening. Current requirements.txt, test-plan.txt and CHANGELOG.txt supersede
+version-preservation instructions and obsolete coverage statements below.
+
 Stage 8: summoning, generated instances and zone transitions
 ==========================================================
 2026-10-20; foundation-v8; schema 1.8; 37 definitions.

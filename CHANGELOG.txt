@@ -1,8 +1,74 @@
 Hardening pass (2026-10-21, before stage 10)
 ==========================================
-1. Existing baseline: 0f37497 (all original files, already on GitHub).
-   Consolidated current catalog/schema/manifest; removed obsolete snapshots and
-   version branches/tests. Examples now use current rules. Arranged board
-   fixtures explicitly supply entry stamps. outputs/ is regenerated and ignored.
-   The keyword example now takes 81 actions under current placement rules (79
-   under the removed historical engine); deterministic replay still matches.
+1. Git/history: existing baseline 0f37497 already preserves the entire original
+   project. Consolidation commit e3beb5c removes old catalog/schema/manifest and
+   validation snapshots, version branches and 14 obsolete tests. One current
+   catalog/schema/manifest, bumped in place to foundation-v9.1 / schema 1.10.
+   Explicit entry stamps replace unstamped fixtures. Examples use current rules;
+   the keyword example takes 81 actions (formerly 79), with exact replay.
+   outputs/, caches, .DS_Store and local formatter dependencies are ignored.
+
+2. Counterspell/Overload: disagreed with the proposed reversal. Blizzard's
+   archived answer says countering prevents Overload. Kept that behavior and
+   strengthened Lightning Bolt's test: mana spent, no damage, no pending Overload
+   or OVERLOAD event. Original forum page is inaccessible; its primary statement
+   is reproduced under Counterspell at:
+   https://www.hearthpwn.com/news/64-hearthstone-puzzle-2-blue-posts-extravaganza
+   Provenance/limitations are also recorded in docs/reactions-stage9.txt.
+
+3. Spell Damage: removed the manually supplied spellDamage state array. Compute
+   bonuses from living, non-silenced friendly SPELL_DAMAGE minions in PLAY, once
+   per spell damage operation/batch. Added Kobold Geomancer CS2_142 (2 mana, 2/2,
+   Spell Damage +1), bringing the catalog to 52 definitions. Verified its tags
+   against HearthSim/hs-data CardDefs.xml. Tests cover stacking, Fireball,
+   Flamestrike, source removal, and unaffected powers/fatigue/Battlecries.
+
+4. Legal actions: execution and enumeration share validators. Return canonical
+   apply dictionaries with every legal target/position and every opening mulligan
+   subset (at most 16); no simulated effects or hidden-Secret probes. Test all
+   listed actions and invalid samples, and complete seeded games with invariants
+   after every move. HS_RANDOM_GAMES configures the normal six-game property run.
+
+5. Player views: allowlist public state/events, own hand and public resources;
+   hide both deck orders/instances, opponent private hand and Secret identities/
+   handles, RNG, setup choices and scheduler/death bookkeeping. Opponent DRAW
+   hides identity; REVEAL/BURN and public bounces remain visible. Tests include
+   hidden identity/ID permutations, deck reorderings and detached-view mutation.
+   Full checkpoints/raw logs remain private. Future private random generation
+   needs a visibility policy alongside stage 10's new operations.
+
+6. Code quality: PEP 8 formatting with Black 24.10.0; all formatted ASTs were
+   verified unchanged. Before/after formatting: 386 tests passed. Refactored the
+   effect interpreter into 18 named operation handlers. Replaced all 46 bare
+   assertTrue(validate(...)) sites with expected diagnostics; structural errors
+   report the relevant discriminated branch. A weapon-kind test previously
+   failed on an unrelated leftover trigger field; it now tests the intended rule.
+
+7. Performance: tools/bench.py measures enumeration + execution, excluding
+   engine/deck setup and report hashing. Historical event payloads are frozen
+   once and shared safely; state/log sequences stay independent. This replaces
+   deep copies of event history with shallow O(n) reference copies, not a fully
+   persistent log. JSON restore and replay remain compatible.
+   Reproducible comparison, three alternating trials per mode, seeds 0..99:
+     python3 tools/bench.py --games 100 --seed 0 --event-copy deep
+     python3 tools/bench.py --games 100 --seed 0 --event-copy shared
+   The deep mode reproduces former plain-list/deepcopy behavior only in the
+   benchmark process; production has one rule/copy behavior.
+   Median before: 1088.89 actions/s; after: 1736.08 actions/s (1.59x).
+   Every trial: 8891 actions. Full final states/traces/events have identical hash:
+     b8e3f995d2cb7fe7354c9e2e3fb1528ec3f17205d7c217ba8438e79c100cc2c6
+   Regenerated detailed measurements: outputs/hardening-benchmark.json.
+
+Final validation
+----------------
+394 tests passed in 33.024s; catalog accepts all 52 definitions; manifest hashes
+match. Larger property run: HS_RANDOM_GAMES=100, seven action tests passed in
+63.497s, executing every listed action from every visited state and periodically
+restoring JSON checkpoints. Formatting check and git whitespace check pass.
+The lower total than an additive stage count reflects retiring 14 obsolete
+version-only tests; 26 new tests were added. Historical tests are in Git.
+
+Estimate: three remaining planned stages (range two to four): random effects/
+choices; deck legality and stable integration contracts; pinned-client profile
+conformance. Legal actions, views, invariant games and initial performance work
+have been pulled forward. See docs/roadmap.txt.

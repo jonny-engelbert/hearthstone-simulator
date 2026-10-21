@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Foundation catalog 1.9 (reactions and interruption windows)",
+  "title": "Foundation catalog 1.10",
   "type": "object",
   "properties": {
     "schemaVersion": {
-      "const": "1.9"
+      "const": "1.10"
     },
     "catalogId": {
-      "const": "foundation-v9"
+      "const": "foundation-v9.1"
     },
     "rulesProfile": {
       "const": "historical-foundation-fixtures"
@@ -1383,17 +1383,7 @@
       "type": "object",
       "properties": {
         "schemaVersion": {
-          "enum": [
-            "1.1",
-            "1.2",
-            "1.3",
-            "1.4",
-            "1.5",
-            "1.6",
-            "1.7",
-            "1.8",
-            "1.9"
-          ]
+          "const": "1.10"
         },
         "cardId": {
           "type": "string",
@@ -1502,7 +1492,8 @@
               "TAUNT",
               "CHARGE",
               "RUSH",
-              "WINDFURY"
+              "WINDFURY",
+              "SPELL_DAMAGE"
             ]
           }
         },
@@ -1550,6 +1541,10 @@
           }
         },
         "overload": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "spellDamage": {
           "type": "integer",
           "minimum": 1
         }

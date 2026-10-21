@@ -1,3 +1,7 @@
+Historical stage notes. Catalog snapshots and old test totals were retired by
+hardening. Current requirements.txt, test-plan.txt and CHANGELOG.txt supersede
+version-preservation instructions and obsolete coverage statements below.
+
 Stage 7: hero powers, combat keywords and turn-boundary effects
 =============================================================
 2026-10-20; foundation-v7; schema 1.7; historical-foundation-fixtures.

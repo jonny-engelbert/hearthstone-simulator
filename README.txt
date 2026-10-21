@@ -9,6 +9,7 @@ Run with Python 3.10+ from this folder:
   python3 -m hearthstone.manifest
   python3 -m unittest discover -s tests -q
   python3 -m examples.play_reactions
+  python3 tools/bench.py --games 100 --seed 0
 
 Project map
 -----------
@@ -33,3 +34,23 @@ branches. Card revision references identify definitions, not alternate engine ru
 Historical stage notes explain timing decisions; current code/tests take precedence.
 Do not edit the supplied Google documents. Constructed deck legality, random
 card effects and choices, and a pinned client-log conformance profile remain work.
+
+Current public API
+------------------
+  from hearthstone.match import MatchEngine
+  engine = MatchEngine()
+  actions = engine.legal_actions(state, player)
+  next_state = engine.apply(state, player, actions[0])
+  visible = engine.view(next_state, player)
+
+legal_actions returns concrete action dictionaries, including every mulligan
+subset (at most 16), legal target and minion position. Concession is legal for
+both players until the result is set. Views expose own hand and public entities,
+counts and filtered events; full checkpoints/event logs contain private data.
+Historical event payloads are immutable; JSON export produces ordinary editable
+data. The log sequence is independent in each state. See docs/requirements.txt
+and docs/test-plan.txt for the precise API/privacy and testing contracts.
+
+Current: 52 definitions; schema 1.10; catalog foundation-v9.1.
+Remaining: random effects/choices, deck legality/API contracts, pinned-profile
+conformance (three planned stages, range two to four).

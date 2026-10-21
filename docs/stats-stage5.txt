@@ -1,3 +1,7 @@
+Historical stage notes. Catalog snapshots and old test totals were retired by
+hardening. Current requirements.txt, test-plan.txt and CHANGELOG.txt supersede
+version-preservation instructions and obsolete coverage statements below.
+
 Stage 5: healing, buffs, auras and silence
 =========================================
 Implemented: 2026-10-20

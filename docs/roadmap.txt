@@ -1,67 +1,26 @@
-Remaining project stages after stage 9
-=====================================
-Estimate made: 2026-10-20
-Working plan: three more stages. Updated planning range: two to five.
-The prior estimate after stage 8 was four planned, range three to six.
-This is an engineering estimate, not a delivery-date commitment.
+Remaining milestones after the pre-stage-10 hardening pass
+=========================================================
+Estimate updated 2026-10-21: three planned stages; reasonable range two to four.
+Target: a useful headless foundational simulator, not the entire card collection.
+Stages 1-9 and the hardening pass are implemented. Legal-action enumeration,
+per-player views, random legal-game invariants and modest performance groundwork
+were pulled forward from the former stage-11/12 plan.
 
-Target milestone: a useful headless foundational simulator that can set up a
-match, run complete turns with a deliberately supported card subset, enumerate
-legal actions, preserve hidden information, and replay deterministic games.
-Full Hearthstone card coverage is a continuing content/conformance effort.
-Current release has a managed match loop with 51 representative definitions, plus
-the legacy fixture interpreter. Constructed legality and public hidden views
-remain deferred.
+10. Random effects and pausable choices
+    Random targets/card pools, Discover/Choose One, typed pending choices and
+    deterministic resume. Add private generation/choice visibility and replay
+    tests before exposing those events in views.
 
-Completed
------------
-1. Card language, validation, targeting, simple damage/transformation.
-2. Drawing, fatigue, full-hand burns and Novice Engineer.
-3. Fiery War Axe, normal combat, weapon replacement and durability.
-4. Loot Hoarder, snapshots, ordered Deathrattles and nested death waves.
-5. Healing, additive permanent buffs, flat auras and silence cleanup.
-6. Managed setup, seeded shuffle, mulligans, The Coin, full supported turns,
-   mana/Overload bookkeeping, owner-scoped phase hooks and match limits.
+11. Deck legality and stable integration contracts
+    Pin supported deck/class/format rules; validate constructed decks. Formalize
+    action/event/view/checkpoint schemas and compatibility policy; provide a
+    small public client/AI integration example using the new APIs.
 
-7. Hero powers, Charge/Rush/Windfury, Freeze deadlines and timed minion buffs.
-   Separate power actions, own-turn use resets, end/start expiration, seven
-   representative definitions and complete public-action replay coverage.
+12. Pinned-profile conformance
+    Choose one explicit client/card revision profile, broaden representative
+    decks, compare client logs and declare a reproducible conformance matrix.
+    Continue invariant/performance checks on the larger supported pool.
 
-8. Ordered minion placement, token/Deathrattle summons, generated hand cards,
-   bounce, seeded shuffles, clean deck copies and explicit zone reset policies.
-   Reinforce and 13 further definitions; complete public-action replay and
-   capacity/identity/zone invariants. Board-state copying remains deferred.
-
-9. Bounded depth-first reactions, event snapshots, play/damage/heal/summon/death
-   listeners, Secrets, weapon scripts and attack/spell interruption windows.
-   Fourteen new definitions, fixed attack redirection/cancellation and complete
-   public-action replay. Additional event families and replacement layers remain.
-
-Proposed remaining sequence
-----------------------------
-10. Random effects and pausable choices.
-    Extend the setup RNG to random targets/card pools, Discover/Choose One,
-    typed pending-choice requests and deterministic resume behavior.
-    Acceptance: replay/branch identical states and seeds through choices.
-
-11. Deck rules and stable public engine APIs.
-    Pinned catalog/format legality, hero/class restrictions, legal-action
-    enumeration, per-player hidden views, snapshot/restore, action/event schemas
-    and replay contracts. Some API work should be introduced incrementally earlier.
-    Acceptance: a client/AI can drive the engine using supported public actions.
-
-12. Foundational conformance and hardening.
-    Choose and verify one explicit client/card revision profile, add a broader
-    supported deck pool, client-log comparisons, random legal-game invariant
-    tests, replay/restore tests and measured performance work.
-    Acceptance: a declared conformance matrix with reproducible full-game tests.
-
-Why the range is two to five
------------------------------
-Some adjacent stages may merge; the reaction scheduler, zone transitions and
-conformance work may each expose enough historical rules to split. Advanced
-card types (locations/hero replacement/quests), complex stat layers and modern
-keywords will need further work if added to the milestone's scope.
-Full turns are now implemented for the supported catalog; re-estimate again
-after the random-effect/choice stage. Stage count
-measures milestones rather than equal-sized units of time or effort.
+Stages 11/12 may merge if the target remains small; choice scheduling or client
+conformance may need a split. No delivery-date promise. Full Hearthstone coverage,
+modern card types and advanced stat/replacement layers are additional scope.

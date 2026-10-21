@@ -1,4 +1,5 @@
 """Pinned SplitMix64 + rejection sampling; all RNG state lives in the match."""
+
 MASK = (1 << 64) - 1
 
 

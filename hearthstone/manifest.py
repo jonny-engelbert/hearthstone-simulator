@@ -1,4 +1,5 @@
 """Verify current catalog/schema bytes without contacting external services."""
+
 import hashlib
 import json
 from pathlib import Path
@@ -25,6 +26,7 @@ def verify(manifest):
 
 if __name__ == '__main__':
     import argparse
+
     parser = argparse.ArgumentParser(description='Verify a current catalog manifest')
     parser.add_argument('path', nargs='?', default=str(ROOT / 'cards/manifest.json'))
     args = parser.parse_args()
@@ -32,4 +34,6 @@ if __name__ == '__main__':
     errors = verify(manifest)
     if errors:
         raise SystemExit('\n'.join(errors))
-    print(f"Verified {len(manifest['files'])} current files for {manifest['catalogId']}")
+    print(
+        f"Verified {len(manifest['files'])} current files for {manifest['catalogId']}"
+    )

@@ -1,3 +1,5 @@
+from fixtures import assert_invalid, invalid_field
+from fixtures import spell_bonus
 from fixtures import enter
 from copy import deepcopy
 import json
@@ -14,35 +16,73 @@ class CatalogTests(unittest.TestCase):
 
     def test_schema_itself_is_valid(self):
         for filename in SCHEMAS.values():
-            Draft202012Validator.check_schema(json.loads((ROOT / 'schemas' / filename).read_text()))
+            Draft202012Validator.check_schema(
+                json.loads((ROOT / 'schemas' / filename).read_text())
+            )
 
     def test_identifiers_match_reviewed_reference(self):
-        expected = {'Chillwind Yeti': 'CS2_182', "Sen'jin Shieldmasta": 'CS2_179',
-                    'Fire Elemental': 'CS2_042', 'Polymorph': 'CS2_022',
-                    'Sheep': 'CS2_tk1', 'Flamestrike': 'CS2_032', 'Fireball': 'CS2_029',
-                    'Novice Engineer': 'EX1_015', 'Fiery War Axe': 'CS2_106',
-                    'Loot Hoarder': 'EX1_096', 'Voodoo Doctor': 'EX1_011',
-                    'Blessing of Kings': 'CS2_092', 'Stormwind Champion': 'CS2_222',
-                    'Spellbreaker': 'EX1_048', 'The Coin': 'GAME_005',
-                    'Lightning Bolt': 'EX1_238', 'Fireblast': 'CS2_034',
-                    'Lesser Heal': 'CS1h_001', 'Wolfrider': 'CS2_124',
-                    'Rabid Worgen': 'GIL_580', 'Windfury Harpy': 'EX1_033',
-                    'Frostbolt': 'CS2_024', 'Abusive Sergeant': 'EX1_046'}
-        new = {('Murloc Tidehunter', 'EX1_506'), ('Murloc Scout', 'EX1_506a'),
-               ('Mirror Image', 'CS2_027'), ('Mirror Image', 'CS2_mirror'),
-               ('Haunted Creeper', 'FP1_002'), ('Spectral Spider', 'FP1_002t'),
-               ('Youthful Brewmaster', 'EX1_049'), ('Sap', 'EX1_581'),
-               ('King Mukla', 'EX1_014'), ('Bananas', 'EX1_014t'),
-               ('Gang Up', 'BRM_007'), ('Recycle', 'GVG_031'),
-               ('Reinforce', 'CS2_101'), ('Silver Hand Recruit', 'CS2_101t')}
-        new |= {('Acolyte of Pain','EX1_007'),('Northshire Cleric','CS2_235'),
-                ('Cult Master','EX1_595'),('Wild Pyromancer','NEW1_020'),
-                ('Questing Adventurer','EX1_044'),('Darkshire Councilman','OG_113'),
-                ('Counterspell','EX1_287'),('Vaporize','EX1_594'),
-                ('Explosive Trap','EX1_610'),('Noble Sacrifice','EX1_130'),
-                ('Defender','EX1_130a'),('Truesilver Champion','CS2_097'),
-                ("Death's Bite",'FP1_021'),('Eye for an Eye','EX1_132')}
-        self.assertEqual({(c['name'], c['cardId']) for c in self.catalog['cards']}, set(expected.items()) | new)
+        expected = {
+            'Chillwind Yeti': 'CS2_182',
+            "Sen'jin Shieldmasta": 'CS2_179',
+            'Fire Elemental': 'CS2_042',
+            'Polymorph': 'CS2_022',
+            'Sheep': 'CS2_tk1',
+            'Flamestrike': 'CS2_032',
+            'Fireball': 'CS2_029',
+            'Novice Engineer': 'EX1_015',
+            'Fiery War Axe': 'CS2_106',
+            'Loot Hoarder': 'EX1_096',
+            'Voodoo Doctor': 'EX1_011',
+            'Blessing of Kings': 'CS2_092',
+            'Stormwind Champion': 'CS2_222',
+            'Spellbreaker': 'EX1_048',
+            'The Coin': 'GAME_005',
+            'Lightning Bolt': 'EX1_238',
+            'Fireblast': 'CS2_034',
+            'Lesser Heal': 'CS1h_001',
+            'Wolfrider': 'CS2_124',
+            'Rabid Worgen': 'GIL_580',
+            'Windfury Harpy': 'EX1_033',
+            'Frostbolt': 'CS2_024',
+            'Abusive Sergeant': 'EX1_046',
+        }
+        new = {
+            ('Murloc Tidehunter', 'EX1_506'),
+            ('Murloc Scout', 'EX1_506a'),
+            ('Mirror Image', 'CS2_027'),
+            ('Mirror Image', 'CS2_mirror'),
+            ('Haunted Creeper', 'FP1_002'),
+            ('Spectral Spider', 'FP1_002t'),
+            ('Youthful Brewmaster', 'EX1_049'),
+            ('Sap', 'EX1_581'),
+            ('King Mukla', 'EX1_014'),
+            ('Bananas', 'EX1_014t'),
+            ('Gang Up', 'BRM_007'),
+            ('Recycle', 'GVG_031'),
+            ('Reinforce', 'CS2_101'),
+            ('Silver Hand Recruit', 'CS2_101t'),
+        }
+        new |= {
+            ('Kobold Geomancer', 'CS2_142'),
+            ('Acolyte of Pain', 'EX1_007'),
+            ('Northshire Cleric', 'CS2_235'),
+            ('Cult Master', 'EX1_595'),
+            ('Wild Pyromancer', 'NEW1_020'),
+            ('Questing Adventurer', 'EX1_044'),
+            ('Darkshire Councilman', 'OG_113'),
+            ('Counterspell', 'EX1_287'),
+            ('Vaporize', 'EX1_594'),
+            ('Explosive Trap', 'EX1_610'),
+            ('Noble Sacrifice', 'EX1_130'),
+            ('Defender', 'EX1_130a'),
+            ('Truesilver Champion', 'CS2_097'),
+            ("Death's Bite", 'FP1_021'),
+            ('Eye for an Eye', 'EX1_132'),
+        }
+        self.assertEqual(
+            {(c['name'], c['cardId']) for c in self.catalog['cards']},
+            set(expected.items()) | new,
+        )
 
     def test_duplicate_definition_is_rejected(self):
         self.catalog['cards'].append(deepcopy(self.catalog['cards'][0]))
@@ -53,29 +93,58 @@ class CatalogTests(unittest.TestCase):
             with self.subTest(mutation=mutation):
                 catalog = deepcopy(self.catalog)
                 card = catalog['cards'][2]
-                if mutation == 'extra': card['madeUp'] = True
-                if mutation == 'op': card['abilities'][0]['effects'][0]['op'] = 'UNKNOWN_OP'
-                if mutation == 'version': card['schemaVersion'] = '99'
-                if mutation == 'policy': card['abilities'][0]['targeting']['legalityPolicy'] = 'UNKNOWN'
-                self.assertTrue(validate(catalog))
+                if mutation == 'extra':
+                    card['madeUp'] = True
+                if mutation == 'op':
+                    card['abilities'][0]['effects'][0]['op'] = 'UNKNOWN_OP'
+                if mutation == 'version':
+                    card['schemaVersion'] = '99'
+                if mutation == 'policy':
+                    card['abilities'][0]['targeting']['legalityPolicy'] = 'UNKNOWN'
+                assert_invalid(
+                    self,
+                    catalog,
+                    {
+                        'extra': ('madeUp', 'Additional properties'),
+                        'op': 'UNKNOWN_OP',
+                        'version': ("'schemaVersion'", "'1.10' was expected"),
+                        'policy': ("'legalityPolicy'", "'UNKNOWN' is not one of"),
+                    }[mutation],
+                )
 
     def test_invalid_stat_shapes_are_rejected(self):
-        for index, key, value in [(0, 'health', 0), (0, 'manaCost', -1), (3, 'attack', 1)]:
+        for index, key, value in [
+            (0, 'health', 0),
+            (0, 'manaCost', -1),
+            (3, 'attack', 1),
+        ]:
             with self.subTest(index=index, key=key):
                 catalog = deepcopy(self.catalog)
                 catalog['cards'][index]['baseStats'][key] = value
-                self.assertTrue(validate(catalog))
+                assert_invalid(
+                    self,
+                    catalog,
+                    (
+                        (key, 'should not be valid under')
+                        if key == 'attack'
+                        else invalid_field(key, value)
+                    ),
+                )
         del self.catalog['cards'][0]['baseStats']['health']
-        self.assertTrue(validate(self.catalog))
+        assert_invalid(self, self.catalog, "'health' is a required property")
 
     def test_unresolved_revision_and_token_are_rejected(self):
         for field in ('cardId', 'revision'):
             catalog = deepcopy(self.catalog)
-            catalog['cards'][3]['abilities'][0]['effects'][0]['targetDefinition'][field] = 'UNKNOWN'
+            catalog['cards'][3]['abilities'][0]['effects'][0]['targetDefinition'][
+                field
+            ] = 'UNKNOWN'
             self.assertTrue(any('unresolved' in e for e in validate(catalog)))
 
     def test_unbound_target_is_rejected(self):
-        self.catalog['cards'][2]['abilities'][0]['effects'][0]['recipient']['name'] = 'other'
+        self.catalog['cards'][2]['abilities'][0]['effects'][0]['recipient'][
+            'name'
+        ] = 'other'
         self.assertTrue(any('unbound' in e for e in validate(self.catalog)))
 
     def test_wrong_ability_and_damage_class_are_rejected(self):
@@ -86,11 +155,17 @@ class CatalogTests(unittest.TestCase):
         self.assertTrue(any('ability kind' in e for e in validate(self.catalog)))
 
     def test_batch_shape_must_match_recipient(self):
-        self.catalog['cards'][5]['abilities'][0]['effects'][0]['application'] = 'SINGLE_HIT'
-        self.assertTrue(any('application disagree' in e for e in validate(self.catalog)))
+        self.catalog['cards'][5]['abilities'][0]['effects'][0][
+            'application'
+        ] = 'SINGLE_HIT'
+        self.assertTrue(
+            any('application disagree' in e for e in validate(self.catalog))
+        )
 
     def test_transform_cannot_reference_spell(self):
-        self.catalog['cards'][3]['abilities'][0]['effects'][0]['targetDefinition']['cardId'] = 'CS2_029'
+        self.catalog['cards'][3]['abilities'][0]['effects'][0]['targetDefinition'][
+            'cardId'
+        ] = 'CS2_029'
         self.assertTrue(any('must be a minion' in e for e in validate(self.catalog)))
 
 
@@ -134,15 +209,20 @@ class BehaviorTests(unittest.TestCase):
     def test_insufficient_mana_full_board_and_wrong_turn(self):
         self.add('CS2_182', 'source', zone='HAND')
         self.state['mana'][0] = 3
-        with self.assertRaisesRegex(ValueError, 'mana'): self.engine.play(self.state, 0, 'source')
+        with self.assertRaisesRegex(ValueError, 'mana'):
+            self.engine.play(self.state, 0, 'source')
         self.state['mana'][0] = 10
-        for i in range(7): self.add('CS2_182', f'm{i}')
-        with self.assertRaisesRegex(ValueError, 'full'): self.engine.play(self.state, 0, 'source')
-        with self.assertRaisesRegex(ValueError, 'decision'): self.engine.play(self.state, 1, 'source')
+        for i in range(7):
+            self.add('CS2_182', f'm{i}')
+        with self.assertRaisesRegex(ValueError, 'full'):
+            self.engine.play(self.state, 0, 'source')
+        with self.assertRaisesRegex(ValueError, 'decision'):
+            self.engine.play(self.state, 1, 'source')
 
     def test_fire_elemental_requires_target_when_available(self):
         self.add('CS2_042', 'fire', zone='HAND')
-        with self.assertRaisesRegex(ValueError, 'required'): self.engine.play(self.state, 0, 'fire')
+        with self.assertRaisesRegex(ValueError, 'required'):
+            self.engine.play(self.state, 0, 'fire')
         result = self.engine.play(self.state, 0, 'fire', 'hero-1')
         self.assertEqual(self.get(result, 'hero-1')['damage'], 3)
 
@@ -155,7 +235,8 @@ class BehaviorTests(unittest.TestCase):
         result = self.engine.play(self.state, 0, 'fire')
         self.assertEqual(self.get(result, 'fire')['zone'], 'PLAY')
         self.assertFalse(any(e['type'] == 'DAMAGE' for e in result['events']))
-        with self.assertRaisesRegex(ValueError, 'illegal'): self.engine.play(self.state, 0, 'fire', 'fire')
+        with self.assertRaisesRegex(ValueError, 'illegal'):
+            self.engine.play(self.state, 0, 'fire', 'fire')
 
     def test_optional_target_can_be_declined(self):
         catalog = load()
@@ -167,7 +248,7 @@ class BehaviorTests(unittest.TestCase):
 
     def test_spell_bonus_does_not_modify_battlecry(self):
         self.add('CS2_042', 'fire', zone='HAND')
-        self.state['spellDamage'][0] = 2
+        spell_bonus(self.engine, self.state, 0, 2)
         result = self.engine.play(self.state, 0, 'fire', 'hero-1')
         self.assertEqual(self.get(result, 'hero-1')['damage'], 3)
 
@@ -181,7 +262,7 @@ class BehaviorTests(unittest.TestCase):
 
     def test_fireball_bonus_armor_and_graveyard(self):
         self.add('CS2_029', 'spell', zone='HAND')
-        self.state['spellDamage'][0] = 1
+        spell_bonus(self.engine, self.state, 0, 1)
         self.get(self.state, 'hero-1')['armor'] = 3
         result = self.engine.play(self.state, 0, 'spell', 'hero-1')
         self.assertEqual(self.get(result, 'hero-1')['damage'], 4)
@@ -193,31 +274,44 @@ class BehaviorTests(unittest.TestCase):
         self.add('CS2_182', 'a', 1)
         self.add('CS2_182', 'b', 1)
         self.add('CS2_182', 'friendly')
-        self.state['spellDamage'][0] = 1
+        spell_bonus(self.engine, self.state, 0, 1)
         result = self.engine.play(self.state, 0, 'spell')
         damage = [e for e in result['events'] if e['type'] == 'DAMAGE']
-        self.assertEqual([(e['target'], e['amount']) for e in damage], [('a', 5), ('b', 5)])
-        self.assertEqual(result['events'][-1], {'type': 'DEATH_BATCH', 'targets': ['a', 'b']})
+        self.assertEqual(
+            [(e['target'], e['amount']) for e in damage], [('a', 5), ('b', 5)]
+        )
+        self.assertEqual(
+            result['events'][-1], {'type': 'DEATH_BATCH', 'targets': ['a', 'b']}
+        )
         self.assertEqual(self.get(result, 'friendly')['damage'], 0)
         self.assertEqual(self.get(result, 'hero-1')['damage'], 0)
 
     def test_area_effect_ignores_selection_restrictions_but_not_immunity(self):
         self.add('CS2_032', 'spell', zone='HAND')
-        for entity_id, keyword in [('hidden', 'STEALTH'), ('elusive', 'ELUSIVE'), ('immune', 'IMMUNE')]:
+        for entity_id, keyword in [
+            ('hidden', 'STEALTH'),
+            ('elusive', 'ELUSIVE'),
+            ('immune', 'IMMUNE'),
+        ]:
             self.add('CS2_182', entity_id, 1)['keywords'].append(keyword)
         result = self.engine.play(self.state, 0, 'spell')
-        self.assertEqual([self.get(result, e)['damage'] for e in ('hidden', 'elusive', 'immune')], [4, 4, 0])
+        self.assertEqual(
+            [self.get(result, e)['damage'] for e in ('hidden', 'elusive', 'immune')],
+            [4, 4, 0],
+        )
 
     def test_spell_and_battlecry_target_legality_differ(self):
         self.add('CS2_029', 'spell', zone='HAND')
         self.add('CS2_042', 'fire', zone='HAND')
         target = self.add('CS2_182', 'target', 1)
         target['keywords'] = ['ELUSIVE']
-        with self.assertRaisesRegex(ValueError, 'illegal'): self.engine.play(self.state, 0, 'spell', 'target')
+        with self.assertRaisesRegex(ValueError, 'illegal'):
+            self.engine.play(self.state, 0, 'spell', 'target')
         result = self.engine.play(self.state, 0, 'fire', 'target')
         self.assertEqual(self.get(result, 'target')['damage'], 3)
         target['keywords'] = ['STEALTH']
-        with self.assertRaisesRegex(ValueError, 'illegal'): self.engine.play(self.state, 0, 'fire', 'target')
+        with self.assertRaisesRegex(ValueError, 'illegal'):
+            self.engine.play(self.state, 0, 'fire', 'target')
 
     def test_polymorph_resets_damage_and_buffs_preserving_controller(self):
         self.add('CS2_022', 'spell', zone='HAND')
@@ -226,10 +320,15 @@ class BehaviorTests(unittest.TestCase):
         target['owner'] = 0
         result = self.engine.play(self.state, 0, 'spell', 'target')
         sheep = self.get(result, 'target')
-        self.assertEqual((sheep['cardId'], sheep['damage'], sheep['controller'], sheep['owner']), ('CS2_tk1', 0, 1, 0))
+        self.assertEqual(
+            (sheep['cardId'], sheep['damage'], sheep['controller'], sheep['owner']),
+            ('CS2_tk1', 0, 1, 0),
+        )
         self.assertEqual(sheep['keywords'], [])
         self.assertEqual(sheep['enchantments'], [])
-        self.assertFalse(any(e['type'] in ('DEATH_BATCH', 'SUMMON') for e in result['events']))
+        self.assertFalse(
+            any(e['type'] in ('DEATH_BATCH', 'SUMMON') for e in result['events'])
+        )
 
     def test_taunt_limits_attacks_but_not_fireball(self):
         self.add('CS2_182', 'attacker')['ready'] = True
@@ -249,14 +348,18 @@ class BehaviorTests(unittest.TestCase):
 
     def test_identical_inputs_produce_identical_outputs(self):
         self.add('CS2_029', 'spell', zone='HAND')
-        self.assertEqual(self.engine.play(self.state, 0, 'spell', 'hero-1'), self.engine.play(self.state, 0, 'spell', 'hero-1'))
+        self.assertEqual(
+            self.engine.play(self.state, 0, 'spell', 'hero-1'),
+            self.engine.play(self.state, 0, 'spell', 'hero-1'),
+        )
 
     def test_lethal_hero_damage_ends_fixture(self):
         self.add('CS2_029', 'spell', zone='HAND')
         self.get(self.state, 'hero-1')['damage'] = 24
         result = self.engine.play(self.state, 0, 'spell', 'hero-1')
         self.assertEqual(result['result'], 'PLAYER_0_WINS')
-        with self.assertRaisesRegex(ValueError, 'decision'): self.engine.play(result, 0, 'spell', 'hero-1')
+        with self.assertRaisesRegex(ValueError, 'decision'):
+            self.engine.play(result, 0, 'spell', 'hero-1')
 
 
 if __name__ == '__main__':
