@@ -1,0 +1,164 @@
+Stage 2: Novice Engineer, drawing, fatigue and full hands
+========================================================
+Implemented: 2026-10-20
+Catalog: foundation-v2; schema: 1.2
+Scope: generic draw primitive and DRAW_CARD effects in the fixture interpreter.
+All files and runnable tests are contained in the Hearthstone simulator folder.
+
+Version and metadata decisions
+------------------------------
+Keep foundation-v1.json, catalog.schema.json (schema 1.1), and manifest.json
+unchanged. New files foundation-v2.json, catalog-v1.2.schema.json and
+manifest-v2.json are the default. The seven prior definitions retain their
+original schemaVersion/revision and values. Novice Engineer is EX1_015,
+revision foundation-v2, a 2-mana 1/1 Neutral minion with Battlecry: Draw a card.
+Its historical BASIC/FREE metadata follows this project's historical fixtures.
+No specific live client build or current format legality is claimed.
+
+DRW-01: DRAW_CARD is an explicitly supported effect with a positive integer
+count and targetPlayer EFFECT_CONTROLLER or OPPONENT_OF_EFFECT_CONTROLLER.
+Unknown fields, missing fields, zero/negative/fractional/boolean counts and
+unknown targetPlayer values fail catalog validation. The old schema rejects
+DRAW_CARD. References and exact definition revisions still resolve normally.
+
+DRW-02: Runtime state includes decks=[[], []] and fatigue=[0, 0]. Each deck is
+an ordered list of instance IDs, with index zero at the top. Entities remain
+in the central store, with zone=DECK until drawn/burned. Drawing never shuffles,
+creates a replacement instance, or chooses by entity-store order. Draw checks
+duplicate instance IDs, duplicate deck entries, missing references, controller
+and zone mismatches, and omitted deck entities before resolving attempts.
+This is a draw-specific consistency guard, not a full public state schema.
+
+DRW-03: Each successful draw removes the top ID, moves the same instance to
+HAND, preserves its definition revision, ownership and enchantments, and emits
+DRAW. The drawing player's hand count is recomputed on every attempt.
+
+DRW-04: The default hand cap is ten. At capacity, remove the top ID, emit
+REVEAL with its identity, move it to GRAVEYARD and emit BURN/FULL_HAND.
+It does not enter HAND and emits no successful DRAW, DISCARD, SUMMON or
+DEATH_BATCH event. It does not increment fatigue. Burning a minion never
+executes its Battlecry; future Deathrattle code must not treat burning as death.
+
+DRW-05: If the deck is empty, increment that player's persistent fatigue
+counter first, emit FATIGUE, and apply that much damage to their hero. The first
+failed attempt deals 1, the next 2, then 3, and so on. Check deck emptiness
+before hand capacity, so an empty deck causes fatigue even with a full hand.
+Successful draws, full-hand burns, and fixture deck refills do not reset fatigue.
+
+DRW-06: Fatigue damage uses the common prevention/Armor/Health pipeline but
+never receives Spell Damage. It is tagged damageClass=FATIGUE and has no card
+damage source, even when a Battlecry initiates the failed draw. DRAW_ATTEMPT
+retains the initiating card instance ID for causal context. Immunity prevents
+damage but not fatigue-counter growth. Armor absorbs damage before Health.
+
+DRW-07: Multi-card draws are ordered attempts, not a damage batch. Each attempt
+can draw, burn, or cause fatigue, depending on the updated deck and hand.
+The interpreter retains its existing policy of checking the final match result
+at the end of the effect sequence. No reactive draw/death/replacement scheduler
+is implemented, and multi-draw timing is not certified against a client build.
+
+DRW-08: Novice Engineer's card data calls generic DRAW_CARD; execution code
+contains no Novice-specific branch. Pay mana and move Engineer out of HAND
+before executing its Battlecry. From a ten-card hand, this frees a slot, so a
+single ordinary draw returns the hand to ten. A full board or insufficient mana
+rejects the play before its draw. A setup summon does not execute a Battlecry.
+
+DRW-09: Draws and fatigue affect the selected player, independently of the
+active player and independently of the other player's counters/deck/hand.
+The targetPlayer relation is relative to the effect controller, not the owner.
+
+DRW-10: Public draw(state, player, count=1) is an engine primitive for a future
+turn runner or effects, not a player action granting free draws. It accepts only
+players 0/1 and positive integer counts, rejects completed matches, and returns
+a new state. Invalid requests or inconsistent decks leave caller state/logs
+unchanged. No automatic turn, draw phase, mulligan or draw action is added.
+
+DRW-11: After the sequence, lethal fatigue finalizes the result using the
+existing hero loss rules. When Novice Engineer causes lethal fatigue, its mana
+was spent and it entered play before the loss. Further draws/plays are rejected.
+
+DRW-12: Identical input state/request produces identical output and logs.
+New state is serializable with JSON. Current logs are omniscient test logs:
+DRAW_ATTEMPT, DRAW, REVEAL, BURN, FATIGUE, and DAMAGE. REVEAL is explicitly
+public information, but player-specific hidden-information views are deferred.
+Successful draw identities in the omniscient log must not be sent unredacted
+to a future opponent-facing UI.
+
+API example (run from the project root)
+---------------------------------------
+from hearthstone.catalog import load
+from hearthstone.prototype import Prototype
+
+engine = Prototype(load())
+state = engine.state()
+engineer = engine.entity('engineer-1', 'EX1_015', 0, 'HAND')
+top = engine.entity('top-1', 'CS2_182', 0, 'DECK')
+state['entities'].extend([engineer, top])
+state['decks'][0] = ['top-1']
+after_play = engine.play(state, 0, 'engineer-1')
+# Engineer is in PLAY, top-1 is in HAND, player 0 has 8 mana.
+after_fatigue = engine.draw(after_play, 0)
+# Empty deck: fatigue counter 1, hero damage 1, no new card in hand.
+
+If a catalog contains multiple revisions of a card, entity(..., revision=...)
+must identify one exactly. Transform also uses its destination's exact revision.
+
+Tests and traceability
+-----------------------
+Run: python3 -m unittest discover -s tests -v
+Stage-2 file: tests/test_drawing.py (27 tests)
+Full suite: 55 tests, including all 28 earlier conformance tests.
+
+DRW-01: DrawCatalogTests validates definition, malformed effects, schema versions
+        and preserved v1 catalog/manifest; original CatalogTests still run.
+DRW-02: test_draw_uses_explicit_deck_order_without_mutating_input;
+        test_malformed_deck_is_rejected_atomically.
+DRW-03: test_draw_preserves_instance_identity_and_enchantments.
+DRW-04: test_full_hand_reveals_and_burns_without_draw_or_death_event;
+        test_multi_draw_rechecks_capacity_for_each_card.
+DRW-05: test_empty_deck_increments_fatigue_on_every_attempt;
+        test_full_hand_with_empty_deck_still_takes_fatigue;
+        test_draw_and_burn_then_fatigue_when_deck_runs_out;
+        test_fatigue_persists_after_deck_is_refilled_and_drawn.
+DRW-06: test_fatigue_uses_armor_and_ignores_spell_bonus;
+        test_immunity_prevents_damage_without_preventing_fatigue_growth;
+        test_novice_empty_deck_causes_fatigue_not_battlecry_damage.
+DRW-07: test_draw_and_burn_then_fatigue_when_deck_runs_out.
+DRW-08: test_novice_play_draws_after_entering_play;
+        test_novice_play_from_ten_card_hand_frees_space;
+        test_novice_summoned_without_play_does_not_draw;
+        test_novice_rejected_on_full_board_does_not_draw_or_pay.
+DRW-09: test_opponent_draw_and_fatigue_are_independent;
+        test_generic_draw_effect_can_address_opponent (synthetic card variant).
+DRW-10: test_invalid_draw_requests_are_atomic; deck consistency tests.
+DRW-11: test_fatigue_lethal_finalizes_sequence_and_prevents_further_draws;
+        test_novice_fatigue_lethal_still_spends_mana_and_places_minion.
+DRW-12: test_draw_is_deterministic_and_serializable.
+
+Sources and confidence
+-----------------------
+Official card text, checked 2026-10-20:
+https://hearthstone.blizzard.com/en-gb/cards/284-novice-engineer/
+Official fatigue explanation: first failed draw deals one, then two, etc.:
+https://hearthstone.blizzard.com/en-us/news/22819074/endgame-moves-finessing-fatigue
+Identifier cross-check (simulator author's catalog):
+https://github.com/siva-msft/RosettaStone/blob/master/Documents/CardList.md
+
+Hand-cap/burn semantics and persistence/prevention details follow the supplied
+engine requirements RES-12, RES-15, RES-16, RES-17 and DOM-06. RES-16 was
+explicitly uncertain there. Tests establish this prototype's stated policy;
+they do not independently verify live-client edge cases or triggered timing.
+No automatic card-generation/full-hand discard or full-hand bounce semantics
+were added; those are distinct operations beyond the requested draw stage.
+
+Remaining work
+----------------
+Next planned stage: Fiery War Axe, weapon equip/replacement, combat execution
+and durability. Deathrattles, on-draw listeners, cast-when-drawn cards, auras,
+hand-size overrides, replacement effects and reactive draws require the later
+event scheduler. Keep unsupported operations rejected by the strict schema.
+
+Later-stage note (2026-10-20): stage 4 now implements ordered minion
+Deathrattles and nested death waves. See deaths-stage4.txt and the current
+requirements/test plan for the updated checkpoint policy. Earlier sections
+above describe this document's original stage scope.

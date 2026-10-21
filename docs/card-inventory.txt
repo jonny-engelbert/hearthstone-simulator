@@ -1,0 +1,82 @@
+Card inventory — foundation-v9 / schema 1.9
+51 definitions: 40 collectible cards, 8 generated/token cards, 3 hero powers.
+Historical conformance fixtures; not one verified live patch.
+
+Stage 1
+--------------
+CS2_182        Chillwind Yeti | MINION | 4 mana; 4/5 | collectible
+CS2_179        Sen'jin Shieldmasta | MINION | 4 mana; 3/5 | collectible
+CS2_042        Fire Elemental | MINION | 6 mana; 6/5 | collectible
+CS2_022        Polymorph | SPELL | 4 mana | collectible
+CS2_tk1        Sheep | MINION | 1 mana; 1/1 | token/generated
+CS2_032        Flamestrike | SPELL | 7 mana | collectible
+CS2_029        Fireball | SPELL | 4 mana | collectible
+
+Stage 2
+--------------
+EX1_015        Novice Engineer | MINION | 2 mana; 1/1 | collectible
+
+Stage 3
+--------------
+CS2_106        Fiery War Axe | WEAPON | 2 mana; 3 Attack / 2 durability | collectible
+
+Stage 4
+--------------
+EX1_096        Loot Hoarder | MINION | 2 mana; 2/1 | collectible
+
+Stage 5
+--------------
+EX1_011        Voodoo Doctor | MINION | 1 mana; 2/1 | collectible
+CS2_092        Blessing of Kings | SPELL | 4 mana | collectible
+CS2_222        Stormwind Champion | MINION | 7 mana; 6/6 | collectible
+EX1_048        Spellbreaker | MINION | 4 mana; 4/3 | collectible
+
+Stage 6
+--------------
+GAME_005       The Coin | SPELL | 0 mana | token/generated
+EX1_238        Lightning Bolt | SPELL | 1 mana | collectible
+
+Stage 7
+--------------
+CS2_034        Fireblast | HERO_POWER | 2 mana | hero power
+CS1h_001       Lesser Heal | HERO_POWER | 2 mana | hero power
+CS2_124        Wolfrider | MINION | 3 mana; 3/1 | collectible
+GIL_580        Rabid Worgen | MINION | 3 mana; 3/3 | collectible
+EX1_033        Windfury Harpy | MINION | 6 mana; 4/5 | collectible
+CS2_024        Frostbolt | SPELL | 2 mana | collectible
+EX1_046        Abusive Sergeant | MINION | 1 mana; 2/1 | collectible
+
+Stage 8
+--------------
+EX1_506        Murloc Tidehunter | MINION | 2 mana; 2/1 | collectible
+EX1_506a       Murloc Scout | MINION | 1 mana; 1/1 | token/generated
+CS2_027        Mirror Image | SPELL | 1 mana | collectible
+CS2_mirror     Mirror Image | MINION | 0 mana; 0/2 | token/generated
+FP1_002        Haunted Creeper | MINION | 2 mana; 1/2 | collectible
+FP1_002t       Spectral Spider | MINION | 1 mana; 1/1 | token/generated
+EX1_049        Youthful Brewmaster | MINION | 2 mana; 3/2 | collectible
+EX1_581        Sap | SPELL | 2 mana | collectible
+EX1_014        King Mukla | MINION | 3 mana; 5/5 | collectible
+EX1_014t       Bananas | SPELL | 1 mana | token/generated
+BRM_007        Gang Up | SPELL | 2 mana | collectible
+GVG_031        Recycle | SPELL | 6 mana | collectible
+CS2_101        Reinforce | HERO_POWER | 2 mana | hero power
+CS2_101t       Silver Hand Recruit | MINION | 1 mana; 1/1 | token/generated
+
+Stage 9
+--------------
+EX1_007        Acolyte of Pain | MINION | 3 mana; 1/3 | collectible
+CS2_235        Northshire Cleric | MINION | 1 mana; 1/3 | collectible
+EX1_595        Cult Master | MINION | 4 mana; 4/2 | collectible
+NEW1_020       Wild Pyromancer | MINION | 2 mana; 3/2 | collectible
+EX1_044        Questing Adventurer | MINION | 3 mana; 2/2 | collectible
+OG_113         Darkshire Councilman | MINION | 3 mana; 1/5 | collectible
+EX1_287        Counterspell | SPELL | 3 mana | collectible
+EX1_594        Vaporize | SPELL | 3 mana | collectible
+EX1_610        Explosive Trap | SPELL | 2 mana | collectible
+EX1_130        Noble Sacrifice | SPELL | 1 mana | collectible
+EX1_130a       Defender | MINION | 1 mana; 2/1 | token/generated
+CS2_097        Truesilver Champion | WEAPON | 4 mana; 4 Attack / 2 durability | collectible
+FP1_021        Death's Bite | WEAPON | 4 mana; 4 Attack / 2 durability | collectible
+EX1_132        Eye for an Eye | SPELL | 1 mana | collectible
+

@@ -1,0 +1,24 @@
+{
+  "manifestVersion": "1.0",
+  "catalogId": "foundation-v9",
+  "schemaVersion": "1.9",
+  "rulesProfile": "historical-foundation-fixtures",
+  "basis": "HISTORICAL_TEST_FIXTURE",
+  "targetClientBuild": null,
+  "createdDate": "2026-10-20",
+  "files": [
+    {
+      "path": "cards/foundation-v9.json",
+      "sha256": "f06b9f3d4a574c99e63c013d5234e0302678e21b98186078e6ccfc47336ed80f"
+    },
+    {
+      "path": "schemas/catalog-v1.9.schema.json",
+      "sha256": "03b1ac2f5eca93be4638dafe36f3a74c4fc5e21501221845801ea3127b750e08"
+    }
+  ],
+  "deathResolutionPolicy": "DEATH_WAVES_FIFO",
+  "healthModifierPolicy": "CAP_CURRENT_ON_MAX_LOSS",
+  "resourcePolicy": "CAPPED_TEMPORARY_MANA",
+  "zoneTransitionPolicy": "RESET_ON_EXIT_BASE_DECK_COPIES",
+  "reactionPolicy": "DEPTH_FIRST_REACTIONS_DEATH_WAVES_V1"
+}

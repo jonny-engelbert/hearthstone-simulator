@@ -1,0 +1,162 @@
+Stage 5: healing, buffs, auras and silence
+=========================================
+Implemented: 2026-10-20
+Current catalog: foundation-v5; schema: 1.5
+Health modifier policy: CAP_CURRENT_ON_MAX_LOSS
+Death policy remains DEATH_WAVES_FIFO.
+
+STA-01: Add four exact historical fixture definitions, revision foundation-v5:
+EX1_011 Voodoo Doctor: 1 mana, 2/1, Battlecry restore 2 Health.
+CS2_092 Blessing of Kings: 4 mana, Paladin spell, give a minion +4/+4.
+CS2_222 Stormwind Champion: 7 mana, 6/6, other friendly minions have +1/+1.
+EX1_048 Spellbreaker: 4 mana, 4/3, Battlecry silence a minion.
+Stormwind Champion deliberately uses its historical 6/6, not the later 7/7.
+The ten prior definitions and all earlier files remain unchanged.
+
+STA-02: Schema 1.5 adds HEAL, BUFF, SILENCE, FRIENDLY selectors and the AURA
+ability shape. HEAL uses a nonnegative constant and existing bound/query
+recipients. BUFF has nonnegative attack/health modifiers and PERMANENT duration.
+At least one modifier must be positive. BUFF/SILENCE require minion recipients.
+AURA requires a friendly-minion selector and positive flat stat modifiers.
+Reject unsupported fields/durations, negative/fractional/boolean modifiers,
+unknown policies, no-op buffs/auras and mismatched AURA mechanic labels.
+
+STA-03: HEAL reduces accumulated damage by min(requested, existing damage),
+never below zero. It adds neither max Health nor Armor. It does not receive
+Spell Damage, consume Divine Shield, or run damage prevention. Selected-target
+legality still applies before execution, including enemy Immune/Stealth rules.
+A full-Health legal target produces a HEAL event with amount zero. Healing an
+enemy character is permitted when the card selector allows it. A queued heal
+may save a lethally damaged character before the final death/result checkpoint;
+it does not cancel pendingDestroy.
+
+STA-04: A permanent buff appends a structured STAT_BUFF enchantment with source
+instance ID and additive attack/health values. It persists after the spell or
+granting source leaves play. Printed definitions are immutable. Buffs stack.
+Current Attack feeds normal combat; max Health feeds damage/death checks.
+No attack counts/readiness are refreshed by buffs or healing.
+
+STA-05: Supported minion stats are printed values + attached STAT_BUFF values
++ contributions from all active flat AURA abilities. Aura sources are in-play
+unsilenced minions; mortally wounded/pending-destroy sources remain active until
+their death batch is removed. Each aura selector runs relative to its source's
+current controller. SELF exclusion implements Stormwind's "other" clause.
+Heroes/weapons do not receive these minion auras. Multiple Champions stack and
+benefit one another. Incoming minions immediately receive existing auras.
+
+STA-06: Auras are computed from current sources, not attached as permanent
+enchantments. Re-evaluation never accumulates duplicate bonuses. Sources in
+hand/graveyard or transformed/silenced sources contribute nothing. A fixture
+control change moves the aura's affected set to the new controller. There is
+no mind-control action yet. External auras still affect a silenced recipient.
+
+STA-07: Keep accumulated damage plus max Health, with explicit adjustment when
+a modifier is removed. On max-Health gain, leave damage unchanged: current
+Health rises by the gain. On max-Health loss, preserve current Health up to the
+new maximum. Algebraically: damage = max(0, damage + newMax - oldMax) on a loss.
+This implements the supplied DOM-04 prose rather than assuming unchanged damage.
+Examples: 9 max/3 damage (current 6) loses +4 Health => 5 max/0 damage, current 5.
+9 max/8 damage (current 1) loses +4 => 5 max/4 damage, current 1.
+A minion already at zero/negative current Health stays lethal under max loss.
+This is a named tested fixture policy, not verification of every live stat layer.
+
+STA-08: effectiveStats caches normalized Attack/max Health on in-play minions.
+Refresh before stat-dependent actions, after relevant effects/board changes and at
+death checkpoints. Refresh after removing a death batch, before its Deathrattles.
+This lets nested damage see the remaining board's stats. Capture death snapshots
+with the aura-influenced stats that existed when that batch was collected.
+Whole ability / whole combat damage checkpoint boundaries remain as in stage 4.
+
+STA-09: SILENCE clears current keywords and attached enchantments, sets silenced,
+and suppresses intrinsic AURA and DEATHRATTLE abilities. Preserve identity,
+damage subject to STA-07, controller, attack count, readiness and pendingDestroy.
+Do not clear other minions' auras or permanent buffs previously granted to others.
+New buffs may be added after silence; a later silence clears those new buffs.
+No silence-proof keyword exceptions are implemented. Battlecries on played
+hand cards follow the existing play path; full zone-reset behavior is deferred.
+
+STA-10: TRANSFORM still creates destination stats at full Health, clears attached
+buffs and intrinsic silenced state/keywords, and stamps a new play order. Apply
+existing external auras afresh to the destination. The old aura/Deathrattle
+identity does not survive transformation. A source disappearing removes its
+aura; its effects already attached to other minions remain.
+
+STA-11: STATS_CHANGED logs before/after stat values and damage adjustment;
+HEAL logs actual restoration; BUFF logs source/target/modifiers; SILENCE logs
+source/target. Stateless queries current_attack(state, entity),
+max_health(entity, state) and current_health(state, entity) do not mutate state.
+max_health(entity) without state uses normalized cached stats, or attached
+stats if not yet normalized; pass state to include freshly arranged auras.
+Normal actions return copies. Invalid requests or unsupported stat annotations
+raise without committing partial updates. Results remain JSON-serializable.
+
+STA-12: Scope is permanent positive additive minion stats and flat friendly
+minion auras. Legacy string enchantments in old fixtures are opaque annotations;
+they do not execute. Structured STAT_BUFF records are checked before use.
+Negative/set-to/cost modifiers, temporary durations, keyword grants, adjacency,
+tribe-filtered/conditional auras, Spell Damage auras, healing multipliers,
+healing-to-damage conversion and Overheal listeners are deferred. Flat constants
+avoid recursive dependencies between aura sources and recipients.
+
+API example (run from project root)
+------------------------------------
+from hearthstone.catalog import load
+from hearthstone.prototype import Prototype
+
+engine = Prototype(load())
+state = engine.state()
+yeti = engine.entity('yeti', 'CS2_182', 0, 'PLAY')
+yeti['damage'] = 3
+kings = engine.entity('kings', 'CS2_092', 0, 'HAND')
+state['entities'].extend([yeti, kings])
+state = engine.play(state, 0, 'kings', 'yeti')
+target = next(e for e in state['entities'] if e['id'] == 'yeti')
+# Attack 8, max Health 9, current Health 6; printed definition is still 4/5.
+assert engine.current_attack(state, target) == 8
+assert engine.max_health(target, state) == 9
+assert engine.current_health(state, target) == 6
+
+Tests and traceability
+-----------------------
+tests/test_stats.py adds 42 tests (8 catalog, 34 behavior). Full suite: 167.
+Command: python3 -m unittest discover -s tests -v
+
+STA-01/02: all five catalogs/manifests; historical stats; old-schema rejection;
+           modifier/duration/recipient/aura/label/heal/policy validation.
+STA-03: hero/minion/enemy healing; actual capped/zero restoration; Armor,
+        Spell Damage and Divine Shield independence; synthetic spell and
+        Deathrattle healing (including saving a hero before final result), same-ability
+        rescue of a mortally wounded minion and pendingDestroy persistence.
+STA-04: two Kings stack, granting spell goes to graveyard, definition isolation,
+        no attack refresh, buffed stats used in combat and targeting atomicity.
+STA-05/06: source exclusion, friendly filter, heroes unaffected, incoming minion,
+           mutual Champions, separate buff/aura layers, source silence, fixture
+           controller/zone changes and idempotent refresh.
+STA-07: retain damage on Health increase; cap current Health on modifier loss;
+        preserve low current Health; already-lethal simultaneous deaths stay dead.
+STA-08: aura raises lethal threshold; source removal before synthetic
+        Deathrattle damage creates the expected next wave.
+STA-09: real Spellbreaker removes buffs, Taunt/Frozen and Loot Deathrattle;
+        external aura remains and silenced minion accepts new buffs.
+STA-10: Polymorph clears buffs and receives external aura; transforming an aura
+        source removes its contribution without old identity effects.
+STA-11/12: read-only stat queries, no accumulation, malformed stat annotation
+           atomicity, STATS_CHANGED events, deterministic JSON roundtrip.
+
+Sources and confidence
+-----------------------
+Official card texts checked 2026-10-20:
+https://hearthstone.blizzard.com/en-us/cards/69547-voodoo-doctor
+https://hearthstone.blizzard.com/en-us/cards/943/
+https://hearthstone.blizzard.com/en-us/cards/753-stormwind-champion
+https://hearthstone.blizzard.com/en-gb/cards/754/
+Identifier cross-check from simulator author's catalog:
+https://github.com/siva-msft/RosettaStone/blob/master/Documents/CardList.md
+Historical stats follow the project's historical fixture baseline. Current
+official listings may show a different set, rarity, card ID or Champion stats.
+No particular client build is claimed. Health policy, silence interactions and
+aura/death boundaries are explicit implementation decisions based on the supplied
+requirements; tests establish internal conformance, not live-client equivalence.
+
+Remaining-stage estimate is recorded in roadmap.txt: seven planned stages,
+rough range six to nine after this milestone for a useful foundational engine.

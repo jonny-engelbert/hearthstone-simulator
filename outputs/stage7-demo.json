@@ -1,0 +1,4030 @@
+{
+  "summary": {
+    "seed": 0,
+    "catalogId": "foundation-v7",
+    "profile": "FOUNDATION_SANDBOX",
+    "result": "PLAYER_1_WINS",
+    "turn": 17,
+    "actions": 79,
+    "events": 311
+  },
+  "actions": [
+    {
+      "player": 0,
+      "action": {
+        "type": "mulligan",
+        "replace": []
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "mulligan",
+        "replace": []
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "play",
+        "source": "p0-card-14"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "play",
+        "source": "setup-coin"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-14",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "play",
+        "source": "p1-card-25",
+        "target": "p0-card-14"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-14",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "play",
+        "source": "p1-card-6",
+        "target": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-14",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "play",
+        "source": "p0-card-3",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "play",
+        "source": "p1-card-12"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-14",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "play",
+        "source": "p0-card-5"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "hero-0",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "play",
+        "source": "p0-card-24",
+        "target": "p0-card-14"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-12",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "play",
+        "source": "p1-card-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "hero-0",
+        "defender": "p1-card-0"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-14",
+        "defender": "p1-card-0"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-24",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "play",
+        "source": "p0-card-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-1",
+        "defender": "p1-card-12"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "play",
+        "source": "p1-card-2"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "play",
+        "source": "p1-card-5",
+        "target": "p0-card-1"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "play",
+        "source": "p1-card-13"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-1",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-24",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "play",
+        "source": "p0-card-8"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-2",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-5",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-13",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "play",
+        "source": "p1-card-7"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-1",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-8",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "p0-card-24",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "hero_power",
+        "target": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "play",
+        "source": "p0-card-9"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "play",
+        "source": "p0-card-25"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "attack",
+        "attacker": "hero-0",
+        "defender": "hero-1"
+      }
+    },
+    {
+      "player": 0,
+      "action": {
+        "type": "end_turn"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-2",
+        "defender": "p0-card-9"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-5",
+        "defender": "p0-card-9"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-7",
+        "defender": "p0-card-9"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-7",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-13",
+        "defender": "hero-0"
+      }
+    },
+    {
+      "player": 1,
+      "action": {
+        "type": "attack",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      }
+    }
+  ],
+  "finalState": {
+    "activePlayer": 1,
+    "mana": [
+      0,
+      9
+    ],
+    "spellDamage": [
+      0,
+      0
+    ],
+    "entities": [
+      {
+        "id": "hero-0",
+        "kind": "HERO",
+        "owner": 0,
+        "controller": 0,
+        "zone": "PLAY",
+        "maxHealth": 30,
+        "damage": 30,
+        "armor": 0,
+        "attack": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [],
+        "enchantments": []
+      },
+      {
+        "id": "hero-1",
+        "kind": "HERO",
+        "owner": 1,
+        "controller": 1,
+        "zone": "PLAY",
+        "maxHealth": 30,
+        "damage": 28,
+        "armor": 0,
+        "attack": 0,
+        "ready": true,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": []
+      },
+      {
+        "id": "hero-power-0",
+        "cardId": "CS2_034",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "PLAY",
+        "kind": "HERO_POWER",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "hero-power-1",
+        "cardId": "CS1h_001",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "PLAY",
+        "kind": "HERO_POWER",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-0",
+        "cardId": "CS2_124",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "CHARGE"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-1",
+        "cardId": "GIL_580",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "PLAY",
+        "kind": "MINION",
+        "damage": 1,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [
+          "RUSH"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 7,
+        "effectiveStats": {
+          "attack": 3,
+          "health": 3
+        }
+      },
+      {
+        "id": "p0-card-2",
+        "cardId": "EX1_033",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "WINDFURY"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-3",
+        "cardId": "CS2_024",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "GRAVEYARD",
+        "kind": "SPELL",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-4",
+        "cardId": "EX1_046",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-5",
+        "cardId": "CS2_106",
+        "revision": "foundation-v3",
+        "owner": 0,
+        "controller": 0,
+        "zone": "GRAVEYARD",
+        "kind": "WEAPON",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "durability": 0,
+        "playOrder": 4
+      },
+      {
+        "id": "p0-card-6",
+        "cardId": "EX1_096",
+        "revision": "foundation-v4",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-7",
+        "cardId": "EX1_015",
+        "revision": "foundation-v2",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-8",
+        "cardId": "CS2_182",
+        "revision": "foundation-v1",
+        "owner": 0,
+        "controller": 0,
+        "zone": "PLAY",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 11,
+        "effectiveStats": {
+          "attack": 4,
+          "health": 5
+        }
+      },
+      {
+        "id": "p0-card-9",
+        "cardId": "CS2_179",
+        "revision": "foundation-v1",
+        "owner": 0,
+        "controller": 0,
+        "zone": "GRAVEYARD",
+        "kind": "MINION",
+        "damage": 7,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "TAUNT"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 13,
+        "effectiveStats": {
+          "attack": 3,
+          "health": 5
+        }
+      },
+      {
+        "id": "p0-card-10",
+        "cardId": "CS2_124",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "HAND",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "CHARGE"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-11",
+        "cardId": "GIL_580",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "RUSH"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-12",
+        "cardId": "EX1_033",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "HAND",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "WINDFURY"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-13",
+        "cardId": "CS2_024",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "SPELL",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-14",
+        "cardId": "EX1_046",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "GRAVEYARD",
+        "kind": "MINION",
+        "damage": 3,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 1,
+        "effectiveStats": {
+          "attack": 2,
+          "health": 1
+        }
+      },
+      {
+        "id": "p0-card-15",
+        "cardId": "CS2_106",
+        "revision": "foundation-v3",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "WEAPON",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "durability": 2
+      },
+      {
+        "id": "p0-card-16",
+        "cardId": "EX1_096",
+        "revision": "foundation-v4",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-17",
+        "cardId": "EX1_015",
+        "revision": "foundation-v2",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-18",
+        "cardId": "CS2_182",
+        "revision": "foundation-v1",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-19",
+        "cardId": "CS2_179",
+        "revision": "foundation-v1",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "TAUNT"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-20",
+        "cardId": "CS2_124",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "CHARGE"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-21",
+        "cardId": "GIL_580",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "HAND",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "RUSH"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-22",
+        "cardId": "EX1_033",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "WINDFURY"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-23",
+        "cardId": "CS2_024",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "SPELL",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-24",
+        "cardId": "EX1_046",
+        "revision": "foundation-v7",
+        "owner": 0,
+        "controller": 0,
+        "zone": "PLAY",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 5,
+        "effectiveStats": {
+          "attack": 2,
+          "health": 1
+        }
+      },
+      {
+        "id": "p0-card-25",
+        "cardId": "CS2_106",
+        "revision": "foundation-v3",
+        "owner": 0,
+        "controller": 0,
+        "zone": "PLAY",
+        "kind": "WEAPON",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "durability": 1,
+        "playOrder": 14
+      },
+      {
+        "id": "p0-card-26",
+        "cardId": "EX1_096",
+        "revision": "foundation-v4",
+        "owner": 0,
+        "controller": 0,
+        "zone": "HAND",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-27",
+        "cardId": "EX1_015",
+        "revision": "foundation-v2",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-28",
+        "cardId": "CS2_182",
+        "revision": "foundation-v1",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p0-card-29",
+        "cardId": "CS2_179",
+        "revision": "foundation-v1",
+        "owner": 0,
+        "controller": 0,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "TAUNT"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-0",
+        "cardId": "CS2_179",
+        "revision": "foundation-v1",
+        "owner": 1,
+        "controller": 1,
+        "zone": "GRAVEYARD",
+        "kind": "MINION",
+        "damage": 5,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "TAUNT"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 6,
+        "effectiveStats": {
+          "attack": 3,
+          "health": 5
+        }
+      },
+      {
+        "id": "p1-card-1",
+        "cardId": "CS2_182",
+        "revision": "foundation-v1",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-2",
+        "cardId": "EX1_015",
+        "revision": "foundation-v2",
+        "owner": 1,
+        "controller": 1,
+        "zone": "GRAVEYARD",
+        "kind": "MINION",
+        "damage": 3,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 8,
+        "effectiveStats": {
+          "attack": 1,
+          "health": 1
+        }
+      },
+      {
+        "id": "p1-card-3",
+        "cardId": "EX1_096",
+        "revision": "foundation-v4",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-4",
+        "cardId": "CS2_106",
+        "revision": "foundation-v3",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "WEAPON",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "durability": 2
+      },
+      {
+        "id": "p1-card-5",
+        "cardId": "EX1_046",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "GRAVEYARD",
+        "kind": "MINION",
+        "damage": 3,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 9,
+        "effectiveStats": {
+          "attack": 2,
+          "health": 1
+        }
+      },
+      {
+        "id": "p1-card-6",
+        "cardId": "CS2_024",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "GRAVEYARD",
+        "kind": "SPELL",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-7",
+        "cardId": "EX1_033",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "PLAY",
+        "kind": "MINION",
+        "damage": 3,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 2,
+        "keywords": [
+          "WINDFURY"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 12,
+        "effectiveStats": {
+          "attack": 4,
+          "health": 5
+        }
+      },
+      {
+        "id": "p1-card-8",
+        "cardId": "GIL_580",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "RUSH"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-9",
+        "cardId": "CS2_124",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "CHARGE"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-10",
+        "cardId": "CS2_179",
+        "revision": "foundation-v1",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "TAUNT"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-11",
+        "cardId": "CS2_182",
+        "revision": "foundation-v1",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-12",
+        "cardId": "EX1_015",
+        "revision": "foundation-v2",
+        "owner": 1,
+        "controller": 1,
+        "zone": "GRAVEYARD",
+        "kind": "MINION",
+        "damage": 3,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 3,
+        "effectiveStats": {
+          "attack": 1,
+          "health": 1
+        }
+      },
+      {
+        "id": "p1-card-13",
+        "cardId": "EX1_096",
+        "revision": "foundation-v4",
+        "owner": 1,
+        "controller": 1,
+        "zone": "PLAY",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 10,
+        "effectiveStats": {
+          "attack": 2,
+          "health": 1
+        }
+      },
+      {
+        "id": "p1-card-14",
+        "cardId": "CS2_106",
+        "revision": "foundation-v3",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "WEAPON",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "durability": 2
+      },
+      {
+        "id": "p1-card-15",
+        "cardId": "EX1_046",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-16",
+        "cardId": "CS2_024",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "HAND",
+        "kind": "SPELL",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-17",
+        "cardId": "EX1_033",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "WINDFURY"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-18",
+        "cardId": "GIL_580",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "RUSH"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-19",
+        "cardId": "CS2_124",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "CHARGE"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-20",
+        "cardId": "CS2_179",
+        "revision": "foundation-v1",
+        "owner": 1,
+        "controller": 1,
+        "zone": "HAND",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "TAUNT"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-21",
+        "cardId": "CS2_182",
+        "revision": "foundation-v1",
+        "owner": 1,
+        "controller": 1,
+        "zone": "HAND",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-22",
+        "cardId": "EX1_015",
+        "revision": "foundation-v2",
+        "owner": 1,
+        "controller": 1,
+        "zone": "HAND",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-23",
+        "cardId": "EX1_096",
+        "revision": "foundation-v4",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-24",
+        "cardId": "CS2_106",
+        "revision": "foundation-v3",
+        "owner": 1,
+        "controller": 1,
+        "zone": "HAND",
+        "kind": "WEAPON",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "durability": 2
+      },
+      {
+        "id": "p1-card-25",
+        "cardId": "EX1_046",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "PLAY",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": true,
+        "attacksThisTurn": 1,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false,
+        "playOrder": 2,
+        "effectiveStats": {
+          "attack": 2,
+          "health": 1
+        }
+      },
+      {
+        "id": "p1-card-26",
+        "cardId": "CS2_024",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "SPELL",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-27",
+        "cardId": "EX1_033",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "WINDFURY"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-28",
+        "cardId": "GIL_580",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "HAND",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "RUSH"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "p1-card-29",
+        "cardId": "CS2_124",
+        "revision": "foundation-v7",
+        "owner": 1,
+        "controller": 1,
+        "zone": "DECK",
+        "kind": "MINION",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [
+          "CHARGE"
+        ],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      },
+      {
+        "id": "setup-coin",
+        "cardId": "GAME_005",
+        "revision": "foundation-v6",
+        "owner": 0,
+        "controller": 0,
+        "zone": "GRAVEYARD",
+        "kind": "SPELL",
+        "damage": 0,
+        "armor": 0,
+        "ready": false,
+        "attacksThisTurn": 0,
+        "keywords": [],
+        "enchantments": [],
+        "silenced": false,
+        "pendingDestroy": false
+      }
+    ],
+    "decks": [
+      [
+        "p0-card-27",
+        "p0-card-23",
+        "p0-card-29",
+        "p0-card-11",
+        "p0-card-7",
+        "p0-card-15",
+        "p0-card-17",
+        "p0-card-28",
+        "p0-card-19",
+        "p0-card-18",
+        "p0-card-2",
+        "p0-card-20",
+        "p0-card-13",
+        "p0-card-16",
+        "p0-card-22",
+        "p0-card-4",
+        "p0-card-6",
+        "p0-card-0"
+      ],
+      [
+        "p1-card-27",
+        "p1-card-8",
+        "p1-card-9",
+        "p1-card-14",
+        "p1-card-29",
+        "p1-card-10",
+        "p1-card-18",
+        "p1-card-23",
+        "p1-card-17",
+        "p1-card-11",
+        "p1-card-26",
+        "p1-card-3",
+        "p1-card-15",
+        "p1-card-4",
+        "p1-card-19",
+        "p1-card-1"
+      ]
+    ],
+    "fatigue": [
+      0,
+      0
+    ],
+    "nextPlayOrder": 15,
+    "deathHistory": [
+      {
+        "entity": {
+          "id": "p0-card-14",
+          "cardId": "EX1_046",
+          "revision": "foundation-v7",
+          "owner": 0,
+          "controller": 0,
+          "zone": "PLAY",
+          "kind": "MINION",
+          "damage": 3,
+          "armor": 0,
+          "ready": true,
+          "attacksThisTurn": 1,
+          "keywords": [],
+          "enchantments": [],
+          "silenced": false,
+          "pendingDestroy": false,
+          "playOrder": 1,
+          "effectiveStats": {
+            "attack": 2,
+            "health": 1
+          }
+        },
+        "controllerAtDeath": 0,
+        "position": 0,
+        "abilities": []
+      },
+      {
+        "entity": {
+          "id": "p1-card-0",
+          "cardId": "CS2_179",
+          "revision": "foundation-v1",
+          "owner": 1,
+          "controller": 1,
+          "zone": "PLAY",
+          "kind": "MINION",
+          "damage": 5,
+          "armor": 0,
+          "ready": false,
+          "attacksThisTurn": 0,
+          "keywords": [
+            "TAUNT"
+          ],
+          "enchantments": [],
+          "silenced": false,
+          "pendingDestroy": false,
+          "playOrder": 6,
+          "effectiveStats": {
+            "attack": 3,
+            "health": 5
+          }
+        },
+        "controllerAtDeath": 1,
+        "position": 0,
+        "abilities": []
+      },
+      {
+        "entity": {
+          "id": "p1-card-12",
+          "cardId": "EX1_015",
+          "revision": "foundation-v2",
+          "owner": 1,
+          "controller": 1,
+          "zone": "PLAY",
+          "kind": "MINION",
+          "damage": 3,
+          "armor": 0,
+          "ready": true,
+          "attacksThisTurn": 1,
+          "keywords": [],
+          "enchantments": [],
+          "silenced": false,
+          "pendingDestroy": false,
+          "playOrder": 3,
+          "effectiveStats": {
+            "attack": 1,
+            "health": 1
+          }
+        },
+        "controllerAtDeath": 1,
+        "position": 0,
+        "abilities": []
+      },
+      {
+        "entity": {
+          "id": "p1-card-2",
+          "cardId": "EX1_015",
+          "revision": "foundation-v2",
+          "owner": 1,
+          "controller": 1,
+          "zone": "PLAY",
+          "kind": "MINION",
+          "damage": 3,
+          "armor": 0,
+          "ready": true,
+          "attacksThisTurn": 1,
+          "keywords": [],
+          "enchantments": [],
+          "silenced": false,
+          "pendingDestroy": false,
+          "playOrder": 8,
+          "effectiveStats": {
+            "attack": 1,
+            "health": 1
+          }
+        },
+        "controllerAtDeath": 1,
+        "position": 0,
+        "abilities": []
+      },
+      {
+        "entity": {
+          "id": "p1-card-5",
+          "cardId": "EX1_046",
+          "revision": "foundation-v7",
+          "owner": 1,
+          "controller": 1,
+          "zone": "PLAY",
+          "kind": "MINION",
+          "damage": 3,
+          "armor": 0,
+          "ready": true,
+          "attacksThisTurn": 1,
+          "keywords": [],
+          "enchantments": [],
+          "silenced": false,
+          "pendingDestroy": false,
+          "playOrder": 9,
+          "effectiveStats": {
+            "attack": 2,
+            "health": 1
+          }
+        },
+        "controllerAtDeath": 1,
+        "position": 0,
+        "abilities": []
+      },
+      {
+        "entity": {
+          "id": "p0-card-9",
+          "cardId": "CS2_179",
+          "revision": "foundation-v1",
+          "owner": 0,
+          "controller": 0,
+          "zone": "PLAY",
+          "kind": "MINION",
+          "damage": 7,
+          "armor": 0,
+          "ready": false,
+          "attacksThisTurn": 0,
+          "keywords": [
+            "TAUNT"
+          ],
+          "enchantments": [],
+          "silenced": false,
+          "pendingDestroy": false,
+          "playOrder": 13,
+          "effectiveStats": {
+            "attack": 3,
+            "health": 5
+          }
+        },
+        "controllerAtDeath": 0,
+        "position": 2,
+        "abilities": []
+      }
+    ],
+    "events": [
+      {
+        "type": "MATCH_SETUP",
+        "firstPlayer": 1
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-12"
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-6"
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-22"
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-26"
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-3"
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-9"
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-25"
+      },
+      {
+        "type": "MULLIGAN_SUBMITTED",
+        "player": 0,
+        "count": 0
+      },
+      {
+        "type": "MULLIGAN_SUBMITTED",
+        "player": 1,
+        "count": 0
+      },
+      {
+        "type": "ADD_TO_HAND",
+        "player": 0,
+        "entity": "setup-coin",
+        "reason": "SECOND_PLAYER_COIN"
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 1,
+        "turn": 1
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 1,
+        "resource": {
+          "cap": 10,
+          "permanent": 1,
+          "filled": 1,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-20"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 1,
+        "turn": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 1,
+        "turn": 1
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 0,
+        "turn": 2
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 0,
+        "resource": {
+          "cap": 10,
+          "permanent": 1,
+          "filled": 1,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-14"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 0,
+        "turn": 2
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 1,
+        "temporary": 0,
+        "permanent": 1
+      },
+      {
+        "type": "PLAY",
+        "source": "p0-card-14"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 0,
+        "temporary": 0,
+        "permanent": 0
+      },
+      {
+        "type": "PLAY",
+        "source": "setup-coin"
+      },
+      {
+        "type": "MANA_CHANGED",
+        "player": 0,
+        "operation": "GAIN_MANA",
+        "resource": {
+          "cap": 10,
+          "permanent": 1,
+          "filled": 0,
+          "temporary": 1,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 0,
+        "turn": 2
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 1,
+        "turn": 3
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 1,
+        "resource": {
+          "cap": 10,
+          "permanent": 2,
+          "filled": 2,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-25"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 1,
+        "turn": 3
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-1",
+        "player": 1
+      },
+      {
+        "type": "HEAL",
+        "source": "hero-power-1",
+        "target": "hero-1",
+        "amount": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 1,
+        "turn": 3
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 0,
+        "turn": 4
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 0,
+        "resource": {
+          "cap": 10,
+          "permanent": 2,
+          "filled": 2,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-5"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 0,
+        "turn": 4
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-14",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-14",
+        "target": "hero-1",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-0",
+        "player": 0
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-power-0",
+        "target": "hero-1",
+        "amount": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 0,
+        "turn": 4
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 1,
+        "turn": 5
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 1,
+        "resource": {
+          "cap": 10,
+          "permanent": 3,
+          "filled": 3,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-0"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 1,
+        "turn": 5
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-1",
+        "player": 1
+      },
+      {
+        "type": "HEAL",
+        "source": "hero-power-1",
+        "target": "hero-1",
+        "amount": 2
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 1,
+        "temporary": 0,
+        "permanent": 1
+      },
+      {
+        "type": "PLAY",
+        "source": "p1-card-25"
+      },
+      {
+        "type": "BUFF",
+        "source": "p1-card-25",
+        "target": "p0-card-14",
+        "modifiers": {
+          "attack": 2,
+          "health": 0
+        }
+      },
+      {
+        "type": "STATS_CHANGED",
+        "entity": "p0-card-14",
+        "before": {
+          "attack": 2,
+          "health": 1
+        },
+        "after": {
+          "attack": 4,
+          "health": 1
+        },
+        "damageBefore": 0,
+        "damageAfter": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 1,
+        "turn": 5
+      },
+      {
+        "type": "BUFF_EXPIRED",
+        "target": "p0-card-14",
+        "source": "p1-card-25",
+        "phase": "END_OF_TURN"
+      },
+      {
+        "type": "STATS_CHANGED",
+        "entity": "p0-card-14",
+        "before": {
+          "attack": 4,
+          "health": 1
+        },
+        "after": {
+          "attack": 2,
+          "health": 1
+        },
+        "damageBefore": 0,
+        "damageAfter": 0
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 0,
+        "turn": 6
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 0,
+        "resource": {
+          "cap": 10,
+          "permanent": 3,
+          "filled": 3,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-10"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 0,
+        "turn": 6
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-14",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-14",
+        "target": "hero-1",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-0",
+        "player": 0
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-power-0",
+        "target": "hero-1",
+        "amount": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 0,
+        "turn": 6
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 1,
+        "turn": 7
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 1,
+        "resource": {
+          "cap": 10,
+          "permanent": 4,
+          "filled": 4,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-21"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 1,
+        "turn": 7
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-25",
+        "target": "hero-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-1",
+        "player": 1
+      },
+      {
+        "type": "HEAL",
+        "source": "hero-power-1",
+        "target": "hero-1",
+        "amount": 2
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "PLAY",
+        "source": "p1-card-6"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-6",
+        "target": "hero-0",
+        "amount": 3
+      },
+      {
+        "type": "FREEZE",
+        "source": "p1-card-6",
+        "target": "hero-0",
+        "until": {
+          "player": 0,
+          "playerTurn": 4
+        }
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 1,
+        "turn": 7
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 0,
+        "turn": 8
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 0,
+        "resource": {
+          "cap": 10,
+          "permanent": 4,
+          "filled": 4,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-21"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 0,
+        "turn": 8
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-14",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-14",
+        "target": "hero-1",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-0",
+        "player": 0
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-power-0",
+        "target": "hero-1",
+        "amount": 1
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "PLAY",
+        "source": "p0-card-3"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-3",
+        "target": "hero-1",
+        "amount": 3
+      },
+      {
+        "type": "FREEZE",
+        "source": "p0-card-3",
+        "target": "hero-1",
+        "until": {
+          "player": 1,
+          "playerTurn": 5
+        }
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 0,
+        "turn": 8
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 0
+      },
+      {
+        "type": "THAW",
+        "target": "hero-0"
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 1,
+        "turn": 9
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 1,
+        "resource": {
+          "cap": 10,
+          "permanent": 5,
+          "filled": 5,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-24"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 1,
+        "turn": 9
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-25",
+        "target": "hero-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-1",
+        "player": 1
+      },
+      {
+        "type": "HEAL",
+        "source": "hero-power-1",
+        "target": "hero-1",
+        "amount": 2
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "PLAY",
+        "source": "p1-card-12"
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": "p1-card-12"
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-7"
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 1,
+        "turn": 9
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 1
+      },
+      {
+        "type": "THAW",
+        "target": "hero-1"
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 0,
+        "turn": 10
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 0,
+        "resource": {
+          "cap": 10,
+          "permanent": 5,
+          "filled": 5,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-24"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 0,
+        "turn": 10
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-14",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-14",
+        "target": "hero-1",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-0",
+        "player": 0
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-power-0",
+        "target": "hero-1",
+        "amount": 1
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "PLAY",
+        "source": "p0-card-5"
+      },
+      {
+        "type": "EQUIP",
+        "weapon": "p0-card-5",
+        "player": 0
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "hero-0",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-0",
+        "target": "hero-1",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DURABILITY",
+        "weapon": "p0-card-5",
+        "remaining": 1
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 1,
+        "temporary": 0,
+        "permanent": 1
+      },
+      {
+        "type": "PLAY",
+        "source": "p0-card-24"
+      },
+      {
+        "type": "BUFF",
+        "source": "p0-card-24",
+        "target": "p0-card-14",
+        "modifiers": {
+          "attack": 2,
+          "health": 0
+        }
+      },
+      {
+        "type": "STATS_CHANGED",
+        "entity": "p0-card-14",
+        "before": {
+          "attack": 2,
+          "health": 1
+        },
+        "after": {
+          "attack": 4,
+          "health": 1
+        },
+        "damageBefore": 0,
+        "damageAfter": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 0,
+        "turn": 10
+      },
+      {
+        "type": "BUFF_EXPIRED",
+        "target": "p0-card-14",
+        "source": "p0-card-24",
+        "phase": "END_OF_TURN"
+      },
+      {
+        "type": "STATS_CHANGED",
+        "entity": "p0-card-14",
+        "before": {
+          "attack": 4,
+          "health": 1
+        },
+        "after": {
+          "attack": 2,
+          "health": 1
+        },
+        "damageBefore": 0,
+        "damageAfter": 0
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 1,
+        "turn": 11
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 1,
+        "resource": {
+          "cap": 10,
+          "permanent": 6,
+          "filled": 6,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-5"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 1,
+        "turn": 11
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-12",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-12",
+        "target": "hero-0",
+        "amount": 1,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-25",
+        "target": "hero-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-1",
+        "player": 1
+      },
+      {
+        "type": "HEAL",
+        "source": "hero-power-1",
+        "target": "hero-1",
+        "amount": 2
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 4,
+        "temporary": 0,
+        "permanent": 4
+      },
+      {
+        "type": "PLAY",
+        "source": "p1-card-0"
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 1,
+        "turn": 11
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 0,
+        "turn": 12
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 0,
+        "resource": {
+          "cap": 10,
+          "permanent": 6,
+          "filled": 6,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-1"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 0,
+        "turn": 12
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "hero-0",
+        "defender": "p1-card-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-0",
+        "target": "p1-card-0",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-0",
+        "target": "hero-0",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DURABILITY",
+        "weapon": "p0-card-5",
+        "remaining": 0
+      },
+      {
+        "type": "WEAPON_DESTROYED",
+        "weapon": "p0-card-5",
+        "reason": "EXHAUSTED"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-14",
+        "defender": "p1-card-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-14",
+        "target": "p1-card-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-0",
+        "target": "p0-card-14",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DEATH_BATCH",
+        "targets": [
+          "p0-card-14",
+          "p1-card-0"
+        ]
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-24",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-24",
+        "target": "hero-1",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-0",
+        "player": 0
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-power-0",
+        "target": "hero-1",
+        "amount": 1
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 3,
+        "temporary": 0,
+        "permanent": 3
+      },
+      {
+        "type": "PLAY",
+        "source": "p0-card-1"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-1",
+        "defender": "p1-card-12"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-1",
+        "target": "p1-card-12",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-12",
+        "target": "p0-card-1",
+        "amount": 1,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DEATH_BATCH",
+        "targets": [
+          "p1-card-12"
+        ]
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 0,
+        "turn": 12
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 1,
+        "turn": 13
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 1,
+        "resource": {
+          "cap": 10,
+          "permanent": 7,
+          "filled": 7,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-2"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 1,
+        "turn": 13
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-25",
+        "target": "hero-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-1",
+        "player": 1
+      },
+      {
+        "type": "HEAL",
+        "source": "hero-power-1",
+        "target": "hero-1",
+        "amount": 2
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "PLAY",
+        "source": "p1-card-2"
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": "p1-card-2"
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-13"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 1,
+        "temporary": 0,
+        "permanent": 1
+      },
+      {
+        "type": "PLAY",
+        "source": "p1-card-5"
+      },
+      {
+        "type": "BUFF",
+        "source": "p1-card-5",
+        "target": "p0-card-1",
+        "modifiers": {
+          "attack": 2,
+          "health": 0
+        }
+      },
+      {
+        "type": "STATS_CHANGED",
+        "entity": "p0-card-1",
+        "before": {
+          "attack": 3,
+          "health": 3
+        },
+        "after": {
+          "attack": 5,
+          "health": 3
+        },
+        "damageBefore": 1,
+        "damageAfter": 1
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "PLAY",
+        "source": "p1-card-13"
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 1,
+        "turn": 13
+      },
+      {
+        "type": "BUFF_EXPIRED",
+        "target": "p0-card-1",
+        "source": "p1-card-5",
+        "phase": "END_OF_TURN"
+      },
+      {
+        "type": "STATS_CHANGED",
+        "entity": "p0-card-1",
+        "before": {
+          "attack": 5,
+          "health": 3
+        },
+        "after": {
+          "attack": 3,
+          "health": 3
+        },
+        "damageBefore": 1,
+        "damageAfter": 1
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 0,
+        "turn": 14
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 0,
+        "resource": {
+          "cap": 10,
+          "permanent": 7,
+          "filled": 7,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-8"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 0,
+        "turn": 14
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-1",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-1",
+        "target": "hero-1",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-24",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-24",
+        "target": "hero-1",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-0",
+        "player": 0
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-power-0",
+        "target": "hero-1",
+        "amount": 1
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 4,
+        "temporary": 0,
+        "permanent": 4
+      },
+      {
+        "type": "PLAY",
+        "source": "p0-card-8"
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 0,
+        "turn": 14
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 1,
+        "turn": 15
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 1,
+        "resource": {
+          "cap": 10,
+          "permanent": 8,
+          "filled": 8,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-28"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 1,
+        "turn": 15
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-2",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-2",
+        "target": "hero-0",
+        "amount": 1,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-5",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-5",
+        "target": "hero-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-13",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-13",
+        "target": "hero-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-25",
+        "target": "hero-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-1",
+        "player": 1
+      },
+      {
+        "type": "HEAL",
+        "source": "hero-power-1",
+        "target": "hero-1",
+        "amount": 2
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 1,
+        "amount": 6,
+        "temporary": 0,
+        "permanent": 6
+      },
+      {
+        "type": "PLAY",
+        "source": "p1-card-7"
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 1,
+        "turn": 15
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 0,
+        "turn": 16
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 0,
+        "resource": {
+          "cap": 10,
+          "permanent": 8,
+          "filled": 8,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 0,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 0,
+        "entity": "p0-card-12"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 0,
+        "turn": 16
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-1",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-1",
+        "target": "hero-1",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-8",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-8",
+        "target": "hero-1",
+        "amount": 4,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p0-card-24",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-24",
+        "target": "hero-1",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "HERO_POWER",
+        "source": "hero-power-0",
+        "player": 0
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-power-0",
+        "target": "hero-1",
+        "amount": 1
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 4,
+        "temporary": 0,
+        "permanent": 4
+      },
+      {
+        "type": "PLAY",
+        "source": "p0-card-9"
+      },
+      {
+        "type": "MANA_SPENT",
+        "player": 0,
+        "amount": 2,
+        "temporary": 0,
+        "permanent": 2
+      },
+      {
+        "type": "PLAY",
+        "source": "p0-card-25"
+      },
+      {
+        "type": "EQUIP",
+        "weapon": "p0-card-25",
+        "player": 0
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "hero-0",
+        "defender": "hero-1"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "hero-0",
+        "target": "hero-1",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DURABILITY",
+        "weapon": "p0-card-25",
+        "remaining": 1
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_END",
+        "player": 0,
+        "turn": 16
+      },
+      {
+        "type": "MANA_EXPIRE",
+        "player": 0
+      },
+      {
+        "type": "PHASE",
+        "phase": "TURN_START",
+        "player": 1,
+        "turn": 17
+      },
+      {
+        "type": "MANA_REFILL",
+        "player": 1,
+        "resource": {
+          "cap": 10,
+          "permanent": 9,
+          "filled": 9,
+          "temporary": 0,
+          "locked": 0,
+          "pendingOverload": 0
+        }
+      },
+      {
+        "type": "DRAW_ATTEMPT",
+        "player": 1,
+        "source": null
+      },
+      {
+        "type": "DRAW",
+        "player": 1,
+        "entity": "p1-card-16"
+      },
+      {
+        "type": "PHASE",
+        "phase": "MAIN",
+        "player": 1,
+        "turn": 17
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-2",
+        "defender": "p0-card-9"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-2",
+        "target": "p0-card-9",
+        "amount": 1,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-9",
+        "target": "p1-card-2",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DEATH_BATCH",
+        "targets": [
+          "p1-card-2"
+        ]
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-5",
+        "defender": "p0-card-9"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-5",
+        "target": "p0-card-9",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-9",
+        "target": "p1-card-5",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DEATH_BATCH",
+        "targets": [
+          "p1-card-5"
+        ]
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-7",
+        "defender": "p0-card-9"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-7",
+        "target": "p0-card-9",
+        "amount": 4,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p0-card-9",
+        "target": "p1-card-7",
+        "amount": 3,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "DEATH_BATCH",
+        "targets": [
+          "p0-card-9"
+        ]
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-7",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-7",
+        "target": "hero-0",
+        "amount": 4,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-13",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-13",
+        "target": "hero-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      },
+      {
+        "type": "ATTACK",
+        "attacker": "p1-card-25",
+        "defender": "hero-0"
+      },
+      {
+        "type": "DAMAGE",
+        "source": "p1-card-25",
+        "target": "hero-0",
+        "amount": 2,
+        "damageClass": "COMBAT"
+      }
+    ],
+    "result": "PLAYER_1_WINS",
+    "rng": {
+      "algorithm": "splitmix64-v1",
+      "state": 8559387686524852439,
+      "draws": 59
+    },
+    "match": {
+      "catalogId": "foundation-v7",
+      "profile": "FOUNDATION_SANDBOX",
+      "seed": 0,
+      "deckSize": 30,
+      "turnLimit": 90,
+      "resourcePolicy": "CAPPED_TEMPORARY_MANA"
+    },
+    "phase": "FINISHED",
+    "firstPlayer": 1,
+    "turn": 17,
+    "playerTurns": [
+      8,
+      9
+    ],
+    "cardsPlayedThisTurn": [
+      2,
+      0
+    ],
+    "resources": [
+      {
+        "cap": 10,
+        "permanent": 8,
+        "filled": 0,
+        "temporary": 0,
+        "locked": 0,
+        "pendingOverload": 0
+      },
+      {
+        "cap": 10,
+        "permanent": 9,
+        "filled": 9,
+        "temporary": 0,
+        "locked": 0,
+        "pendingOverload": 0
+      }
+    ],
+    "heroPowers": [
+      "hero-power-0",
+      "hero-power-1"
+    ],
+    "heroPowerUsesThisTurn": [
+      1,
+      0
+    ],
+    "mulligan": {
+      "initialHands": [
+        [
+          "p0-card-3",
+          "p0-card-9",
+          "p0-card-25",
+          "p0-card-26"
+        ],
+        [
+          "p1-card-6",
+          "p1-card-12",
+          "p1-card-22"
+        ]
+      ],
+      "choices": [
+        [],
+        []
+      ]
+    }
+  }
+}

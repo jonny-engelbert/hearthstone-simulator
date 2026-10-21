@@ -1,0 +1,117 @@
+Implemented mechanics and card-backed coverage
+===============================================
+Current: foundation-v9; 51 definitions. Last complete validation: 382 tests passed.
+Card-backed means real catalog definitions are exercised by behavior tests.
+Extra corner cases may use arranged states or modified in-memory definitions.
+
+Basic stats, minion combat, exhaustion and retaliation
+  Cards: Chillwind Yeti [CS2_182]
+Taunt
+  Cards: Sen'jin Shieldmasta [CS2_179], Mirror Image [CS2_mirror]
+Charge
+  Cards: Wolfrider [CS2_124]
+Rush
+  Cards: Rabid Worgen [GIL_580]
+Windfury
+  Cards: Windfury Harpy [EX1_033]
+Freeze and turn-based thawing
+  Cards: Frostbolt [CS2_024]
+Battlecry; required/required-if-available targeting
+  Cards: Fire Elemental [CS2_042], Voodoo Doctor [EX1_011], Novice Engineer [EX1_015], Youthful Brewmaster [EX1_049]
+Targeted damage
+  Cards: Fireball [CS2_029], Fire Elemental [CS2_042], Lightning Bolt [EX1_238], Fireblast [CS2_034]
+Area damage and batched hits
+  Cards: Flamestrike [CS2_032], Wild Pyromancer [NEW1_020], Death's Bite [FP1_021], Explosive Trap [EX1_610]
+Healing and overheal caps
+  Cards: Voodoo Doctor [EX1_011], Lesser Heal [CS1h_001], Truesilver Champion [CS2_097]
+Permanent Attack/Health buffs and stacking
+  Cards: Blessing of Kings [CS2_092], Bananas [EX1_014t], Questing Adventurer [EX1_044]
+Until-end-of-turn Attack buffs and expiration
+  Cards: Abusive Sergeant [EX1_046]
+Flat friendly-minion auras and aura removal
+  Cards: Stormwind Champion [CS2_222]
+Silence and cleanup
+  Cards: Spellbreaker [EX1_048]
+Transform and identity/reset behavior
+  Cards: Polymorph [CS2_022], Sheep [CS2_tk1]
+Card drawing
+  Cards: Novice Engineer [EX1_015], Loot Hoarder [EX1_096], Acolyte of Pain [EX1_007], Northshire Cleric [CS2_235], Cult Master [EX1_595]
+Fatigue and full-hand draw burns
+  Cards: Novice Engineer [EX1_015]
+Weapon equip/replacement, attacks, durability and breakage
+  Cards: Fiery War Axe [CS2_106], Truesilver Champion [CS2_097], Death's Bite [FP1_021]
+Overload and next-own-turn locked mana
+  Cards: Lightning Bolt [EX1_238]
+Temporary mana and expiration
+  Cards: The Coin [GAME_005]
+Hero-power costs, targeting and once-per-turn usage
+  Cards: Fireblast [CS2_034], Lesser Heal [CS1h_001], Reinforce [CS2_101]
+Token summoning, positioning and seven-minion board cap
+  Cards: Murloc Tidehunter [EX1_506], Mirror Image [CS2_027], Haunted Creeper [FP1_002], Reinforce [CS2_101]
+Generated cards in hand and full-hand discard
+  Cards: King Mukla [EX1_014], Bananas [EX1_014t]
+Bounce, full-hand bounce destruction and replay
+  Cards: Youthful Brewmaster [EX1_049], Sap [EX1_581]
+Shuffle existing minion into deck
+  Cards: Recycle [GVG_031]
+Generate clean base-definition copies in deck
+  Cards: Gang Up [BRM_007]
+Ordered Deathrattles, death waves and nested death handling
+  Cards: Loot Hoarder [EX1_096], Haunted Creeper [FP1_002], Death's Bite [FP1_021]
+Card-play listeners
+  Cards: Questing Adventurer [EX1_044]
+After-spell listeners
+  Cards: Wild Pyromancer [NEW1_020]
+Summon listeners
+  Cards: Darkshire Councilman [OG_113]
+Damage listeners, including lethal hits
+  Cards: Acolyte of Pain [EX1_007]
+Healing listeners
+  Cards: Northshire Cleric [CS2_235]
+Friendly-death listeners
+  Cards: Cult Master [EX1_595]
+Secrets: five slots, no duplicate IDs, off-turn activation
+  Cards: Counterspell [EX1_287], Vaporize [EX1_594], Explosive Trap [EX1_610], Noble Sacrifice [EX1_130], Eye for an Eye [EX1_132]
+Spell countering: costs retained, text/Overload suppressed
+  Cards: Counterspell [EX1_287]
+Attack destruction/damage interruptions and cancellation
+  Cards: Vaporize [EX1_594], Explosive Trap [EX1_610]
+Fixed attack redirection to generated Defender
+  Cards: Noble Sacrifice [EX1_130], Defender [EX1_130a]
+Event-amount damage reflection and deferred lethal/draw result
+  Cards: Eye for an Eye [EX1_132]
+Weapon before-attack and destruction scripts
+  Cards: Truesilver Champion [CS2_097], Death's Bite [FP1_021]
+
+Implemented but supported mainly by synthetic/arranged tests
+-----------------------------------------------------------
+Divine Shield: damage absorption and consumption; no granting card in catalog.
+Stealth: selected-target/attack restrictions and loss on attack; no granting card.
+Immune: damage prevention and selected-target restrictions; no granting card.
+Elusive: spell/hero-power selected-target exclusion; no granting card.
+Armor: damage absorption only; no armor-gain card/operation.
+Spell Damage scaling: bonuses supplied through test state; no bonus-granting aura card.
+Start-of-next-own-turn buff expiration and temporary Health buffs: modified definitions.
+Empty/filled permanent mana gains, crystal destruction, Overload unlocking: direct resource tests.
+Start/end-of-turn ability hooks and generic AFTER_CARD_PLAY callbacks: modified definitions.
+Dynamic Charge/Rush/Windfury state and weapon Windfury: arranged keyword states; general keyword-grant operations are not implemented.
+Deep nesting, queued-source invalidation and pathological reaction budgets: synthetic chains plus real-card interactions.
+
+Implemented hooks with no dedicated positive representative-card coverage
+-------------------------------------------------------------------------
+AFTER_ATTACK listener execution: window exists; catalog has no AFTER_ATTACK listener card.
+EVENT_TARGET effect recipient: implemented and context-validated; no catalog card uses it and no dedicated positive behavior test was found.
+
+Non-card engine rules with tests
+-------------------------------
+Seeded setup/shuffle, starting hands, mulligan, first-player selection and Coin.
+Turn handover, mana growth/refill/caps, automatic draw, readiness refresh and phase legality.
+Concession, turn limit, winner/draw results and rejection of actions after finishing.
+Board/hand/deck limits, entity IDs, zone resets, owner/controller tracking and immutable definitions.
+Copy-on-write actions, failed-action rollback, bounded resolution, JSON checkpoints and full-game replay.
+Versioned catalog/schema validation, exact references and frozen-manifest integrity.
+
+Evidence: tests/test_conformance.py, test_drawing.py, test_combat.py, test_deaths.py,
+test_stats.py, test_match.py, test_keywords.py, test_zones.py and test_reactions.py.
+Detailed requirements and timing choices remain in the corresponding stage documents.
+Coverage establishes the historical fixture policy, not verified single-client-patch conformance.

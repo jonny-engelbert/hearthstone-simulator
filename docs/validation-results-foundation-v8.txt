@@ -1,0 +1,35 @@
+Stage 8 validation — 2026-10-20
+Catalog: foundation-v8 / schema 1.8
+Policy: RESET_ON_EXIT_BASE_DECK_COPIES
+
+$ python3 -m hearthstone.catalog
+Validated 37 card definitions in foundation-v8
+
+$ python3 -m hearthstone.manifest
+Verified 2 frozen files for foundation-v8
+
+$ python3 -m unittest discover -s tests -q
+----------------------------------------------------------------------
+Ran 330 tests in 14.184s
+
+OK
+
+55 new stage-8 tests passed, including all eight catalog/schema manifests,
+unchanged earlier definition prefixes, placement and capacity cases, generation,
+bounce and cleanup, copies and shuffles, nested Deathrattle summons, and a
+complete game replayed through JSON checkpoints with per-step zone invariants.
+Stage requirements and coverage: docs/zones-stage8.txt.
+
+$ python3 -m examples.play_zones
+seed: 1
+catalogId: foundation-v8
+profile: FOUNDATION_SANDBOX
+result: PLAYER_0_WINS
+turn: 32
+actions: 177
+events: 791
+Saved outputs/stage8-demo.json
+
+Historical results remain in docs/validation-results-foundation-v1.txt through
+validation-results-foundation-v7.txt. These results validate the declared fixture
+policies and supported subset; they do not establish live-client conformance.

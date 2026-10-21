@@ -1,0 +1,169 @@
+Stage 3: Fiery War Axe, weapons, combat and durability
+=====================================================
+Implemented: 2026-10-20
+Current catalog: foundation-v3; schema: 1.3
+Status: plain weapons and normal declared combat in the fixture interpreter.
+
+WPN-01: Fiery War Axe is CS2_106, revision foundation-v3, a Warrior WEAPON
+costing 2 mana with 3 Attack and 2 durability. Use its original historical cost,
+not the later 3-mana version from Gemini's examples. Keep the eight previous
+definitions unchanged. Retain v1/v2 catalogs, schemas and manifests byte-for-byte.
+
+WPN-02: Schema 1.3 supports WEAPON/WARRIOR and weapon baseStats containing
+manaCost, attack and positive integer durability. Health is forbidden. Spells
+and minions cannot contain durability. Weapons in this stage must have empty
+abilities, keywords, mechanics and tribes. Reject scripted weapons until their
+timing and reactions are implemented; a WEAPON enum alone is insufficient.
+
+WPN-03: Playing a weapon checks turn, source control/hand, mana and absence of
+an unexpected target, then pays mana and equips it in PLAY. It occupies no
+minion slot. Exactly one equipped weapon per controller is supported. Another
+weapon replaces the old one into GRAVEYARD with WEAPON_DESTROYED/REPLACED,
+then emits EQUIP for the new instance. Replacement does not expend durability.
+This event order is a plain-weapon fixture contract, not a specification of
+weapon Battlecry/Deathrattle order. No such reactions exist in this catalog.
+
+WPN-04: Current durability lives on the weapon instance; printed durability
+remains in its definition. Hero current Attack is its fixture attack value
+plus its equipped weapon's printed Attack on its own turn. Weapon Attack is
+sheathed on the opponent's turn. Weapons themselves cannot attack or be normal
+combat targets. Definition/instance isolation remains enforced.
+
+WPN-05: Both heroes and minions may make a normal declared attack on their
+controller's active turn if in PLAY, alive, ready, at positive current Attack,
+not Frozen or CANT_ATTACK, and with attacksThisTurn < 1. Minions enter play
+unready; heroes start ready. One attack per turn is the supported baseline.
+Charge/Rush, Windfury, forced attacks and other attack-count overrides are
+not implemented or permitted in card definitions. Fixture keyword injection
+tests cover only stated protections/restrictions, not arbitrary new keywords.
+
+WPN-06: Legal defenders are living enemy characters in PLAY without Stealth
+or Immune. A visible, non-Immune enemy Taunt minion restricts normal attacks to
+such Taunt minions. A Stealthed or Immune Taunt does not protect other targets.
+Attack targeting and attack execution use the same checks. Own characters,
+hand/graveyard entities, spells, weapons and missing IDs are invalid targets.
+
+WPN-07: Consume the attack and remove attacker Stealth before combat damage.
+Capture both combatants' Attack values before applying either hit. The attacker
+deals its current Attack to the defender; a minion defender retaliates with
+its current Attack even when lethally hit or unready/Frozen. A defending hero
+never retaliates, even if armed or possessing fixture Attack. Zero-Attack
+defenders produce no return-damage event. Spell Damage never modifies combat.
+
+WPN-08: Apply combat hits using the shared Immune/Divine Shield/Armor/Health
+pipeline, tagged damageClass=COMBAT and attributed to the dealing character.
+Both hits resolve before lethal minions are removed together. Thus lethal
+damage to a defender does not suppress its return hit. Log serialization lists
+attacker damage first and return damage second; this is paired combat with no
+death or result checks between the two, not full reactive event timing.
+
+WPN-09: Every valid hero attack with an equipped plain weapon consumes one
+durability, including damage prevented by Divine Shield and retaliation
+prevented by hero Immune. This corrects the supplied spec's hero-Immune
+exception. A minion attacking, an enemy attacking the hero, an invalid attack,
+or replacing a weapon never consumes that weapon's durability. Durability
+overrides from special weapon text are deferred.
+
+WPN-10: At durability zero emit WEAPON_DESTROYED/EXHAUSTED and move the weapon
+to GRAVEYARD. Its Attack no longer contributes. Hero attacksThisTurn belongs
+to the hero and survives weapon replacement or destruction; new weapon equip
+never grants a fresh attack. All combat damage and durability changes finish
+before grouped minion death processing and the final hero win/loss check.
+Lethal retaliation can kill the attacking hero while killing the defender.
+Final results reject further play, attack, draw or combat-turn refresh calls.
+
+WPN-11: begin_combat_turn(state, player) is a fixture/future-turn-runner
+primitive, not a player action. It sets the active player, resets only that
+player's in-play characters' attacksThisTurn, and marks them ready. It does
+not refill mana, draw, thaw Frozen, expire buffs or run start/end-of-turn events.
+Use it to arrange successive combat turns until a complete turn runner exists.
+Do not expose it as an action that lets a player refresh attacks at will.
+
+WPN-12: play, attack, and begin_combat_turn return copied states. Invalid
+requests leave caller state, events, mana, attack counts and durability unchanged.
+Invalid players, missing/duplicate combat entity IDs, multiple equipped weapons
+or equipped weapons already at zero durability fail rather than guessing.
+Normal supported states remain deterministic and JSON-serializable.
+
+Events
+--------
+PLAY and EQUIP: weapon play/equip.
+WEAPON_DESTROYED: reason REPLACED or EXHAUSTED, with weapon instance ID.
+ATTACK: attacker and defender instance IDs, after validation.
+DAMAGE: source character, target character, amount, damageClass=COMBAT.
+DURABILITY: weapon instance ID and remaining durability.
+DEATH_BATCH: all lethally damaged minions removed after combat.
+COMBAT_TURN_START: incoming player, from the scoped refresh primitive.
+These are omniscient fixture logs, with no registered event listeners yet.
+
+Example (run from the project root)
+------------------------------------
+from hearthstone.catalog import load
+from hearthstone.prototype import Prototype
+
+engine = Prototype(load())
+state = engine.state()
+state['entities'].append(engine.entity('axe-1', 'CS2_106', 0, 'HAND'))
+state = engine.play(state, 0, 'axe-1')
+state = engine.attack(state, 0, 'hero-0', 'hero-1')
+# Opposing hero takes 3; axe has 1 durability; hero spent its attack.
+state = engine.begin_combat_turn(state, 1)
+state = engine.begin_combat_turn(state, 0)
+state = engine.attack(state, 0, 'hero-0', 'hero-1')
+# Opposing hero has taken 6 total; axe is broken in the graveyard.
+
+For minion combat, play a minion, then use a later incoming combat turn to
+ready it. attack_targets(state, attacker_id) enumerates currently legal
+defenders. current_attack(state, entity) computes supported current Attack.
+equipped_weapon(state, player) returns the equipped instance or None.
+
+Tests and traceability
+-----------------------
+Run: python3 -m unittest discover -s tests -v
+tests/test_combat.py adds 36 tests (6 catalog, 30 combat); full suite is 91.
+All 55 earlier tests still run, including drawing/fatigue/burn regressions.
+
+WPN-01/02: WeaponCatalogTests validates ID/stats, new/previous schemas,
+           strict stat shapes, scripted-weapon rejection and all manifests.
+WPN-03: equip, replacement, full-board equip and failed-play atomicity tests.
+WPN-04: printed/instance durability isolation, current hero Attack and sheathing.
+WPN-05: exhausted/frozen/cannot-attack, zero Attack, spent attacks, and
+        non-character/wrong-player/zone rejection tests.
+WPN-06: visible Taunt, Stealthed/Immune Taunt, invalid target and player tests.
+WPN-07/08: paired minion deaths, lethal-defender retaliation, zero defender
+           Attack, hero non-retaliation, Divine Shield, Armor and Spell Damage.
+WPN-09: minion attack does not consume weapon; hero Immune still consumes
+        durability; enemy hero defending does not consume its own weapon.
+WPN-10: final durability breaks axe; replacement before/after attack;
+        lethal combat/retaliation and final-state rejection.
+WPN-11: refresh only incoming player's characters, preserve mana/decks/fatigue,
+        sheathing and successive-turn breakage scenarios.
+WPN-12: invalid attack atomicity; malformed weapon rejection; identical
+        input/output, serialization and unchanged-input assertions.
+
+Evidence and limits
+---------------------
+Official 2017 cost-change announcement (Fiery War Axe becomes 3 mana):
+https://hearthstone.blizzard.com/en-us/news/21037556
+Card ID mapping from simulator author's own catalog:
+https://github.com/siva-msft/RosettaStone/blob/master/Documents/CardList.md
+Official example separating attacking-hero immunity from weapon properties:
+https://hearthstone.blizzard.com/en-gb/cards/311-gladiators-longbow
+The fixture does not implement Gladiator's Longbow; immunity is injected in
+its dedicated regression scenario. No full client-log conformance is claimed.
+
+Base combat rules follow the supplied engine specification's section 6 with
+the immunity/durability correction above. This stage covers normal declarations
+for the supported catalog. No combat-preparation interrupts, redirected or
+cancelled attacks, reaction triggers, weapon Battlecries/Deathrattles, secrets,
+forced combat, Windfury, Charge/Rush, Poisonous, Lifesteal, stat enchantment
+layers or complete freeze-thaw/turn lifecycle are implemented. These require
+later scheduler/keyword stages; they must not be inferred from these tests.
+
+Next stage: death snapshots, controller-at-death, ordered Deathrattles and
+nested death handling, using Loot Hoarder after adding a reaction scheduler.
+
+Later-stage note (2026-10-20): stage 4 now implements ordered minion
+Deathrattles and nested death waves. See deaths-stage4.txt and the current
+requirements/test plan for the updated checkpoint policy. Earlier sections
+above describe this document's original stage scope.

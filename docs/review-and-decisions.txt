@@ -1,0 +1,290 @@
+Review of supplied card definitions
+==================================
+Reviewed: 2026-10-20. Original exports are preserved in docs/sources/.
+
+Input documents
+---------------
+Engine requirements:
+https://docs.google.com/document/d/1-M4hT_uxRQ-qjtdJvsa-_Mg4LOsGXMSxH0sd-MGVoic/edit
+Gemini definitions:
+https://docs.google.com/document/d/1HF0GJaqBo_97Wl0W0SXS-7VmJw2aK4TKaB2USYsNSiA/edit
+
+The Google documents were read and exported, not modified. The original engine
+document's patch-37.0/current-format assertions have not been independently
+verified. Neither exported document is a machine-validated catalog.
+
+Corrections
+-----------
+Chillwind Yeti: CS2_182, not CS2_032.
+Sen'jin Shieldmasta: CS2_179, not CS2_122 (Raid Leader).
+Flamestrike: CS2_032, not the invented CS2_032_SPELL.
+Polymorph's Sheep: CS2_tk1, not CS2_022t. Include its definition.
+Novice Engineer: EX1_015, not CS2_105 (Heroic Strike).
+Fiery War Axe: CS2_106, not CS2_091 (Light's Justice).
+Loot Hoarder: EX1_096 is correct; draw/Deathrattle support is deferred.
+
+Identifier evidence from a simulator developer's own catalog:
+https://github.com/siva-msft/RosettaStone/blob/master/Documents/CardList.md
+Sheep identity is also present in recorded game logs:
+https://gist.github.com/Patashu/a9102c0dcdb5d199cee7
+
+The prose promises targeted damage, but the original five objects contain no
+targeted damage spell: Polymorph is a transformation. Add Fireball CS2_029.
+Together with Sheep, this makes seven executable definitions in the first stage.
+
+Version decision
+----------------
+Use a clearly labeled historical fixture instead of mixing historical Fire
+Elemental damage with modern Flamestrike damage and calling it patch 37.0.
+Historical Flamestrike's 4 damage is explicitly shown by HearthSim's author:
+https://hearthsim.info/blog/new-site-new-blog-new-events-api/
+Current official library contrasts, checked during review:
+https://hearthstone.blizzard.com/en-gb/cards/1004-flamestrike
+https://hearthstone.blizzard.com/en-us/cards/69516/
+The current listings show Flamestrike 5 damage and Fire Elemental 4 damage.
+Fireball's 6 damage is confirmed by the official card listing:
+https://hearthstone.blizzard.com/en-us/cards/315-fireball
+Historic Fire Elemental 3 damage comes from the supplied examples and historical
+community accounts; this project's profile is not certified to one client build.
+
+A direct HearthstoneJSON catalog download returned HTTP 403. No complete,
+current catalog was imported, and no live patch conformance is claimed.
+Its publisher's format documentation remains useful for metadata design:
+https://hearthstonejson.com/docs/cards.html
+
+Schema decisions
+----------------
+1. Replace examples-only prose with actual JSON Schema 2020-12 and semantic
+   validation. Increment schema to 1.1 because the contract changed.
+2. Avoid duplicate TARGET_REQUIRED selectors in playConditions. Derive target
+   availability from ability targeting, using the applicable legality policy.
+3. Separate batch timing from damage scaling. For Flamestrike, Spell Damage
+   increases the damage to every minion. For Arcane Missiles, scaling the number
+   of missiles is a separate card behavior, not an INDIVIDUAL_HITS shortcut.
+4. Replace NO_MODIFIERS with SPELL/ABILITY damage classification. Shared
+   defenses always apply. Later damage multipliers need explicit source and
+   modifier context, not arbitrary exceptions in card definitions.
+5. Reference exact revisions when generating or transforming into another card.
+6. Fail closed for unsupported operations, policies and fields.
+
+Original engine specification issues requiring later resolution
+---------------------------------------------------------------
+DOM-04: The maxHealth+damage representation needs an explicit damage adjustment
+policy when a max-Health modifier falls. Its stated current-Health behavior does
+not follow from retaining accumulated damage unchanged.
+DOM-06/CARD-04: Replace blanket enchantment removal with explicit zone-transition
+policies, including exceptions for effects such as Tradeable.
+DECK-05: Separate deck-construction restrictions from conditional effects such
+as checking for duplicates when a Battlecry resolves.
+EFF-01..10: Do not generalize old ordering observations into current guarantees.
+ARCH-07: Event-loop limits are simulator safeguards; a forced draw is not yet
+verified live-game behavior.
+STAT-11/13: Confirm transformation entity identity, damage, readiness and
+play-order behavior using client logs. Fixture behavior is deliberately limited.
+
+Next staged additions from Gemini's expanded document
+----------------------------------------------------
+Stage 2 COMPLETE: EX1_015 Novice Engineer; draw-one semantics including empty deck,
+fatigue, full hand, reveal/burn behavior, and deterministic deck order.
+Stage 3 COMPLETE: CS2_106 Fiery War Axe; versioned mana cost, weapon replacement,
+hero attack counts, durability and combat damage.
+Stage 4 COMPLETE: EX1_096 Loot Hoarder; death snapshots, controller-at-death, ordered
+Deathrattles and nested deaths. Add a scheduler before claiming these work.
+Then add healing, auras, buffs and random-hit cards with dedicated tests.
+
+Stage-2 implementation decision (2026-10-20)
+-------------------------------------------
+Publish foundation-v2 / schema 1.2 rather than modifying the frozen v1 files.
+Keep existing definitions unchanged, add Novice Engineer revision foundation-v2,
+and select the schema from the catalog version. New DRAW_CARD effects explicitly
+name EFFECT_CONTROLLER or OPPONENT_OF_EFFECT_CONTROLLER; SELF is not supported.
+See drawing-stage2.txt for behavior, sources and limitations.
+
+Stage-3 implementation decision (2026-10-20)
+-------------------------------------------
+Publish foundation-v3 / schema 1.3 and preserve v1/v2 artifacts. Choose the
+original 2-mana 3/2 Fiery War Axe, matching the historical pre-buff Fire Elemental
+and Flamestrike fixtures. The supplied Gemini document instead used its later
+3-mana cost; either needs an exact revision. The 2017 official nerf establishes
+the change to 3, and the current cost is not used as this fixture baseline.
+https://hearthstone.blizzard.com/en-us/news/21037556
+
+Correct original CMB section: hero immunity does NOT preserve ordinary weapon
+durability. Fiery War Axe loses one per valid hero attack even when the hero is
+Immune. Weapon-specific durability overrides remain unsupported. Hero attack
+counts survive replacement and breakage; equipping never refreshes attacks.
+
+No battlecry/deathrattle weapons, attack secrets, redirected/cancelled attacks,
+forced attacks, Windfury, Charge/Rush, Poisonous or Lifesteal are claimed. Normal
+combat has no reactive listeners yet. See combat-stage3.txt for exact boundaries.
+
+Stage-4 implementation decision (2026-10-20)
+-------------------------------------------
+Publish foundation-v4 / schema 1.4 with DEATH_WAVES_FIFO named policy. Keep
+prior catalog/schema/manifest bytes unchanged. Add Loot Hoarder EX1_096 with
+EXPERT1/COMMON metadata (not BASIC/FREE), plus generic DESTROY and Deathrattle
+execution contexts. Snapshot controller, owner, definition, position, playOrder,
+state and executable Deathrattles before removing a whole death batch.
+
+Drain each wave oldest-first; collect newly lethal/destroy-marked minions after
+that queue finishes. This is a deliberately explicit fixture timing contract
+consistent with the supplied phase-boundary model, not newly verified live
+ordering. Only the existing supported operations can run in Deathrattles.
+No general damage/death listeners or weapon Deathrattles have been added.
+
+Full abilities now finish before death collection, replacing the earlier
+per-effect checkpoint simplification. All earlier published cards have one
+effect, so their ordinary behavior is preserved. Synthetic multi-effect tests
+cover the new boundary. See deaths-stage4.txt for exact behavior and limits.
+
+Stage-5 implementation decision (2026-10-20)
+-------------------------------------------
+Publish foundation-v5 / schema 1.5. Add Voodoo Doctor EX1_011, Blessing of Kings
+CS2_092, historical Stormwind Champion CS2_222 (7 mana, 6/6), and Spellbreaker
+EX1_048. Keep all prior catalog/schema/manifest files unchanged.
+
+Stat layers in scope are printed stats, positive permanent attached buffs and
+flat additive friendly-minion auras. Auras are recomputed rather than written
+as enchantments on each recipient. Sources remain active while mortally wounded
+until their death batch is removed. Stat refresh then occurs before queued
+Deathrattles, so their effects see the updated board.
+
+Adopt explicit CAP_CURRENT_ON_MAX_LOSS to implement the original DOM-04 prose:
+max-Health loss preserves current Health up to the new cap by adjusting damage.
+A max-Health increase leaves damage unchanged. This addresses the earlier
+representation gap; it is a tested fixture policy rather than verified evidence
+for every historical/live modifier interaction. No set-to/negative modifiers
+or temporary durations are admitted by the new effect schema.
+
+Silence now has a real operation/card, rather than only a setup flag. It clears
+attached buffs/keywords and suppresses intrinsic auras and Deathrattles while
+allowing external auras and future buffs. A later silence also clears buffs
+given since the previous one; do not treat an already-silenced flag as immunity
+to further silence operations.
+
+Remaining-stage estimate: seven planned, rough range six to nine after stage 5
+for a useful foundational simulator. Full card collection coverage is an ongoing
+content/conformance effort beyond that milestone. See roadmap.txt.
+
+Stage-6 implementation decision (2026-10-20)
+-------------------------------------------
+Publish foundation-v6 / schema 1.6; preserve all earlier artifacts. Add The Coin
+GAME_005 and Lightning Bolt EX1_238 (Overload 1) to exercise resource effects.
+MatchEngine subclasses the core interpreter and adds a managed lifecycle,
+SplitMix64/Fisher-Yates setup, simultaneous mulligan commitments, The Coin,
+owner-scoped phase hooks, automatic draws, resource buckets and end_turn.
+
+The default deck profile is FOUNDATION_SANDBOX, length 30, collectible definitions
+only. Explicit 4..99-card fixtures are supported; full class/copy/format validation
+remains later work. With this small card pool, repeated vanilla decks are an
+intentional integration fixture, not a constructed-legal deck claim.
+
+Use CAPPED_TEMPORARY_MANA: temporary mana is spent first and cannot push available
+mana past the configured cap. It may restore spent mana at permanent cap.
+The original RES-04 claim of 11-of-10 is not used; temporary/Overload edge cases
+are tested named policies, not verified current-client parity. Excess locks
+beyond permanent crystals offset temporary gains. Generic filled-crystal gains
+at cap do nothing; card-specific Excess Mana generation is not implemented.
+
+Both mulligan choices are collected before replacement, replacements exclude
+rejected physical copies, then marked copies return and affected decks shuffle.
+Canonical player/order handling makes the final replacement/RNG result
+independent of which player submits first. Omniscient state includes both choices;
+player-specific hidden views remain on the roadmap.
+
+The supported turn lifecycle is complete, but Freeze thaw/temporary stat durations
+and hero powers remain stage 7, and general reaction windows remain stage 9.
+The standalone example completes on turn 15 with 39 actions for seed 17; full
+public-action replay produces the identical final state and log.
+
+Stage 7 decisions (2026-10-20)
+------------------------------
+HERO_POWER definitions and HERO_POWER_EFFECT are separate from hand-card plays.
+They use their own selected-target policy and damage class. Use counts are
+player-scoped and reset on the next own turn. Fireblast and Lesser Heal cover
+damage and healing without introducing generated minions before stage 8.
+Existing old catalogs can still run managed matches with powers disabled.
+
+Readiness remains distinct from keyword exemptions. Charge/Rush only bypass
+normal minion exhaustion; Windfury changes the limit without resetting counts.
+No general keyword-grant operation is claimed; mutable instance fixtures cover
+gain/loss branches and weapon Windfury without inventing a real weapon card.
+
+Freeze follows supplied KW-05/06 as the declared foundation-v7 fixture policy.
+The Windfury-after-first-attack interpretation is explicitly not independently
+client verified. The timer anchors to the recipient's own-turn counter. Buff
+END_OF_TURN anchors to the current global turn; START_OF_NEXT_TURN anchors to
+the effect controller. Expiration runs after end hooks or before start hooks,
+refreshes stat layers and settles deaths/results. Existing capped-current-Health
+policy applies to temporary Health loss. Silence and transform discard timers.
+
+Rabid Worgen adds a Witchwood-era Rush fixture to the historical subset, so the
+catalog remains a feature conformance set rather than one historical patch.
+Abusive Sergeant intentionally uses its pre-6.1.3 2/1 body; Blizzard's balance
+announcement documents its later reduction to 1/1. Sources and full limitations
+are recorded in keywords-stage7.txt. The project retains all source exports.
+
+Stage 8 decisions (2026-10-20)
+------------------------------
+Catalog/schema 1.8 adds 14 definitions and RESET_ON_EXIT_BASE_DECK_COPIES.
+Names are not unique: Mirror Image spell and token have distinct canonical IDs.
+Board order is entity-store minion order; chronological playOrder remains
+separate. Optional play position defaults to the right end. v8 minion play
+emits SUMMON before Battlecry; older catalog semantics remain available. The
+stage-7 example is pinned to v7 to preserve its prior deterministic trace.
+
+Generation uses serialized generated-N IDs with collision avoidance and fresh
+definition instances. Clean deck copies match Gang Up's base-copy policy.
+Board-state copies remain excluded while supplied STAT-09 is unresolved.
+Existing bounce/shuffle retains entity ID and owner, preserves transformed
+definition and generated provenance, chooses destination controller explicitly,
+and clears board damage/modifiers/statuses. A stolen minion's destination for
+these representative cards is its current controller, not its original owner.
+
+Generated hand overflow is DISCARD without Deathrattle; draw overflow remains
+BURN. Full-hand board returns mark for death so last-known Deathrattles fire.
+The supplied deck cap is 99; partial copy generation stops there. Destroying
+an existing minion whose shuffle fails against a full deck is a chosen fixture
+policy awaiting client evidence. Shuffles append all successes, then shuffle
+each affected whole deck once with the existing seeded RNG. Fatigue persists.
+
+Death snapshots precede modifier cleanup. Virtual per-wave gap markers preserve
+board placement when chronological Deathrattle order differs from physical
+board order, and newly summoned minions can die in the next wave. Resolution
+budget failure rolls back generation as well as all preceding action changes.
+General reactions, resurrection, board-state copying and advanced enchantment
+persistence remain deferred. See zones-stage8.txt for sources and full rules.
+
+Stage 9 decisions (2026-10-20)
+------------------------------
+Catalog/schema 1.9 names DEPTH_FIRST_REACTIONS_DEATH_WAVES_V1. Immutable
+event-time listener queues use global playOrder and are revalidated before
+delivery. An explicit continuation stack handles nested reactions without
+Python recursion. Per-action budgets span nested death waves and reject loops
+atomically; bounded reentrancy is supported rather than the historical source's
+unverified self-trigger deferral rule. Old catalog execution stays available.
+
+Damage batches apply all hits before callbacks. Lethal Acolyte can draw before
+its death checkpoint. Deathrattles and surviving Cult Master listeners merge
+chronologically per corpse; simultaneous dead sources are absent. After Play
+and After Spell use pre-action source eligibility. Spell counters suppress
+text, Overload and After Spell while retaining the paid card-play action.
+
+Secrets have five distinct slots, off-turn activation and reveal-before-effect.
+Spell damage bonuses are read when damaging Secrets activate; weapon/Pyromancer
+damage uses ABILITY class. Eye for an Eye uses actual damage including Armor
+absorption and can resolve before a fatal result. Secrets are currently visible
+in omniscient state/logs; hidden/redacted views remain future API work.
+
+Combat preparation shares chronological callbacks, rechecks live proposals,
+and supports fixed Defender redirection without a second full proposal pass.
+All pre-combat cancellations refund attacks and durability instead of copying
+the obsolete two-death-phase consumption bug. New weapon enters before draining
+old weapon destruction; weapon-break callbacks precede After Attack listeners.
+These are declared fixture timings, not a verified complete client chronology.
+
+Fourteen definitions add five Secrets, six listening minions, a token and two
+weapons. Truesilver healing and Acolyte Health deliberately use historical
+values. New example saves a complete reaction game; stage-8 demo is now pinned
+to v8, alongside the already pinned stage-7 demo. The complete inventory is
+saved in card-inventory.txt. Remaining scope is detailed in reactions-stage9.txt.

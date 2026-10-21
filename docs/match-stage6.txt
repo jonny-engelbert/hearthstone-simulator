@@ -1,0 +1,203 @@
+Stage 6: managed setup, mulligans, turns and resources
+=====================================================
+Implemented: 2026-10-20
+Current catalog: foundation-v6; schema: 1.6
+Deck profile: FOUNDATION_SANDBOX
+Resource policy: CAPPED_TEMPORARY_MANA
+
+MAT-01: MatchEngine.new_game creates a managed match, separate from legacy
+Prototype.state fixture construction. Each player starts with a 30-Health hero,
+zero Armor, empty board, zero mana and fatigue zero. Match metadata records
+catalog ID, seed, deck size, turn limit and resource policy. All entities have
+deterministic unique IDs. The core damage/combat/aura/death rules are reused.
+
+MAT-02: Accept two deck lists of exactly deck_size entries (default 30). Entries
+are card-ID strings or exact {cardId, revision} objects. Definitions must exist
+unambiguously and be collectible. Generated Coin/Sheep cannot start in decks.
+Explicit fixtures may configure deck_size=4..99, mana_cap=1..99 and turn_limit>=2.
+Default cap is 10; default turn limit is 90. Reject malformed entries/configuration.
+This profile permits repeated cards/mixed classes for integration tests. Full
+constructed class, copy-limit and format legality is NOT claimed or implemented.
+
+MAT-03: One serializable SplitMix64-v1 RNG in state owns first-player selection
+and all shuffles. Use rejection-sampled randbelow and Fisher-Yates; no global
+randomness, time or external I/O. Arbitrary integer seeds normalize to 64 bits.
+The optional first_player override consumes no random first-player draw.
+Shuffle player 0 then player 1. Retain algorithm name, state and draw count.
+The same seed/decks/actions yields identical state and logs, including after a
+valid JSON roundtrip. Broader random card effects are a later stage.
+
+MAT-04: Setup deals three cards to the first player and four to the second,
+then returns phase=MULLIGAN. Both players may submit once, independently of
+activePlayer. No play/attack/end-turn action is legal yet. Validate selected IDs
+against that player's opening hand; reject duplicates, foreign/missing IDs,
+non-lists, or requests larger than the remaining replacement pool. Minimal
+fixture decks can therefore support fewer replacements than normal 30-card decks.
+
+MAT-05: Save the first player's choice without moving cards or consuming RNG.
+When both choices exist, process owners 0 then 1, with selections canonicalized
+to the stored opening-hand order. Set rejected copies aside, draw replacements
+from the remaining deck, then return rejected copies and reshuffle the affected
+deck. A rejected physical instance cannot replace itself, but another copy of
+the same card definition can appear. Keep-all choices do not reshuffle. Coin is
+granted only after both mulligans; it is not an opening replacement candidate.
+
+MAT-06: Add The Coin GAME_005, revision foundation-v6, to the second player's
+hand. It costs zero and gains one temporary mana through generic GAIN_MANA.
+Add Lightning Bolt EX1_238, revision foundation-v6, a 1-mana Shaman spell dealing
+3 with overload=1. Keep all prior definitions unchanged. Schema 1.6 validates
+GAIN_MANA (TEMPORARY/EMPTY/FILLED), DESTROY_MANA, UNLOCK_MANA, positive Overload
+metadata and owner-scoped START_OF_TURN/END_OF_TURN minion abilities.
+
+MAT-07: After setup, start global turn 1 for firstPlayer. Each start increments
+the global turn and incoming player's turn count; readies that player's in-play
+characters, resets their attack counts and cardsPlayedThisTurn, gains one
+permanent mana crystal up to cap, converts pending Overload to locked, refills
+unlocked crystals, resolves owner START_OF_TURN hooks, then draws one card.
+Drain deaths and decide lethal fatigue before entering MAIN. First player thus
+has four cards at their first main phase; second has four plus Coin before their
+own initial automatic draw. The draw/burn/fatigue engine is unchanged.
+
+MAT-08: MAIN permits play, attack, end_turn and concede for the appropriate
+player. end_turn runs owner END_OF_TURN hooks, settles their consequences, expires
+temporary and unspent available mana, and starts the opponent's next turn.
+Permanent crystals and Overload bookkeeping persist appropriately. Minions
+played this turn are exhausted until their next own turn. Weapon attacks are
+automatically sheathed on the opponent's turn; attack counts refresh only at
+the incoming owner's start. Permanent stat buffs and auras retain prior behavior.
+
+MAT-09: Turn hooks snapshot eligible owner-controlled, in-play, unsilenced
+minions in playOrder. Each ability resolves completely, then death waves and a
+hero result checkpoint run before the next source. Sources removed, silenced,
+transformed/re-stamped or no longer controlled by that owner are skipped. Newly
+eligible sources do not join an already-built phase queue. Lethal start hooks
+stop before automatic draw; lethal end hooks stop before cleanup/handover.
+Selected target choices inside phase hooks are unsupported and rejected.
+These are specific phase queues, not a general damage/secret reaction bus.
+
+MAT-10: Resource state per player separates cap, permanent, filled, temporary,
+locked and pendingOverload. mana[] is only a derived compatibility view. Available
+mana is max(0, min(cap, filled + temporary - max(0, locked - permanent))).
+Use these resource buckets for payment, never a caller-edited mana mirror.
+Require the full cost before executing any card effect; zero costs remain legal
+at zero available mana. Spend temporary first, then filled permanent mana.
+
+MAT-11: TEMPORARY gains increase the temporary bucket up to room under cap;
+they may restore spent mana at permanent cap, but never yield 11 available at a
+cap of 10. Temporary mana expires at the current turn's end, without permanent
+growth. EMPTY gains increase permanent crystals only. FILLED gains also add
+usable filled capacity subject to locks and cap. Gains at permanent cap do not
+generate an Excess Mana card: that is a future card-specific behavior, not a
+generic resource rule. These are explicit historical fixture policies.
+
+MAT-12: Overload metadata is charged exactly once when successfully playing
+the card from hand, outside its ability effects. It accumulates as pending until
+the next OWN turn; that turn's locks replace the prior lock count. On the next
+own turn after that, old locks clear unless new pending Overload was incurred.
+Excess locks beyond permanent crystals offset temporary mana gains. Summoned
+minions do not incur on-play metadata; no summon operation exists yet. Countered
+spells and replacement effects remain outside this stage's supported catalog.
+
+MAT-13: DESTROY_MANA reduces permanent crystals, removes empty capacity before
+reducing filled capacity, floors at zero, and leaves locked/pending counters
+unchanged. Clamp filled capacity to the remaining unlocked crystals. UNLOCK_MANA
+restores locked capacity (up to actual permanent crystals), clears current and
+pending locks, and cannot create hidden filled+temporary mana beyond cap.
+Generic resource effects target EFFECT_CONTROLLER or its opponent, including
+captured Deathrattle contexts. No direct free resource-change player action exists.
+
+MAT-14: Public managed actions are mulligan, play, attack, end_turn and concede,
+available as methods or strict-field apply dictionaries. Reject bad phases,
+wrong players, finished matches and malformed action fields without committing
+state/mana/RNG/events. Concede is permitted by either player in mulligan/main and
+immediately awards the opponent a win. Managed methods require matching managed
+catalog metadata. Legacy draw, resolve_deaths and begin_combat_turn fixture
+shortcuts are rejected by MatchEngine. Internal turns/effects call those core
+primitives directly, so the hosting client cannot request free draws or resets.
+
+MAT-15: If the next global turn reaches turn_limit (default 90), finalize a draw
+before mana refill, readiness changes, hooks or draw for that turn. Thus the
+default permits turns 1..89. All hero wins, concession and turn-limit draws use
+phase=FINISHED. No further player actions are accepted. Timers/networking are
+outside this pure synchronous engine.
+
+MAT-16: Keep the entire project local. examples/play_match.py drives two sandbox
+decks through new_game/apply only, with no fixture state edits. Its seed-17 run
+finishes on global turn 15, PLAYER_1_WINS, 39 actions and 168 events. The test
+replays every action from the same seed and checks exact final state/log equality.
+outputs/stage6-demo.json saves summary, action sequence and full final state.
+The report is omniscient; hidden player-specific views are a later stage.
+
+Public API example (run from project root)
+-------------------------------------------
+from hearthstone.match import MatchEngine
+
+engine = MatchEngine()
+decks = [['CS2_182'] * 30, ['CS2_182'] * 30]  # Sandbox, not constructed-legal.
+state = engine.new_game(decks, seed=17)
+state = engine.apply(state, 0, {'type': 'mulligan', 'replace': []})
+state = engine.apply(state, 1, {'type': 'mulligan', 'replace': []})
+player = state['activePlayer']
+state = engine.apply(state, player, {'type': 'end_turn'})
+
+Other action shapes:
+{'type': 'play', 'source': '<instance ID>', 'target': '<optional instance ID>'}
+{'type': 'attack', 'attacker': '<instance ID>', 'defender': '<instance ID>'}
+{'type': 'concede'}
+All methods return a new state. Hosts own who may submit each player's request.
+Use the supported methods instead of mutating state to create player actions.
+Raw state is trusted engine input, not a security boundary or a full state schema.
+
+Run and verify
+----------------
+python3 -m hearthstone.catalog
+python3 -m hearthstone.manifest
+python3 -m unittest discover -s tests -v
+python3 -m examples.play_match
+
+tests/test_match.py adds 55 tests: 5 catalog, 4 RNG, 35 match, 11 resource.
+Full suite: 222 tests, including all 167 earlier tests.
+
+Traceability:
+MAT-01/02: opening hand/resource/entity checks; exact definition references;
+           malformed decks/configuration and generated-card rejection.
+MAT-03: known SplitMix64 vectors, repeatable shuffle/permutation, RNG and
+        match JSON continuation, deterministic setup and full-game replay.
+MAT-04/05: first submission waits, bad/duplicate/foreign selections, physical
+           rejection exclusion, submission-order independence and short fixtures.
+MAT-06: Coin/Bolt definitions, schema/policy/legacy-version checks.
+MAT-07/08: first/second-player setup, turn handover, mana growth, draw/burn,
+           fatigue termination, summoning exhaustion and readiness refresh.
+MAT-09: ordered owner queues, refill-before-trigger-before-draw, removed-source
+        skipping and lethal end hook preventing handover.
+MAT-10/11: temporary-first payment, Coin expiry, cap/no-hidden-mana checks,
+           forged mana mirror rejection, EMPTY/FILLED differences and full cost.
+MAT-12/13: Bolt next-own-turn lock/clear, invalid Bolt atomicity, excess Overload,
+           destroy floor/empty-first/unchanged locks and unlock/refill/cap behavior.
+MAT-14/15: decision/fixture-shortcut rejection, valid dispatch, concession,
+           terminal rejection and configurable turn-limit boundary.
+MAT-16: complete setup/play/combat/turn example and exact public-action replay.
+
+Evidence and remaining scope
+-----------------------------
+Official opening-hand/mulligan overview:
+https://news.blizzard.com/en-us/article/21363040/opening-moves-mulligans
+Official Coin text:
+https://hearthstone.blizzard.com/en-gb/cards/1746/
+Official library includes Lightning Bolt and Overload:
+https://hearthstone.blizzard.com/en-us/cards?set=core&viewMode=table
+Identifier reference from a simulator author's catalog:
+https://github.com/siva-msft/RosettaStone/blob/master/Documents/CardList.md
+
+Detailed resource/phase/turn-limit assumptions build on the supplied engine
+requirements and are named/tested policies. This stage does not certify parity
+with a live client patch. In particular CAPPED_TEMPORARY_MANA replaces the original
+unverified 11-of-10 example, and generic filled gains do not grant Excess Mana.
+
+Complete turns here means the lifecycle for the supported catalog. Hero powers,
+Freeze thawing, Charge/Rush/Windfury and timed stat-modifier expiry remain stage 7;
+the current catalog cannot create those unsupported mechanics. General event
+listeners/secrets, summons/copies/zone changes, card randomness/Discover, full
+constructed legality, opponent-redacted views and public state/action schemas
+remain later roadmap work. Mulligan state and event logs are omniscient and must
+not be exposed unredacted as an opponent-facing UI.

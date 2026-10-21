@@ -1,0 +1,177 @@
+Stage 4: Loot Hoarder, death snapshots and ordered death waves
+=============================================================
+Implemented: 2026-10-20
+Current catalog: foundation-v4; schema: 1.4
+Named resolution policy: DEATH_WAVES_FIFO
+Scope: minion Deathrattles built from the supported effect language.
+
+DTH-01: Loot Hoarder is EX1_096, revision foundation-v4, Neutral, 2 mana,
+2 Attack, 1 Health, set EXPERT1 and rarity COMMON. Its Deathrattle is DRAW_CARD
+count=1, targetPlayer=CONTROLLER_AT_DEATH. The prior nine card definitions are
+unchanged. All four catalogs and their original schemas/hashes remain valid.
+
+DTH-02: Schema 1.4 adds DEATHRATTLE, CONTROLLER_AT_DEATH and generic DESTROY,
+plus the required deathResolutionPolicy. A minion can have one BATTLECRY and
+one DEATHRATTLE; a spell only SPELL_EFFECT; weapons remain unscripted. Reject
+duplicate kinds, mismatched mechanic labels, Deathrattles on spells, selected
+Deathrattle targets, invalid damage classes, unknown policies and controller-
+at-death references outside a Deathrattle. Deathrattles do not ask a player for
+a target. Query recipients are allowed for supported non-draw effects.
+
+DTH-03: playOrder is a globally unique, positive, monotonically allocated stamp
+when a minion/weapon enters PLAY. State tracks nextPlayOrder. Re-entry through
+normal play and transformation receives a fresh stamp. Merely changing a fixture
+controller retains the stamp. Normal play assigns actual chronology independently
+of entity storage order. Legacy direct-PLAY fixtures without stamps get stamps
+once in entity-list order; tests requiring another chronology must supply unique
+explicit stamps. Duplicate/invalid stamps and duplicate instance IDs fail closed.
+Board position still follows the existing entity-list board representation.
+
+DTH-04: A death checkpoint finds in-play minions whose accumulated damage is
+at least max Health or whose pendingDestroy flag is true. Generic DESTROY marks
+selected/query MINION recipients pendingDestroy without applying damage or
+requiring lethal Health. Ordinary destroy is not prevented by Divine Shield
+or damage immunity; selected-target restrictions still apply to declaration.
+Hero direct destruction remains unsupported by this new operation.
+
+DTH-05: Before removing any dying minion, sort the batch by playOrder and make
+deep snapshots of entity state, controllerAtDeath, board position and eligible
+executable Deathrattles. Snapshots retain owner, definition ID/revision,
+enchantments, damage and playOrder as last-known information. Then move the whole
+batch to GRAVEYARD and append DEATH_BATCH. Removed minions cannot be selected
+by later PLAY-zone effects or occupy board slots. Append detached snapshots to
+state.deathHistory; mutating a graveyard instance cannot rewrite that record.
+
+DTH-06: Build the wave's immutable Deathrattle queue from those snapshots, then
+execute oldest-played first across BOTH players. Active-player priority and
+entity-store order do not override explicit playOrder. Emit DEATHRATTLE with
+source ID, captured controller and playOrder. Source removal is expected and
+does not cancel the queued ability. Its effect controller is the captured
+controller, not its owner, active player or a later graveyard value.
+
+DTH-07: Execute all effects in one Deathrattle without a nested death checkpoint.
+Finish the current wave's queued Deathrattles before collecting new deaths.
+Then snapshot/remove the next batch and resolve its queue in play order.
+An older minion dying in a later wave does not jump ahead of the first wave's
+remaining sources. Repeat until no lethal/pending-destroy minions remain.
+Use an iterative wave loop rather than recursive calls. Zero-health minions
+caused mid-wave remain in PLAY until the next checkpoint; query effects may
+still see them under the existing area-effect fixture policy.
+
+DTH-08: Battlecries, spells and Deathrattles share _execute_effects. Playing
+Loot Hoarder selects no on-play ability and does not draw. Its death does.
+DEAL_DAMAGE in a Deathrattle is ABILITY damage, so it receives no Spell Damage
+bonus but still uses prevention/Armor/Health rules. DRAW_CARD uses the existing
+ordered deck, full-hand reveal/burn, fatigue and per-player counter logic.
+EFFECT_CONTROLLER or OPPONENT_OF_EFFECT_CONTROLLER, if used by a synthetic
+Deathrattle, also refer to the captured controller context.
+
+DTH-09: A silenced fixture minion contributes no Deathrattle to the queue.
+Actual silence effects are not implemented yet; this stage respects the
+runtime silenced flag for death snapshot eligibility only. Transform resets
+to the destination definition and gets a fresh playOrder without a death.
+Burned hand/deck cards and transformed-away identities never create a death
+snapshot or Deathrattle. Killing the resulting Sheep has no old Loot ability.
+
+DTH-10: Normal play, attack and draw drain deaths before the final hero result.
+Top-level spells/Battlecries now complete their WHOLE ability before that
+checkpoint, replacing stage 1's per-effect simplification. Combat still applies
+both hits before collection. All queued Deathrattles and nested waves finish
+before deciding hero loss/draw, even if an earlier fatigue hit became lethal.
+Both players' lethal Deathrattle fatigue can therefore yield a draw under this
+fixture policy. Completed matches reject additional checkpoint/actions.
+
+DTH-11: resolve_deaths(state) is a fixture/engine checkpoint, not a free player
+action. It returns a copied settled state. Repeating it on an already settled,
+unfinished state emits no new deaths or Deathrattles. The internal queue is
+local to the synchronous resolution; no pause/resume during a Deathrattle is
+offered. Finished states, snapshots and logs remain JSON-serializable.
+
+DTH-12: max_deathrattles is an explicit positive integer prototype configuration,
+default 1000 executions per death drain. Exceeding it raises ResolutionLimitError;
+the public action commits no partial state, mana, events or result. This is a
+simulator safeguard, not a claim that the live game draws on long sequences.
+Normal supported operations cannot summon/resurrect, so sources leave play
+once per collection and cannot requeue themselves in this stage.
+
+Ordering example
+------------------
+Wave 1: dying Bomb (playOrder=10) and Loot A (20) are removed together.
+Bomb's synthetic Deathrattle damages Loot B (playOrder=1) lethally.
+Loot A's already-queued Deathrattle still runs next.
+Wave 2: Loot B is now removed and its Deathrattle runs.
+Execution order: Bomb, Loot A, Loot B. The old playOrder of Loot B does not
+move its later wave ahead of pending work from the first wave.
+Bomb is a synthetic test definition only, not a card in the published catalog.
+
+API example (from project root)
+--------------------------------
+from hearthstone.catalog import load
+from hearthstone.prototype import Prototype
+
+engine = Prototype(load())
+state = engine.state()
+loot = engine.entity('loot-1', 'EX1_096', 0, 'HAND')
+top = engine.entity('top-1', 'CS2_182', 0, 'DECK')
+state['entities'].extend([loot, top])
+state['decks'][0] = ['top-1']
+state = engine.play(state, 0, 'loot-1')
+# No draw on play. In a fixture, arrange lethal damage:
+next(e for e in state['entities'] if e['id'] == 'loot-1')['damage'] = 1
+state = engine.resolve_deaths(state)
+# loot-1 is in the graveyard; top-1 is in hand; one snapshot was recorded.
+
+In ordinary use, spell damage and combat automatically use this same checkpoint.
+No external caller should manually mutate damage in a future player-facing UI.
+
+Tests and traceability
+-----------------------
+Run: python3 -m unittest discover -s tests -v
+tests/test_deaths.py adds 34 tests (9 catalog, 25 behavioral scenarios).
+Full suite: 125 tests, including all 91 prior tests.
+
+DTH-01/02: DeathCatalogTests verifies definition, all four frozen versions,
+           ability/label validity, context restrictions, policy and DESTROY.
+DTH-03: normal-play chronology; explicit order under reversed entity storage;
+        duplicate-stamp failure and transform re-stamping.
+DTH-04: pendingDestroy without lethal damage; generic destroy causes next wave.
+DTH-05: snapshots preserve owner/controller, board position, definition revision
+        and detached modifier data; removed batch cannot be hit again.
+DTH-06: simultaneous opposing combat Deathrattles follow global play order;
+        captured controller receives the draw; no active-player priority.
+DTH-07: nested child waits behind sibling; multiple effects complete first;
+        twelve waves settle iteratively without repeated sources.
+DTH-08: spell kill draws after DEATH_BATCH; play does not draw; mixed Battlecry
+        and Deathrattle dispatch separately; ability damage ignores Spell Damage.
+DTH-09: silenced snapshot has no ability; Polymorph and hand burns do not
+        trigger old Deathrattle; the resulting Sheep has no old ability.
+DTH-10: full-hand Deathrattle burn; ordered escalating fatigue; both queued
+        lethal fatigue draws finish before final DRAW result.
+DTH-11: idempotent settled checkpoint; JSON serialization/determinism and
+        unchanged input state assertions.
+DTH-12: explicit budget error; normal play failure preserves mana/history/input.
+
+Sources and limits
+--------------------
+Official Loot Hoarder text and metadata, checked 2026-10-20:
+https://hearthstone.blizzard.com/en-us/cards/251-loot-hoarder/
+Official library lists its 2-mana 2/1 stats:
+https://hearthstone.blizzard.com/en-us/cards?set=core&viewMode=table
+Identifier reference from simulator author's catalog:
+https://github.com/siva-msft/RosettaStone/blob/master/Documents/CardList.md
+Author's discussion of sharing operations between Battlecries and Deathrattles:
+https://hearthsim.info/blog/new-site-new-blog-new-events-api/
+
+Death ordering follows an explicit named fixture policy adapted from sections
+7 and 12 of the supplied requirements. Those timing observations were flagged
+as old/uncertain there. Tests prove the documented prototype behavior, not
+current-patch parity. No live-client differential verification was performed.
+The synthetic bomb/destroy/chain definitions are in-memory test data, clearly
+separate from the ten real card definitions. The twelve-minion chain uses six
+minions per side and staggered Health to cause one new death per wave.
+
+This is a death-specific scheduler, not a general event bus. Weapon Deathrattles,
+auras/health recalculation, summons/resurrection, duplicate Deathrattles,
+Deathrattle doublers, reborn, secrets, on-damage/on-death listeners, state changes
+during paused choices and historical exception ordering remain unsupported.
+begin_combat_turn remains a readiness fixture primitive, not a full turn runner.

@@ -1,0 +1,143 @@
+Stage 7: hero powers, combat keywords and turn-boundary effects
+=============================================================
+2026-10-20; foundation-v7; schema 1.7; historical-foundation-fixtures.
+Previous catalog/schema/manifest files are preserved byte-for-byte. Earlier
+card definitions retain exact revisions. The catalog now contains 23 entries.
+
+Representative definitions
+--------------------------
+CS2_034 Fireblast: 2 mana, HERO_POWER, Mage; selected character takes 1 damage.
+CS1h_001 Lesser Heal: 2 mana, HERO_POWER, Priest; selected character heals 2.
+CS2_124 Wolfrider: 3 mana, 3/1, Charge.
+GIL_580 Rabid Worgen: 3 mana, 3/3 Warrior, Rush, The Witchwood.
+EX1_033 Windfury Harpy: 6 mana, 4/5, Windfury.
+CS2_024 Frostbolt: 2 mana, selected character takes 3 spell damage, then Freeze.
+EX1_046 Abusive Sergeant: historical 1 mana 2/1; targeted Battlecry gives a
+minion +2 Attack until the end of the current turn. This is the pre-6.1.3 body.
+
+This deliberately mixes historical fixtures and a later Rush representative;
+it is not one live-client patch snapshot. Display text is never interpreted.
+All new definitions have revision foundation-v7. No Google source was changed.
+
+Requirements and execution contract
+-----------------------------------
+KEY-01 Hero powers are noncollectible HERO_POWER definitions, instantiated in
+PLAY outside the minion board, hand and deck. new_game(..., hero_powers=[...])
+accepts two IDs, exact {cardId, revision} references, or None to disable one.
+Default v7 setup uses Fireblast for both players. Older catalogs without power
+definitions default to no power. This sandbox still permits mixed-class decks;
+configuring a power does not validate hero/deck class or format legality.
+
+KEY-02 hero_power(state, player, target_id=None), or apply with
+{type: hero_power, target: entityID}, requires the active player's MAIN phase,
+an unfinished match, a configured power, full available mana and an unused power.
+Reject invalid requests atomically. Charge mana and consume one use even if
+healing restores zero or damage is absorbed. Reset only at that player's next
+start of turn. It does not consume a hand slot, emit PLAY, or increment the
+cards-played counter. Resolution includes existing death and result checkpoints.
+
+KEY-03 HERO_POWER_EFFECT uses HERO_POWER_SELECTED_TARGET. Both spell and power
+selected targeting exclude Elusive, enemy Stealth and enemy Immune. Friendly
+Stealth remains targetable. Taunt does not restrict powers. HERO_POWER damage
+does not inherit Spell Damage. Armor, Divine Shield and immunity still apply.
+Frozen heroes can use powers and equip weapons. Powers cannot attack or be
+played as hand cards. Passive powers, upgrades, refresh effects, discounts and
+summoning powers are deferred with later card operations and scheduler work.
+
+KEY-04 Charge permits immediate attacks against legal enemy characters. Rush
+permits immediate attacks against minions while normal readiness is absent.
+After the next own-turn refresh, a Rush minion may attack heroes too. Charge
+takes precedence when both are present. Both obey Taunt, Freeze, positive
+Attack, ownership, health and attack limits. Readiness is not set by a keyword;
+silencing away Charge/Rush restores normal exhaustion on the arrival turn.
+
+KEY-05 Windfury increases the attack limit from one to two. Attack counters
+belong to the character, never the keyword or weapon. Gaining Windfury after
+one attack makes a second available; losing it does not refund any attack.
+Hero combat reads Windfury from the equipped weapon instance. Replacement
+retains the hero's count; exhaustion or replacement removes the old weapon's
+contribution. The catalog contains a Windfury minion, not a scripted Windfury
+weapon; injected weapon keywords exercise this generic branch. Mega-Windfury,
+forced attacks and general keyword-granting operations are outside this stage.
+
+KEY-06 FREEZE is an explicit character effect, separate from its damage. A
+frozen character cannot declare attacks and still retaliates normally. Freeze
+is not dependent on the preceding damage penetrating Armor or a shield.
+
+KEY-07 Apply supplied KW-05 as the fixture policy: on the controller's own turn,
+if no attack has been spent and a legal attack is available ignoring Freeze,
+thaw at this turn's end. Otherwise thaw at the end of the next own turn.
+Opponent-turn Freeze also expires at the end of the recipient's next own turn.
+This covers exhausted minions, unarmed heroes, Rush without legal minion targets,
+and Windfury after its first attack. The latter deliberately follows the
+supplied specification's after-any-attack rule; no client-log verification of
+that fine timing is claimed. Repeated Freeze does not add skipped turns;
+retain the later applicable deadline, anchored to the controller at application.
+Control-change and forced-attack interactions are deferred with those operations.
+
+KEY-08 Store freezeUntil {player, playerTurn}, using own-turn counters. Thaw
+after end hooks, end-of-turn buffs and temporary mana expiry, before handover.
+Never thaw a graveyard character. Silence removes Frozen and its deadline;
+transform creates a fresh destination state without the old deadline.
+
+KEY-09 BUFF durations are PERMANENT, END_OF_TURN or START_OF_NEXT_TURN. A timed
+STAT_BUFF stores an expiration record. END_OF_TURN anchors to the current
+global turn, even if the recipient is an enemy. START_OF_NEXT_TURN anchors to
+the effect controller's next own-turn count, independent of the recipient or
+source's subsequent state. Timers do not depend on the source staying alive.
+
+KEY-10 Resolve end hooks with buffs still present, then remove due buffs,
+refresh stats, settle deaths and check results. Before start hooks, remove
+start-due buffs, settle stats/deaths/results, then refresh attacks/resources
+and proceed with the existing start hooks and draw. Health loss uses existing
+CAP_CURRENT_ON_MAX_LOSS, not subtraction from current Health. Flat external
+auras and permanent enchantments survive expiration. No attack is refunded.
+Silence/transform discard attached timers. General hero-stat buffs remain
+outside the supported minion BUFF operation.
+
+KEY-11 State and action processing remains copy-on-write. Invalid actions and
+failed resolution never commit partial payments, use counts, timers or events.
+New timer state is ordinary JSON. Restoring a JSON checkpoint retains exact
+future expiration. Prototype has no timing clock: effectful FREEZE/temporary
+BUFF requires a managed match; legacy combat fixture helpers do not thaw buffs.
+
+Validation and trace coverage
+-----------------------------
+tests/test_keywords.py contains 53 new tests:
+- Five catalog/schema tests, including all seven frozen manifests and previous
+  definition continuity, negative power shape/class/policy/duration cases.
+- Eleven power tests: costs/limits, own-turn reset, legality/atomicity, freeze,
+  healing, armor/shield, lethal and Loot Hoarder, setup/dispatch and replay.
+- Nine combat keyword tests: Charge, Rush, Taunt, silence, Windfury refresh,
+  gain/loss, hero weapon replacement and durability.
+- Sixteen Freeze tests: actual Frostbolt and isolated zero-damage timing
+  fixtures, own/opponent turns, exhausted/Charge/Rush/Windfury, repeated Freeze,
+  unarmed/armed heroes, retaliation, silence/transform and graveyard handling.
+- Eleven buff expiration tests: enemy targets, permanent layers/auras, phase
+  ordering, next-own-turn anchoring, Health clamping, source death, cleanup,
+  attack counts and JSON/atomicity.
+- One complete public-action game, replayed through a JSON checkpoint before
+  every action. Tests use in-memory mutations and arranged resources where
+  needed to isolate rules; these are not free production player actions.
+
+The complete suite contains 275 tests. See validation-results.txt for saved
+output. examples/play_keywords.py writes outputs/stage7-demo.json. Seed 0 uses
+all six principal event categories: HERO_POWER, FREEZE, THAW, BUFF_EXPIRED,
+ATTACK and DURABILITY. It completes at turn 17 in 79 public actions; player 1
+wins. Decks are sandbox fixtures. The example policy is not an AI opponent.
+
+Sources and limits
+------------------
+Original supplied requirements: docs/sources/engine-requirements.original.md,
+CMB-01/02, KW-04/05/06, and the end-of-turn ordering paragraph.
+Rabid Worgen card text/class/set:
+https://hearthstone.blizzard.com/en-us/cards/46650-rabid-worgen/
+Frostbolt character damage and Freeze:
+https://hearthstone.blizzard.com/en-gb/cards/111365-frostbolt/
+Abusive Sergeant effect:
+https://hearthstone.blizzard.com/en-us/cards/242
+Historical body changed from 2 Attack to 1 in 6.1.3:
+https://hearthstone.blizzard.com/en-us/news/20303031/upcoming-balance-changes-update-613-9-28-2016
+Cards not tied to a single patch remain explicit fixtures. The project still
+needs client-log comparisons, general reactions, generated entities and a
+verified complete patch snapshot before any claim of Hearthstone conformance.

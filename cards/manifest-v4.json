@@ -1,0 +1,20 @@
+{
+  "manifestVersion": "1.0",
+  "catalogId": "foundation-v4",
+  "schemaVersion": "1.4",
+  "rulesProfile": "historical-foundation-fixtures",
+  "basis": "HISTORICAL_TEST_FIXTURE",
+  "targetClientBuild": null,
+  "createdDate": "2026-10-20",
+  "files": [
+    {
+      "path": "cards/foundation-v4.json",
+      "sha256": "738b3789abb4cf87ed9b2457bd47ba200d097c9464226dfabc9f714bb01e3d84"
+    },
+    {
+      "path": "schemas/catalog-v1.4.schema.json",
+      "sha256": "8e52c5a1138840c85ae1e77b9c3555590feff1a78a6aed88ba4b47614c1bac2e"
+    }
+  ],
+  "deathResolutionPolicy": "DEATH_WAVES_FIFO"
+}

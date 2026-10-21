@@ -1,0 +1,189 @@
+Stage 9: reaction scheduling and interruption windows
+====================================================
+2026-10-20; foundation-v9 / schema 1.9; 51 definitions.
+Named policy: DEPTH_FIRST_REACTIONS_DEATH_WAVES_V1.
+Earlier catalog/schema/manifest bytes and prior definition revisions are intact.
+
+New representative definitions
+------------------------------
+EX1_007 Acolyte of Pain: historical 3 mana 1/3; damage to itself draws a card.
+CS2_235 Northshire Cleric: 1 mana 1/3; a minion actually healed draws a card.
+EX1_595 Cult Master: 4 mana 4/2; another friendly minion's death draws a card.
+NEW1_020 Wild Pyromancer: 2 mana 3/2; after own spell, 1 ability damage to all minions.
+EX1_044 Questing Adventurer: 3 mana 2/2; own card play gives itself +1/+1.
+OG_113 Darkshire Councilman: 3 mana 1/5; another friendly summon gives +1 Attack.
+EX1_287 Counterspell: 3 mana Secret; counter an opposing spell.
+EX1_594 Vaporize: 3 mana Secret; destroy a minion attacking your hero.
+EX1_610 Explosive Trap: 2 mana Secret; hero attack preparation damages all enemies for 2.
+EX1_130 Noble Sacrifice: 1 mana Secret; redirect an attack to a summoned Defender.
+EX1_130a Defender: noncollectible 1 mana 2/1 Paladin token.
+CS2_097 Truesilver Champion: historical 4 mana 4/2 weapon; hero attack heals 2.
+FP1_021 Death's Bite: 4 mana 4/2 weapon; Deathrattle deals 1 to all minions.
+EX1_132 Eye for an Eye: 1 mana Secret; reflect actual incoming damage to enemy hero.
+
+All use revision foundation-v9. Statistics deliberately include historical
+Acolyte/Truesilver values, not their later buffs. The conformance set still
+mixes historical eras. Full inventory with IDs: docs/card-inventory.txt.
+
+Requirements and declared policies
+----------------------------------
+REA-01 TRIGGER and SECRET abilities contain a typed trigger: event, relation,
+subjectKind, optional actorKind and excludeSelf. They cannot ask for a selected
+target. TRIGGER is supported on minions/weapons; SECRET is a standalone spell
+ability with a matching SECRET mechanic. Weapon Deathrattles are now permitted.
+Unknown fields/conditions, incompatible recipients and damage classes fail
+validation. Fixed generation/redirect references resolve exact definitions.
+
+REA-02 Supported events: ON_CARD_PLAY, AFTER_CARD_PLAY, BEFORE_SPELL,
+AFTER_SPELL, AFTER_SUMMON, DAMAGE, HEAL, MINION_DIED, BEFORE_ATTACK, AFTER_ATTACK.
+Relations are ANY, FRIENDLY, ENEMY, SELF. Attack event subjects are defenders;
+SELF attack listeners use the attacker instead, including a weapon's own hero.
+Event recipients are SELF, EVENT_TARGET, ATTACKER, DEFENDER, CONTROLLER_HERO,
+OPPONENT_HERO, in addition to existing selected/query recipients. EVENT_AMOUNT
+is legal only in damage/heal listeners and uses the captured event amount.
+
+REA-03 Snapshot matching listeners at event creation, sorted oldest playOrder
+first, then definition ability order. New sources cannot join an existing event.
+Before delivery, recheck source zone, definition/revision, controller, stamp,
+silence and trigger conditions. A bounced/transformed/silenced source loses its
+queued reaction. Last-known Deathrattles are the explicit source-presence
+exception. Secret and ordinary attack callbacks share chronological ordering.
+
+REA-04 Resolve nested consequences depth-first using an explicit continuation
+stack. Reactions raised by one callback effect run before the next effect of
+that callback or the next parent listener. No Python call-stack recursion is
+used for nested reaction delivery. Damage batches apply all member hits before
+any of their damage listeners are delivered. Combat queues defender damage
+before attacker return damage, retaining paired-hit simultaneity.
+
+REA-05 Normal death collection remains at outer ability/phase checkpoints.
+Acolyte can react to its lethal hit before removal. Remove all minions in a
+wave before collecting MINION_DIED listeners. For each corpse, merge its
+last-known Deathrattle and surviving death observers in playOrder, resolve
+that event, then advance to the next original corpse. Newly caused deaths
+wait for the next wave. Existing death-slot placement and aura rules remain.
+Cult Master removed in the same wave cannot observe any member of that wave.
+
+REA-06 Card play validates and pays before interruptions. Preserve card-play
+counts even when a spell is countered. A spell passes BEFORE_SPELL then
+ON_CARD_PLAY, then (if not countered) charges Overload and resolves text or
+installs its Secret. Counterspell consumes the paid spell without its text,
+Overload or AFTER_SPELL callbacks. AFTER_CARD_PLAY still observes the card play.
+Minion On Play callbacks settle before Battlecry, so a source removed there
+cannot execute its Battlecry. Summoned minions do not emit a hand-card play.
+
+REA-07 AFTER_CARD_PLAY and AFTER_SPELL use a pre-action listener barrier:
+the source must already have existed with the same stamp before that play.
+Played minion AFTER_SUMMON is after Battlecry; generated summons snapshot
+AFTER_SUMMON as each enters. Multi-summon batches create their members before
+delivering pending reactions. Questing/Councilman exclude their own arrival.
+This explicit batching policy is not a claim of universal live-client timing.
+
+REA-08 DAMAGE listeners use actual post-immunity/shield damage, including the
+portion absorbed by Armor, not capped to remaining Health. Zero damage emits
+its existing diagnostic event but does not activate these listeners. HEAL
+listeners require actual positive Health restored; no draw for overheal or a
+hero heal when the rule requests a minion. Secret damage is SPELL damage and
+uses the controller's Spell Damage at trigger time. Pyromancer and weapon
+Deathrattle damage remain ABILITY damage and do not receive that modifier.
+
+REA-09 Secrets occupy SECRET, outside the minion board, with unique stamps.
+Allow at most five per player and no duplicate card ID, regardless of revision.
+Reject before paying. Secrets react only during the opponent's active turn.
+Reveal and consume immediately before their callback; an ineligible Secret
+stays in place. The current engine state/log remains an omniscient debugger
+view; per-player redaction and hidden views remain planned API work.
+
+REA-10 BEFORE_ATTACK stores one mutable proposal. Recheck pending Secrets
+against its current defender and actor. Targeted attack Secrets skip actors
+that are mortally wounded, pending destroy or no longer in play. Targetless
+Explosive Trap can still fire after another Secret neutralizes the attacker.
+No-room Noble Sacrifice stays hidden. The defender must remain a living valid
+character when an attack Secret activates. Eye for an Eye responds to its
+captured DAMAGE event, including lethal damage, before the result check.
+
+REA-11 Counterspell marks its current spell proposal countered. Later counters
+in the same queue recheck that flag and remain hidden. Counterspell does not
+react to minions, weapons or hero powers. Playing a Secret is itself a spell;
+an existing Pyromancer can react after its successful installation.
+
+REA-12 REDIRECT_ATTACK summons one exact Defender definition for the Secret's
+controller and changes the proposal's defender. Subsequent queued attack
+callbacks use that defender; a hero-only Vaporize/Explosive Trap then skips.
+This window mutates and revalidates the existing proposal. It does not rebuild
+a second full preparation pass; random Misdirection/forced attacks and multiple
+new-proposal passes remain outside this fixture language.
+
+REA-13 After preparation callbacks and deaths, check the result. Cancel combat
+if the match ended, an actor left play, or the attacker's arrival stamp changed.
+All pre-combat cancellations refund the attack and preserve weapon durability;
+do not emulate the supplied obsolete two-death-phase consumption bug. Otherwise
+capture both Attack values, consume the attack, remove Stealth, apply paired
+hits, drain damage reactions, wear/break the weapon, resolve AFTER_ATTACK,
+settle deaths, then check the result. Existing declared targets are not chosen
+again against Taunt. Dropping Attack to zero after declaration does not cancel.
+
+REA-14 Hero results are deferred until pending reactions and death waves settle,
+with the extra combat-preparation boundary above. Eye for an Eye can turn lethal
+spell damage into a draw. No player-priority response or manual reaction action
+is introduced: Hearthstone-style interruptions here resolve automatically.
+
+REA-15 Weapon destruction queues last-known Deathrattles for both replacement
+and exhaustion. Replacement installs the new weapon before draining the old
+weapon callback. Truesilver's before-attack healing shares the preparation
+queue with Secrets. Death's Bite's destruction callback precedes queued
+AFTER_ATTACK callbacks, and can cause damage listeners and further deaths.
+These scoped weapon timings retain the existing equip/durability profile;
+Battlecry weapons, Gorehowl overrides and general replacement effects remain
+deferred. The stage-3 immune-attacker durability policy is not changed here.
+
+REA-16 max_reactions (default 1000) bounds all callback starts in a player
+action, across nested damage and death waves. Existing max_deathrattles remains
+a separate guard. Bounded reentrant callbacks are permitted; unbounded cycles
+raise ResolutionLimitError atomically instead of implementing the supplied
+historical self-trigger deferral rule. Input state, mana, uses, generated IDs,
+events and RNG remain unchanged on failure. No private queue/counter remains
+at a returned action boundary. scheduler.nextEventId survives JSON checkpoints.
+
+Implementation and verification
+-------------------------------
+hearthstone/reactions.py: event snapshots, eligibility, continuation stack,
+reaction recipients and interruptible combat. hearthstone/errors.py shares
+the atomic resolution exception, still re-exported from prototype.py.
+Prototype/MatchEngine/ZoneOperations publish the appropriate events and retain
+public action signatures. Public players cannot activate reactions for free.
+
+Tests: tests/test_reactions.py adds 52 cases (8 catalog/negative checks,
+16 listener cases, 19 Secret cases, 5 weapon/interruption cases, 3 safety cases,
+1 complete game). The complete suite contains 382 tests. Includes old versions,
+listener departure, depth-first ordering, mortally wounded targets, Secret caps,
+spell scaling, deferred draw result, and budgets across nested death waves.
+
+  python3 -m examples.play_reactions
+
+outputs/stage9-demo.json saves seed 1: player 0 wins on turn 47, 192 actions,
+991 events. The public action sequence replays identically through a JSON
+checkpoint before every action, checking empty work queues and Secret/board
+invariants. It exercises counters, redirection/cancellation, damage/heal
+callbacks and weapon Deathrattles. Sandbox decks intentionally mix classes.
+Stage-7 and stage-8 demos are pinned to their historical catalogs/traces.
+
+Sources, decisions and remaining scope
+--------------------------------------
+Original supplied specification, section 7 EFF-01..11, section 6 combat,
+section 10 SEC-01..06, END-01, ARCH-01/03/08. The source explicitly warns that
+its depth-first ordering evidence came from an old patch. This release tests
+its named subset/policies; it does not establish current client conformance.
+Primary card/patch references reviewed:
+https://hearthstone.blizzard.com/en-us/cards/113/
+https://hearthstone.blizzard.com/en-us/cards/462-eye-for-an-eye/
+https://hearthstone.blizzard.com/en-us/news/23739023
+The 21.6 notes discuss temporary Spell Damage being consumed on Secret play
+rather than saved for activation; this implementation uses current Spell Damage
+at activation, without implementing that separate temporary-bonus mechanic.
+
+The language does not yet cover draw/discard listeners, prevention/replacement
+layers, arbitrary damage/death event filters, all target-invalidity policies,
+random interruption choices, self-trigger deferral, forced attacks or modern
+card types. General board-state copying, cost layers, hidden views, format
+legality and verified single-patch conformance remain future stages.

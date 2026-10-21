@@ -1,0 +1,181 @@
+Stage 8: summoning, generated instances and zone transitions
+==========================================================
+2026-10-20; foundation-v8; schema 1.8; 37 definitions.
+Policy: RESET_ON_EXIT_BASE_DECK_COPIES, recorded in catalog/schema/manifest.
+All earlier catalog, schema and manifest bytes remain unchanged. Earlier
+card definitions retain their exact revisions. New definitions use v8.
+
+Representative definitions
+--------------------------
+EX1_506   Murloc Tidehunter: 2 mana 2/1; Battlecry summons a Scout.
+EX1_506a  Murloc Scout: noncollectible 1 mana 1/1 Murloc.
+CS2_027   Mirror Image: 1 mana; summon two 0/2 Taunt minions.
+CS2_mirror Mirror Image: noncollectible 0 mana 0/2 Taunt minion.
+FP1_002   Haunted Creeper: 2 mana 1/2 Beast; Deathrattle summons two Spiders.
+FP1_002t  Spectral Spider: noncollectible 1 mana 1/1, no Beast tribe.
+EX1_049   Youthful Brewmaster: 2 mana 3/2; return a friendly minion to hand.
+EX1_581   Sap: 2 mana; return an enemy minion to its controller's hand.
+EX1_014   King Mukla: 3 mana 5/5 Beast; give the opponent two Bananas.
+EX1_014t  Bananas: noncollectible 1 mana spell; give a minion +1/+1.
+BRM_007   Gang Up: 2 mana; shuffle three base copies of a minion into your deck.
+GVG_031   Recycle: 6 mana; shuffle an enemy minion into its controller's deck.
+CS2_101   Reinforce: 2 mana hero power; summon a Silver Hand Recruit.
+CS2_101t  Silver Hand Recruit: noncollectible 1 mana 1/1 Paladin minion.
+
+Name is display data, not an identifier: Mirror Image's spell and token have
+the same name and distinct IDs. Neutral/class/tribe/set/rarity metadata is
+explicit, including Murlocs, Naxxramas, Blackrock Mountain and GvG. This remains
+a mixed historical conformance set, not a single verified client patch.
+
+Requirements
+------------
+ZON-01 board(state, player) returns minions in board order. The entity store
+supplies that order; playOrder independently supplies chronological resolution
+order. play accepts optional position, an integer from zero to current board
+size, inclusive. Default is the right end. Reject invalid positions, booleans,
+positions on spells/weapons and plays into a full board before payment. The
+apply play action accepts the same optional position. Old catalogs retain
+legacy placement/event behavior; v8 fixes default placement to chronological
+right-end arrival rather than entity/deck-storage order.
+
+ZON-02 Every v8 hand-played minion emits PLAY then SUMMON, then executes its
+Battlecry. A generated summon emits GENERATED and SUMMON, with no PLAY,
+Battlecry, mana payment, Overload charge or cards-played increment. Existing
+normal death/result checkpoints follow ability resolution. These are event
+records; reactive summon/play listeners remain stage-9 work.
+
+ZON-03 SUMMON requires an exact definition reference, targetPlayer, count and
+placement. Only minion definitions may be summoned. RIGHT_END serves spells
+and powers; RIGHT_OF_SOURCE serves living friendly minion sources; each
+successive token goes after the preceding token. DEATH_POSITION serves a
+controller-at-death Deathrattle. Static validation rejects incompatible source,
+placement, destination and definition combinations.
+
+ZON-04 The board cap is seven minions per player. Summon as many as fit and
+emit SUMMON_FAILED for each excess attempt. Failed summons create no instance,
+consume no ID or RNG and do not undo the source card. A directly summoning
+hero power is unavailable on a full board; reject before spending mana/use.
+Generated minions start exhausted, with their printed keywords; Charge/Rush
+work immediately. Auras apply immediately and do not accumulate repeatedly.
+Locations and location slot-sharing remain outside supported card types.
+
+ZON-05 Generated IDs are generated-N, using nextEntityId in serialized state.
+Start lazily at one, skip every occupied ID, increment only after creation,
+and never reuse IDs from retained graveyard records. New instances carry
+createdBy provenance, their exact card/revision, and separate owner/controller
+fields. No mutable data is shared between source, definitions or copies.
+Bad counters and failed resolution roll back the entire player action.
+
+ZON-06 ADD_CARD creates clean cards directly in the selected player's hand.
+A full hand discards each excess generated card to the graveyard. Emit DISCARD,
+not DRAW, BURN or DEATH. No Deathrattle fires. This differs from a drawn-card
+burn and from returning a board minion to a full hand. Generated cards may be
+noncollectible and can later be played normally; starting decks still require
+collectible cards. Generation does not consume or reorder the deck.
+
+ZON-07 RETURN_TO_HAND and SHUFFLE_INTO_DECK move existing PLAY minions. Retain
+instance ID, owner and current definition, including a transformed definition.
+Set controller to the explicitly selected destination player. The real bounce
+and Recycle fixtures use RECIPIENT_CONTROLLER, so a stolen minion goes to its
+current controller's hand/deck while retaining its original owner tag. No
+ownership-transfer operation or original-owner bounce is implied.
+
+ZON-08 Successful moves reset damage, Armor, silence, attached stat buffs,
+Freeze/timers, pending destruction, readiness, attack count, cached aura stats
+and the old playOrder. Restore printed keywords. External auras cease when
+the source leaves. Returning a token keeps its token definition and printed
+cost. Replaying it assigns a fresh chronological stamp and normal summoning
+exhaustion; replaying a bounced Battlecry minion executes the Battlecry again.
+The returned card itself costs no mana to return. It must pay when replayed.
+General hand/deck enchantment and cost-modifier persistence remains deferred.
+
+ZON-09 Returning to a full hand marks the board minion for destruction; it
+stays on the board until the usual death checkpoint. Resolve its eligible
+Deathrattle from last-known state. Playing Brewmaster from a full own hand
+first frees its hand slot, so a single return can fit. Repeated/query moves
+check capacity in execution order. A successful bounce or shuffle is not a
+death and emits no Deathrattle.
+
+ZON-10 SHUFFLE_COPIES requires BASE_DEFINITION policy. Gang Up copies the
+source's current exact definition into new, independent deck entities owned
+and controlled by the destination player. It does not move the source, copy
+board enchantments, damage, silence or Freeze, or execute Battlecry. Board-state
+copying remains deliberately unsupported because its precise inheritance
+rules were unresolved in the supplied specification (STAT-09).
+
+ZON-11 Deck operations use the existing serialized SplitMix64 RNG. Append all
+successful cards for one effect, then Fisher-Yates shuffle each affected deck
+once in player order. This shuffles the whole deck, not random insertion into
+an otherwise preserved ordering. Keep explicit deck IDs consistent with entity
+zones. Drawing a shuffled entity uses the normal draw/fatigue/full-hand path.
+Shuffling does not reset fatigue. No global random generator is used.
+
+ZON-12 Apply the supplied 99-card runtime deck cap. Copies that do not fit
+emit COPY_FAILED and consume no ID. Existing PLAY minions that cannot be
+shuffled into a full deck are marked for destruction, preserving Deathrattle
+eligibility until the checkpoint. This overflow destruction rule is an explicit
+fixture choice; the source specified the cap but did not establish full-deck
+shuffle behavior. Client-log verification is required before claiming parity.
+
+ZON-13 Capture death-wave board order before removing the wave. Virtual gap
+markers keep original left/right relationships while Deathrattles resolve in
+playOrder, even when that order differs from board order. Each summoned token
+receives a new global stamp; multiple tokens from one source keep their order.
+All wave members free their slots before summons begin. Existing FIFO waves
+and the resolution budget also cover newly generated minions that die and
+trigger further Deathrattles. Budget failure commits no generated IDs/events.
+
+ZON-14 Death snapshots keep last-known modifiers/statuses. Actual departing
+minions and weapons lose operative modifiers, silence and Freeze timers in
+v8. Graveyard diagnostics retain damage and historical playOrder; immutable
+deathHistory is the authority for last-known behavior. Transform retains its
+existing instance ID and board position, clears prior board state, stamps a
+new arrival chronology and emits no SUMMON or DEATH. Generated provenance is
+retained across transform and reset transitions. Resurrection and new-identity
+transform variants are deferred.
+
+Code and public usage
+---------------------
+hearthstone/zones.py centralizes board order, generation and reset helpers.
+Prototype owns core resolution; MatchEngine owns public actions and power checks.
+
+  state = engine.play(state, 0, source_id, target_id=None, position=1)
+  state = engine.apply(state, 0, {'type':'play', 'source':source_id, 'position':1})
+  state = engine.new_game(decks, seed=1, hero_powers=['CS2_101','CS2_034'])
+  state = engine.hero_power(state, 0)  # Reinforce, once MAIN phase is reached
+
+Summon/generate/bounce/shuffle are effect operations, not free player actions.
+No public shortcut bypasses costs, turn timing, board or hand capacity.
+
+Tests and saved example
+-----------------------
+tests/test_zones.py has 55 new tests: 7 catalog/negative/version checks;
+15 placement/summon tests; 4 generated-hand tests; 11 bounce tests;
+9 copy/shuffle tests; 8 death/cleanup tests; 1 complete public-action game.
+The full regression suite contains 330 tests. Old tests were updated to accept
+the added SUMMON record and non-unique display names. The stage-7 example is
+explicitly pinned to its old catalog, preserving its original 79-action trace.
+
+  python3 -m examples.play_zones
+
+The saved outputs/stage8-demo.json records seed 1, 177 player actions, turn 32,
+791 events and player-0 victory. It exercises generation, summons, hand cards,
+bounce, shuffle/copies and Deathrattles. The test replays through a JSON
+checkpoint before every action and checks ID uniqueness, board/hand/deck caps
+and entity/deck membership after every step. Arranged fixtures and in-memory
+card mutations isolate branches elsewhere; they are not production actions.
+
+Sources and remaining scope
+----------------------------
+Supplied original requirements: DOM-02/06, RES-12/13/15, PLAY-01/02/03,
+DECK-06 and ARCH-01 in docs/sources/engine-requirements.original.md.
+Reviewed card-text references:
+https://hearthstone.blizzard.com/en-gb/cards/976-murloc-tidehunter/
+https://hearthstone.blizzard.com/en-gb/cards/415-youthful-brewmaster/
+https://hearthstone.blizzard.com/en-us/cards/461-sap
+https://hearthstone.blizzard.com/en-us/cards/2304-gang-up/
+
+No source Google document or prior frozen artifact was edited. Fixed definitions
+are fixtures, not a complete current card-data import. The next stage is the
+reaction scheduler. Board-state copying, resurrection, cost layers, general
+zone listeners, hidden information and format legality remain future work.
